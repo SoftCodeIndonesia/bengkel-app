@@ -180,3 +180,4 @@ Route::get('/invoice-reference/search', function (Request $request) {
 })->name('invoice-reference.search');
 Route::get('/suppliers/search', [SupplierController::class, 'search']);
 Route::get('/suppliers/{supplier}', [SupplierController::class, 'getSupplier']);
+Route::post('/products/quick-create', [ProductController::class, 'quickCreate'])->name('products.quick-create');

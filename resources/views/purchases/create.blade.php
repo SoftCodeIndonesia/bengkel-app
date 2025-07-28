@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                        margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -156,14 +156,24 @@
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="text-lg font-medium text-white">Daftar Barang</h3>
-                    <button type="button" id="add-item"
-                        class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg text-sm flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Tambah Barang
-                    </button>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="add-item"
+                            class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Tambah Barang
+                        </button>
+                        <button type="button" id="add-new-product"
+                            class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Produk Baru
+                        </button>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -174,6 +184,8 @@
                                 <th class="px-4 py-3">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
+                                <th class="px-4 py-3">Margin (%)</th>
+                                <th class="px-4 py-3">Harga Jual</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -184,6 +196,8 @@
                             <tr>
                                 <td colspan="3" class="px-4 py-3 text-right font-semibold">Total Pembelian</td>
                                 <td id="grand-total" class="px-4 py-3 font-semibold">Rp 0</td>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -208,6 +222,56 @@
                 </button>
             </div>
         </form>
+    </div>
+    <div id="new-product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50">
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md mx-auto mt-20">
+            <h3 class="text-xl font-semibold text-white mb-4">Tambah Produk Baru</h3>
+            <form id="quick-product-form">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-gray-300 mb-2">Nama Produk <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" required
+                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-300 mb-2">Part Number (Opsional)</label>
+                    <input type="text" name="code"
+                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                </div>
+                <div>
+                    <label for="tipe" class="block text-sm font-medium text-gray-300 mb-2">Tipe Produk <span
+                            class="text-red-500">*</span></label>
+                    <select name="tipe" id="tipe"
+                        class="mt-1 block w-full bg-gray-700 border {{ $errors->has('tipe') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
+                        required>
+                        <option value="part" {{ old('tipe') == 'part' ? 'selected' : '' }}>Part</option>
+                        <option value="oli" {{ old('tipe') == 'oli' ? 'selected' : '' }}>Oli</option>
+                        <option value="material" {{ old('tipe') == 'material' ? 'selected' : '' }}>Material</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-300 mb-2">Harga Beli <span class="text-red-500">*</span></label>
+                    <input type="number" name="buying_price" id="buying_price" required
+                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-300 mb-2">Margin (%) <span class="text-red-500">*</span></label>
+                        <input type="number" name="margin" id="margin" value="20" required
+                            class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 mb-2">Harga Jual</label>
+                        <input type="number" name="selling_price" id="selling_price" readonly
+                            class="w-full border border-gray-600 rounded p-2 text-white bg-gray-600">
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="cancel-product" class="mr-2 px-4 py-2 bg-gray-600 rounded">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 rounded">Simpan</button>
+                </div>
+            </form>
+        </div>
     </div>
 @endsection
 
@@ -275,6 +339,18 @@
                 }
             });
 
+
+            function calculateSellingPrice() {
+                const buyingPrice = parseFloat(document.getElementById('buying_price').value) || 0;
+                const margin = parseFloat(document.getElementById('margin').value) || 0;
+
+                const sellingPrice = buyingPrice * (1 + (margin / 100));
+                document.getElementById('selling_price').value = sellingPrice.toFixed(2);
+            }
+
+
+
+
             // Fetch products from API
             fetch("{{ route('api.product.search') }}")
                 .then(response => response.json())
@@ -308,6 +384,15 @@
                     </td>
                     <td class="px-4 py-3 total-price">Rp 0</td>
                     <td class="px-4 py-3">
+                        <input type="number" value="0" name="items[${itemCount}][margin]"  required
+                            class="margin bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </td>
+                    <td class="px-4 py-3">
+                        <input type="text" name="items[${itemCount}][selling_price]" readonly
+                            class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </td>
+                    
+                    <td class="px-4 py-3">
                         <button type="button" onclick="removeItem('${rowId}')" class="text-red-500 hover:text-red-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -324,6 +409,7 @@
                     labelField: 'text',
 
                     options: products,
+                    create: false,
                     load: function(query, callback) {
                         var url = base_url + '/api/products/search?q=' + encodeURIComponent(
                             query) + '&tipe=barang'
@@ -336,6 +422,40 @@
                                 console.log('error');
                                 callback();
                             });
+                    },
+                    create: function(input, callback) {
+
+
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('products.quick-create') }}",
+                            data: {
+                                name: input,
+                                buying_price: 0,
+                                unit_price: 0,
+                                margin: 0,
+                                code: null,
+                                tipe: 'part',
+                            },
+                            dataType: "json",
+                            success: function(response) {
+
+                                const newProduct = {
+                                    id: response.product.id,
+                                    text: response.product.name,
+                                    buying_price: response.product.buying_price ??
+                                        0,
+                                };
+                                callback(newProduct);
+
+                                // Auto-fill harga dengan 0 dan hitung total
+                                const unitPriceInput = row.querySelector('.unit-price');
+                                unitPriceInput.value = formatRupiah(0);
+                                calculateRowTotal(row);
+                            }
+                        });
+
+
                     },
                     render: {
                         option: function(item, escape) {
@@ -354,6 +474,9 @@
 
                             return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
                         },
+                        option_create: function(data, escape) {
+                            return `<div class="create p-2 text-white hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                        }
                     },
 
                 });
@@ -363,6 +486,7 @@
                 // Add event listeners for quantity and price changes
                 const quantityInput = row.querySelector('.quantity');
                 const unitPriceInput = row.querySelector('.unit-price');
+                const marginInput = row.querySelector('.margin');
 
                 $('.product-select').change(function(e) {
                     e.preventDefault();
@@ -381,9 +505,35 @@
                     calculateRowTotal(row);
                     updateGrandTotal();
                 });
+                marginInput.addEventListener('input', () => {
+                    calculateRowTotal(row);
+                    updateGrandTotal();
+                });
 
                 itemCount++;
             };
+
+
+            // Fungsi untuk menambahkan option ke semua TomSelect
+            function addProductOptionToAllSelects(newProduct) {
+                const newOption = {
+                    id: newProduct.id,
+                    text: newProduct.name,
+                    buying_price: newProduct.buying_price
+                };
+
+                document.querySelectorAll('.product-select').forEach(select => {
+
+                    const tsInstance = select._tomselect;
+                    if (tsInstance) {
+                        tsInstance.addOption(newOption);
+                        tsInstance.refreshOptions();
+                        tsInstance.setValue(newOption.id);
+                    }
+
+                    select.value = newOption.id;
+                });
+            }
 
             $('.quantity').change(function(e) {
                 e.preventDefault();
@@ -399,8 +549,13 @@
             const calculateRowTotal = (row) => {
                 const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
                 const unitPrice = parseFloat(originalNumber(row.querySelector('.unit-price').value)) || 0;
+                const margin = row.querySelector('.margin').value;
                 const total = quantity * unitPrice;
                 row.querySelector('.total-price').textContent = formatRupiah(total);
+                if (margin > 0) {
+                    row.querySelector('.selling_price').value = unitPrice + (unitPrice * (margin / 100))
+                }
+
                 updateGrandTotal();
             };
 
@@ -427,6 +582,8 @@
 
             // Add first item row
             addItemRow();
+
+
 
             // Add item button click handler
             document.getElementById('add-item').addEventListener('click', addItemRow);

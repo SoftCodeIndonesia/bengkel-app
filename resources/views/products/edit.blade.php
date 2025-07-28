@@ -20,36 +20,89 @@
                 @method('PUT')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Nama Sparepart --}}
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Nama Sparepart <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}"
-                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
                             required>
                         @error('name')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
+                    {{-- Part Number --}}
                     <div>
-                        <label for="unit_price" class="block text-sm font-medium text-gray-300 mb-2">Harga Satuan <span
+                        <label for="part_number" class="block text-sm font-medium text-gray-300 mb-2">Nomor Part</label>
+                        <input type="text" name="part_number" id="part_number"
+                            value="{{ old('part_number', $product->part_number) }}"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('part_number') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
+                            placeholder="Contoh: PN-001">
+                        @error('part_number')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Harga Beli --}}
+                    <div>
+                        <label for="buying_price" class="block text-sm font-medium text-gray-300 mb-2">Harga Beli</label>
+                        <input type="text" name="buying_price" id="buying_price"
+                            value="{{ old('buying_price', number_format($product->buying_price, 0, ',', '.')) }}"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('buying_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">
+                        @error('buying_price')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Margin --}}
+                    <div>
+                        <label for="margin" class="block text-sm font-medium text-gray-300 mb-2">Margin (%)</label>
+                        <input type="number" name="margin" id="margin" value="{{ old('margin', $product->margin) }}"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('margin') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
+                            step="0.01" min="0">
+                        @error('margin')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Harga Satuan --}}
+                    <div>
+                        <label for="unit_price" class="block text-sm font-medium text-gray-300 mb-2">Harga Jual <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="unit_price" id="unit_price"
                             value="{{ old('unit_price', $product->unit_price) }}"
-                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            required min="0">
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
+                            required>
                         @error('unit_price')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
+                    {{-- Tipe --}}
                     <div>
-                        <label for="stok" class="block text-sm font-medium text-gray-300 mb-2">Stok <span
+                        <label for="tipe" class="block text-sm font-medium text-gray-300 mb-2">Tipe Produk <span
                                 class="text-red-500">*</span></label>
-                        <input type="number" name="stok" id="stok" value="{{ old('stok', $product->stok) }}"
-                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('stok') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            required min="0">
-                        @error('stok')
+                        <select name="tipe" id="tipe"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('tipe') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">
+                            <option value="part" {{ old('tipe', $product->tipe) == 'part' ? 'selected' : '' }}>Part
+                            </option>
+                            <option value="oli" {{ old('tipe', $product->tipe) == 'oli' ? 'selected' : '' }}>Oli
+                            </option>
+                            <option value="material" {{ old('tipe', $product->tipe) == 'material' ? 'selected' : '' }}>
+                                Material</option>
+                        </select>
+                        @error('tipe')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Deskripsi --}}
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">Deskripsi</label>
+                        <textarea name="description" id="description" rows="3"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('description') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">{{ old('description', $product->description) }}</textarea>
+                        @error('description')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
@@ -83,7 +136,10 @@
             // Format ke angka saat submit
             const form = document.querySelector('form');
             form.addEventListener('submit', function(e) {
+                const buyingPrice = document.getElementById('buying_price');
+                const priceInput = document.getElementById('unit_price');
                 priceInput.value = priceInput.value.replace(/\D/g, '');
+                buyingPrice.value = buyingPrice.value.replace(/\D/g, '');
             });
 
             // Fungsi format Rupiah

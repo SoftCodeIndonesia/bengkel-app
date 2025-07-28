@@ -77,7 +77,7 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request->all());
+
 
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
@@ -89,6 +89,9 @@ class PurchaseController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
         ]);
+
+        // dd($request->all());
+
 
         DB::beginTransaction();
 
@@ -117,10 +120,24 @@ class PurchaseController extends Controller
 
             foreach ($request->items as $item) {
                 $product = json_decode($item['product_id']);
+                $productModel = null;
+
+                if (gettype($product) == 'object') {
+                    $productModel = Product::find($product->id);
+                } else {
+                    $productModel = Product::find($product);
+                }
+
+
+
+                $productModel->unit_price = $item['selling_price'];
+                $productModel->buying_price = $item['unit_price'];
+                $productModel->margin = $item['margin'];
+                $productModel->save();
 
                 $purchaseItem = PurchaseItem::create([
                     'purchase_id' => $purchase->id,
-                    'product_id' => $product->id,
+                    'product_id' => $productModel->id,
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'total_price' => $item['quantity'] * $item['unit_price'],
@@ -131,13 +148,13 @@ class PurchaseController extends Controller
                     'move' => 'in',
                     'reference' => 'purchase_items',
                     'reference_id' => $purchaseItem->id,
-                    'product_id' => $product->id,
-                    'item_name' => $product->name, // pastikan ada 'name' di array
+                    'product_id' => $productModel->id,
+                    'item_name' => $productModel->name, // pastikan ada 'name' di array
                     'name' => 'purchases',
-                    'item_description' => $product->description ?? null,
+                    'item_description' => $productModel->description ?? null,
                     'quantity' => 0,
                     'buying_price' => $item['unit_price'],
-                    'selling_price' => $product->unit_price,
+                    'selling_price' => $item['selling_price'],
                     'total_price' => $purchaseItem->total_price,
                     'discount' => $item['discount'] ?? 0,
                     'grand_total' => $purchaseItem->total_price,

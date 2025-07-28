@@ -79,6 +79,9 @@ Route::middleware('auth')->group(function () {
     // Products
     Route::resource('products', ProductController::class);
 
+    // Route::get('info-stok', [ProductController::class, 'info'])->name('info-stok');
+    // Route::get('info-detail/{id}', [ProductController::class, 'infoDetail'])->name('info-detail');
+
     // Job Orders
     Route::resource('job-orders', JobOrderController::class);
 

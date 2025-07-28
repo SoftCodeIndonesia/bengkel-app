@@ -34,6 +34,7 @@ class MovementItemController extends Controller
 
 
 
+
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('created_by_name', fn($item) => $item->creator->name ?? '-')
@@ -68,6 +69,7 @@ class MovementItemController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['reference_info', 'status_badge', 'action'])
+
                 ->make(true);
         }
         return view('sparepart.move_in.index');
