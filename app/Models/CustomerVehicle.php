@@ -26,8 +26,25 @@ class CustomerVehicle extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function scopeNeedsFollowUp($query)
+    {
+        return $query->whereHas('jobOrders', function ($q) {
+            $q->whereBetween('service_at', [
+                now()->subMonths(6)->toDateTimeString(),
+                now()->subMonths(3)->toDateTimeString()
+            ])
+                ->orderBy('service_at', 'desc')
+                ->limit(1);
+        });
+    }
+
     public function jobOrders()
     {
         return $this->hasMany(JobOrder::class);
+    }
+
+    public function latestJobOrder()
+    {
+        return $this->hasOne(JobOrder::class)->latest();
     }
 }

@@ -90,6 +90,60 @@
             </div>
         </div>
 
+        <div class="p-4">
+            <div class="bg-gray-700 rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-600">
+                    <h3 class="text-lg font-semibold text-white">Follow Up Kendaraan</h3>
+                    <p class="text-gray-400 text-sm">Kendaraan yang terakhir service lebih dari 3 bulan lalu</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-400">
+                        <thead class="text-xs text-gray-400 uppercase bg-gray-600">
+                            <tr>
+                                <th class="px-4 py-3">No</th>
+                                <th class="px-4 py-3">Pelanggan</th>
+                                <th class="px-4 py-3">Kendaraan</th>
+                                <th class="px-4 py-3">No. Polisi</th>
+                                <th class="px-4 py-3">Terakhir Service</th>
+                                <th class="px-4 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($followUpVehicles as $index => $vehicle)
+                                <tr class="border-b border-gray-600 hover:bg-gray-600">
+                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
+                                    <td class="px-4 py-3 font-medium text-white">
+                                        {{ $vehicle->customer->name }}<br>
+                                        <span class="text-xs text-gray-400">{{ $vehicle->customer->phone }}</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {{ $vehicle->vehicle->merk }} {{ $vehicle->vehicle->tipe }}
+                                    </td>
+                                    <td class="px-4 py-3">{{ $vehicle->vehicle->no_pol }}</td>
+                                    <td class="px-4 py-3">
+                                        @php
+                                            $lastService = $vehicle
+                                                ->jobOrders()
+                                                ->where('status', 'completed')
+                                                ->orderByDesc('service_at')
+                                                ->first();
+                                        @endphp
+                                        {{ $lastService ? $lastService->service_at->format('d M Y') : '-' }}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="openFollowUpModal({{ $vehicle->id }})"
+                                            class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
+                                            Follow Up
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Fast & Slow Moving Products -->
         <div class="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Fast Moving Products -->
@@ -154,4 +208,54 @@
             </div>
         </div>
     </div>
+
+    <div id="followUpModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-md">
+            <div class="p-4 border-b border-gray-600 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-white">Follow Up Pelanggan</h3>
+                <button onclick="closeFollowUpModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form id="followUpForm" method="POST" action="{{ route('follow-ups.store') }}" class="p-4">
+                @csrf
+                <input type="hidden" name="customer_vehicle_id" id="modal_vehicle_id">
+                <div class="mb-4">
+                    <label class="block text-gray-400 text-sm font-medium mb-2">Tanggal Follow Up</label>
+                    <input type="date" name="contact_date"
+                        class="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-400 text-sm font-medium mb-2">Catatan</label>
+                    <textarea name="notes" rows="3"
+                        class="bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeFollowUpModal()"
+                        class="text-white bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg mr-2">
+                        Batal
+                    </button>
+                    <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
+@push('scripts')
+    <script>
+        function openFollowUpModal(vehicleId) {
+            document.getElementById('modal_vehicle_id').value = vehicleId;
+            document.getElementById('followUpModal').classList.remove('hidden');
+        }
+
+        function closeFollowUpModal() {
+            document.getElementById('followUpModal').classList.add('hidden');
+        }
+    </script>
+@endpush

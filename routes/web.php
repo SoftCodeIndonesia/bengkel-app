@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\JobOrderController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SupplierController;
@@ -75,6 +76,8 @@ Route::middleware('auth')->group(function () {
         ->name('customer-vehicles.store');
     Route::delete('/customer-vehicles', [CustomerVehicleController::class, 'destroy'])
         ->name('customer-vehicles.destroy');
+
+    Route::post('/follow-ups', [FollowUpController::class, 'store'])->name('follow-ups.store');
 
     // Products
     Route::resource('products', ProductController::class);

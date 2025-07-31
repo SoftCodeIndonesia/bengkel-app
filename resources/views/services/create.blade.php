@@ -43,14 +43,20 @@
                     </div>
 
                     <div>
-                        <label for="frt" class="block text-sm font-medium text-gray-300 mb-2">FRT (Menit) <span
+                        <label for="frt" class="block text-sm font-medium text-gray-300 mb-2">FRT <span
                                 class="text-red-500">*</span></label>
                         <input type="number" name="stok" id="frt" value="{{ old('stok') }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('stok') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            required min="0">
+                            required min="0" step="0.1">
                         @error('stok')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">Deskripsi <span
+                                class="text-red-500">*</span></label>
+                        <textarea type="text" name="description" id="description"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
                     </div>
                 </div>
 

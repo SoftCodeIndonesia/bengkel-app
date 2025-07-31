@@ -19,16 +19,17 @@ class ServiceController extends Controller
                     return 'Rp ' . number_format($row->unit_price, 0, ',', '.');
                 })
                 ->addColumn('formatted_frt', function ($row) {
-                    if (!$row->stok) return '-';
+                    // if (!$row->stok) return '-';
 
-                    $hours = floor($row->stok / 60);
-                    $minutes = $row->stok % 60;
+                    // $hours = floor($row->stok / 60);
+                    // $minutes = $row->stok % 60;
 
-                    $result = [];
-                    if ($hours > 0) $result[] = $hours . ' jam';
-                    if ($minutes > 0) $result[] = $minutes . ' menit';
+                    // $result = [];
+                    // if ($hours > 0) $result[] = $hours . ' jam';
+                    // if ($minutes > 0) $result[] = $minutes . ' menit';
 
-                    return implode(' ', $result);
+                    // return implode(' ', $result);
+                    return $row->stok;
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="flex justify-end gap-2">';
@@ -76,7 +77,8 @@ class ServiceController extends Controller
             'name' => $request->name,
             'tipe' => 'jasa',
             'unit_price' => $request->unit_price,
-            'stok' => $request->stok, // Jasa tidak memiliki stok
+            'stok' => $request->stok, // Jasa tidak memiliki stok,
+            'description' => $request->description ?? '',
         ]);
 
         return redirect()->route('services.index')->with('success', 'Jasa berhasil ditambahkan');

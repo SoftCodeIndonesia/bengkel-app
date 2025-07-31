@@ -130,6 +130,60 @@
                     Tambah Pelanggan Baru
                 </button>
 
+                <div class="mt-4 hidden" id="customer-vehicle-detail-container">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Detail Customer -->
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-3 border-b border-gray-600 pb-2">Detail
+                                    Pelanggan</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <p class="text-sm text-gray-300">Nama:</p>
+                                        <p class="text-white font-medium" id="customer-name">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Telepon:</p>
+                                        <p class="text-white font-medium" id="customer-phone">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Email:</p>
+                                        <p class="text-white font-medium" id="customer-email">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Alamat:</p>
+                                        <p class="text-white font-medium" id="customer-address">-</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detail Kendaraan -->
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-3 border-b border-gray-600 pb-2">Detail
+                                    Kendaraan</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <p class="text-sm text-gray-300">Merk:</p>
+                                        <p class="text-white font-medium" id="vehicle-merk">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Tipe:</p>
+                                        <p class="text-white font-medium" id="vehicle-type">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Nomor Polisi:</p>
+                                        <p class="text-white font-medium" id="vehicle-plate">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-300">Tahun:</p>
+                                        <p class="text-white font-medium" id="vehicle-year">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mt-6 {{ old('customer_name') ? '' : 'hidden' }}" id="add-customer-section">
                     <div class="flex gap-6" id="add-customer-section">
                         <div class="flex-1">
@@ -473,6 +527,63 @@
             //     // Tambahkan event listener untuk item baru
             //     addItemEventListeners(newItem);
             // });
+
+            // Di dalam DOMContentLoaded, setelah inisialisasi TomSelect
+            document.getElementById('customer_vehicle_id').addEventListener('change', function() {
+                const selectedValue = this.value;
+                const detailContainer = document.getElementById('customer-vehicle-detail-container');
+
+                if (selectedValue) {
+                    // Ambil data customer dan kendaraan dari API
+                    fetch(`${base_url}/api/customer_vehicles/${selectedValue}/details`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Tampilkan detail customer
+                                document.getElementById('customer-name').textContent = data.customer
+                                    .name || '-';
+                                document.getElementById('customer-phone').textContent = data.customer
+                                    .phone || '-';
+                                document.getElementById('customer-email').textContent = data.customer
+                                    .email || '-';
+                                document.getElementById('customer-address').textContent = data.customer
+                                    .address || '-';
+
+                                // Tampilkan detail kendaraan
+                                document.getElementById('vehicle-merk').textContent = data.vehicle
+                                    .merk || '-';
+                                document.getElementById('vehicle-type').textContent = data.vehicle
+                                    .tipe || '-';
+                                document.getElementById('vehicle-plate').textContent = data.vehicle
+                                    .no_pol || '-';
+                                document.getElementById('vehicle-year').textContent = data.vehicle
+                                    .year || '-';
+
+                                // Tampilkan container
+                                detailContainer.classList.remove('hidden');
+
+                                // Auto-fill form tambah kendaraan jika ada
+                                if (document.getElementById('merk')) {
+                                    document.getElementById('merk').value = data.vehicle.merk || '';
+                                }
+                                if (document.getElementById('tipe')) {
+                                    document.getElementById('tipe').value = data.vehicle.type || '';
+                                }
+                                if (document.getElementById('no_pol')) {
+                                    document.getElementById('no_pol').value = data.vehicle.no_pol || '';
+                                }
+                            } else {
+                                detailContainer.classList.add('hidden');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching customer details:', error);
+                            detailContainer.classList.add('hidden');
+                        });
+                } else {
+                    detailContainer.classList.add('hidden');
+                }
+            });
 
             document.getElementById('add-sparepart').addEventListener('click', function() {
                 addItemRow('barang');

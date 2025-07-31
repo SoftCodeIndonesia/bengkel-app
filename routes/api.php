@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CustomerVehicleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,3 +182,4 @@ Route::get('/invoice-reference/search', function (Request $request) {
 Route::get('/suppliers/search', [SupplierController::class, 'search']);
 Route::get('/suppliers/{supplier}', [SupplierController::class, 'getSupplier']);
 Route::post('/products/quick-create', [ProductController::class, 'quickCreate'])->name('products.quick-create');
+Route::get('/customer_vehicles/{id}/details', [CustomerVehicleController::class, 'getDetails']);

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\JobOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\CustomerVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
@@ -65,13 +66,35 @@ class DashboardController extends Controller
             ->orderBy('total_sold')
             ->take(5)
             ->get();
+
+
+        // dd(JobOrder::where('service_at', '<=', now()->subMonths(3))->where('status')->get());
+
+        $followUpVehicles = CustomerVehicle::with(['customer', 'vehicle'])
+            ->whereHas('jobOrders', function ($query) {
+                $query->where('status', 'completed')
+                    ->where('service_at', '<=', now()->subMonths(3));
+            })
+            ->orderByDesc(function ($query) {
+                $query->select('service_at')
+                    ->from('job_orders')
+                    ->whereColumn('customer_vehicle_id', 'customer_vehicle.id')
+                    ->where('status', 'completed')
+                    ->orderByDesc('service_at')
+                    ->limit(1);
+            })
+            ->take(10)
+            ->get();
+
+        // dd($followUpVehicles);
         return view('dashboard', compact(
             'todayJobOrders',
             'todayJobOrderIncome',
             'todaySales',
             'todaySalesIncome',
             'fastMovingProducts',
-            'slowMovingProducts'
+            'slowMovingProducts',
+            'followUpVehicles',
         ));
     }
 

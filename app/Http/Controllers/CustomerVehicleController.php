@@ -62,4 +62,26 @@ class CustomerVehicleController extends Controller
     {
         //
     }
+
+    public function followUps()
+    {
+        $vehicles = CustomerVehicle::with(['customer', 'latestJobOrder'])
+            ->needsFollowUp()
+            ->paginate(10);
+
+        return view('follow-up.index', compact('vehicles'));
+    }
+
+    // app/Http/Controllers/CustomerVehicleController.php
+    public function getDetails($id)
+    {
+        $customerVehicle = CustomerVehicle::with(['customer', 'vehicle'])
+            ->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'customer' => $customerVehicle->customer,
+            'vehicle' => $customerVehicle->vehicle
+        ]);
+    }
 }
