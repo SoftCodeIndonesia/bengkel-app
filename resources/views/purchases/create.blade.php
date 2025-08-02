@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -29,6 +29,14 @@
             background-position: right 0.5rem center;
             background-repeat: no-repeat;
             background-size: 1.5em 1.5em;
+        }
+
+        .ts-dropdown .create {
+            color: #2563eb !important;
+        }
+
+        .ts-dropdown .active.create {
+            color: #2563eb !important;
         }
 
         /* Dropdown */
@@ -165,14 +173,6 @@
                             </svg>
                             Tambah Barang
                         </button>
-                        <button type="button" id="add-new-product"
-                            class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg text-sm flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            Produk Baru
-                        </button>
                     </div>
                 </div>
 
@@ -180,7 +180,7 @@
                     <table class="w-full text-sm text-left text-gray-400">
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">Nama Barang</th>
+                                <th class="px-4 py-3" width="20%">Nama Barang</th>
                                 <th class="px-4 py-3">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
@@ -298,6 +298,28 @@
                             callback();
                         });
                 },
+                create: function(input, callback) {
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('suppliers.quickCreate') }}",
+                        data: {
+                            name: input,
+                        },
+                        dataType: "json",
+                        success: function(response) {
+
+                            const newSupplier = {
+                                id: response.data.id,
+                                text: response.data.name,
+                            };
+                            callback(newSupplier);
+                        }
+                    });
+
+
+                },
                 render: {
                     option: function(item, escape) {
 
@@ -316,7 +338,7 @@
                         return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
                     },
                     option_create: function(data, escape) {
-                        return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                        return `<div class="create p-2 text-blue-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
                     }
                 },
                 onInitialize: function() {
@@ -475,7 +497,7 @@
                             return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
                         },
                         option_create: function(data, escape) {
-                            return `<div class="create p-2 text-white hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                            return `<div class="create p-2 text-blue-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
                         }
                     },
 

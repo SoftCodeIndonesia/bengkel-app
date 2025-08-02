@@ -113,25 +113,22 @@
                                 <tr class="border-b border-gray-600 hover:bg-gray-600">
                                     <td class="px-4 py-3">{{ $index + 1 }}</td>
                                     <td class="px-4 py-3 font-medium text-white">
-                                        {{ $vehicle->customer->name }}<br>
-                                        <span class="text-xs text-gray-400">{{ $vehicle->customer->phone }}</span>
+                                        {{ $vehicle->customerVehicle->customer->name }}<br>
+                                        <span
+                                            class="text-xs text-gray-400">{{ $vehicle->customerVehicle->customer->phone }}</span>
                                     </td>
                                     <td class="px-4 py-3">
-                                        {{ $vehicle->vehicle->merk }} {{ $vehicle->vehicle->tipe }}
+                                        {{ $vehicle->customerVehicle->vehicle->merk }}
+                                        {{ $vehicle->customerVehicle->vehicle->tipe }}
                                     </td>
-                                    <td class="px-4 py-3">{{ $vehicle->vehicle->no_pol }}</td>
+                                    <td class="px-4 py-3">{{ $vehicle->customerVehicle->vehicle->no_pol }}</td>
                                     <td class="px-4 py-3">
-                                        @php
-                                            $lastService = $vehicle
-                                                ->jobOrders()
-                                                ->where('status', 'completed')
-                                                ->orderByDesc('service_at')
-                                                ->first();
-                                        @endphp
-                                        {{ $lastService ? $lastService->service_at->format('d M Y') : '-' }}
+                                        {{ $vehicle->service_at->format('d M Y') }}
                                     </td>
                                     <td class="px-4 py-3">
-                                        <button onclick="openFollowUpModal({{ $vehicle->id }})"
+                                        <button
+                                            onclick="openFollowUpModal({{ $vehicle->customer_vehicle_id }}, {{ $vehicle->id }})"
+                                            data-jo="{{ $vehicle->id }}"
                                             class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
                                             Follow Up
                                         </button>
@@ -222,6 +219,7 @@
             </div>
             <form id="followUpForm" method="POST" action="{{ route('follow-ups.store') }}" class="p-4">
                 @csrf
+                <input type="hidden" name="order_id" id="job_order_id">
                 <input type="hidden" name="customer_vehicle_id" id="modal_vehicle_id">
                 <div class="mb-4">
                     <label class="block text-gray-400 text-sm font-medium mb-2">Tanggal Follow Up</label>
@@ -249,9 +247,10 @@
 @endsection
 @push('scripts')
     <script>
-        function openFollowUpModal(vehicleId) {
+        function openFollowUpModal(vehicleId, jo_id) {
             document.getElementById('modal_vehicle_id').value = vehicleId;
             document.getElementById('followUpModal').classList.remove('hidden');
+            document.getElementById('job_order_id').value = jo_id;
         }
 
         function closeFollowUpModal() {

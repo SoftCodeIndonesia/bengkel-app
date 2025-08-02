@@ -7,9 +7,11 @@
         /* Custom TomSelect Theme */
         .ts-wrapper {
             --ts-pr-600: #2563eb;
+            /* Warna primary */
             --ts-pr-200: #93c5fd;
             --ts-option-radius: 0.375rem;
             padding: 5px !important;
+            /* rounded-md */
         }
 
         .ts-wrapper .item {
@@ -20,6 +22,7 @@
             color: #f3f4f6 !important;
         }
 
+        /* Wrapper dan Control */
         .ts-wrapper.single .ts-control {
             @apply bg-gray-700 border border-gray-600 text-gray-300;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
@@ -28,16 +31,21 @@
             background-size: 1.5em 1.5em;
         }
 
+        /* Dropdown */
         .ts-dropdown,
         .ts-dropdown .active {
             background-color: rgb(57 65 81) !important;
             border-color: rgb(57 65 81) !important;
         }
 
+
+
+        /* Option */
         .ts-dropdown .option {
             @apply text-gray-300 hover:bg-gray-600;
         }
 
+        /* Selected Option */
         .ts-dropdown .active {
             @apply bg-gray-600 text-white;
         }
@@ -50,32 +58,32 @@
             color: white;
         }
 
+        /* Input Search */
         .ts-control input {
             @apply bg-gray-700 text-gray-300 placeholder-gray-400;
         }
 
+        /* Focus State */
         .ts-control.focus {
             @apply ring-2 ring-blue-500 border-blue-500;
         }
 
+        /* Error State */
         .ts-wrapper.error .ts-control {
             @apply border-red-500;
         }
 
+        /* Item Selected */
         .ts-wrapper .item {
             @apply bg-gray-600 text-gray-300 rounded;
         }
 
+        /* Clear Button */
         .ts-wrapper .clear-button {
             @apply text-gray-400 hover:text-gray-300;
         }
-
-        .section-title {
-            @apply text-lg font-medium text-gray-300 mb-3 pb-2 border-b border-gray-600;
-        }
     </style>
 @endpush
-
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
@@ -102,13 +110,12 @@
             <form action="{{ route('job-orders.store') }}" method="POST" id="jobOrderForm">
                 @csrf
 
-                <!-- Customer Section -->
                 <div class="w-full" id="field-customer_vehicle_id">
                     <label for="customer_vehicle_id" class="block text-sm font-medium text-gray-300 mb-2">
-                        Kendaraan Pelanggan
-                    </label>
+                        Kendaraan Pelanggan </label>
                     <select name="customer_vehicle_id" id="customer_vehicle_id"
                         class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+
                     </select>
                     @error('customer_vehicle_id')
                         <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
@@ -123,13 +130,13 @@
                     Tambah Pelanggan Baru
                 </button>
 
-                <!-- Customer Details -->
                 <div class="mt-4 hidden" id="customer-vehicle-detail-container">
                     <div class="bg-gray-700 p-4 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Customer Details -->
+                            <!-- Detail Customer -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Pelanggan</h4>
+                                <h4 class="text-lg font-medium text-white mb-3 border-b border-gray-600 pb-2">Detail
+                                    Pelanggan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Nama:</p>
@@ -150,9 +157,10 @@
                                 </div>
                             </div>
 
-                            <!-- Vehicle Details -->
+                            <!-- Detail Kendaraan -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Kendaraan</h4>
+                                <h4 class="text-lg font-medium text-white mb-3 border-b border-gray-600 pb-2">Detail
+                                    Kendaraan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Merk:</p>
@@ -176,9 +184,8 @@
                     </div>
                 </div>
 
-                <!-- New Customer Form -->
                 <div class="mt-6 {{ old('customer_name') ? '' : 'hidden' }}" id="add-customer-section">
-                    <div class="flex gap-6">
+                    <div class="flex gap-6" id="add-customer-section">
                         <div class="flex-1">
                             <div class="mb-4" id="field-customer_name">
                                 <label for="name" class="block text-sm font-medium text-gray-300">
@@ -197,6 +204,7 @@
                                 <input type="email" name="email" id="email" value="{{ old('email') }}"
                                     class="mt-1 block w-full bg-gray-700 text-gray-400 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     placeholder="email@contoh.com">
+
                             </div>
 
                             <div class="mb-4">
@@ -206,6 +214,7 @@
                                 <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
                                     class="mt-1 block w-full bg-gray-700 text-gray-400 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     placeholder="081234567890">
+
                             </div>
 
                             <div class="mb-4">
@@ -215,6 +224,7 @@
                                 <textarea name="address" id="address" rows="3"
                                     class="mt-1 block w-full bg-gray-700 text-gray-400 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     placeholder="Alamat lengkap pelanggan">{{ old('address') }}</textarea>
+
                             </div>
                         </div>
 
@@ -230,6 +240,7 @@
                                 @enderror
                             </div>
 
+                            <!-- Tipe Field -->
                             <div class="mb-4" id="field-tipe">
                                 <label for="tipe" class="block text-sm font-medium text-gray-300">Tipe <span
                                         class="text-red-500">*</span></label>
@@ -241,6 +252,7 @@
                                 @enderror
                             </div>
 
+                            <!-- No Polisi Field -->
                             <div id="field-no-pol">
                                 <label for="no_pol" class="block text-sm font-medium text-gray-300">Nomor Polisi
                                     <span class="text-red-500">*</span></label>
@@ -255,8 +267,9 @@
                     </div>
                 </div>
 
-                <!-- Service Info -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+
+
                     <div>
                         <label for="km" class="block text-sm font-medium text-gray-300 mb-2">Kilometer <span
                                 class="text-red-500">*</span></label>
@@ -274,9 +287,8 @@
                     </div>
                 </div>
 
-                <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan</h3>
+                    <h3 class="text-lg font-medium text-gray-300 mb-3">Breakdown Kerusakan</h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
                         @if (old('breakdowns'))
@@ -326,27 +338,18 @@
                     </button>
                 </div>
 
-                <!-- Spareparts Section -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Sparepart (Barang)</h3>
-                        <button type="button" id="add-sparepart"
-                            class="text-blue-500 hover:text-blue-400 flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Tambah Sparepart
-                        </button>
-                    </div>
 
+
+                {{-- ===================== SPAREPART ===================== --}}
+                <div class="mb-10">
+                    <h3 class="text-lg font-medium text-gray-300 mb-3">Jasa/Sparepart (Barang)</h3>
                     <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
                         id="sparepart-table">
                         <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="p-2">Produk</th>
                                 <th class="p-2">Kategori</th>
-                                <th class="p-2">QTY</th>
+                                <th class="p-2">FRT/QTY</th>
                                 <th class="p-2">Harga Satuan</th>
                                 <th class="p-2">Subtotal</th>
                                 <th class="p-2">Diskon (%)</th>
@@ -355,17 +358,21 @@
                             </tr>
                         </thead>
                         <tbody id="sparepart-items-container">
-                            <!-- Sparepart rows will be added here -->
+                            {{-- Baris sparepart akan ditambahkan di sini --}}
+
                         </tbody>
                     </table>
-                </div>
-
-                <!-- Services Section -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
+                    <div class="flex gap-4">
+                        <button type="button" id="add-sparepart"
+                            class="mt-3 text-blue-500 hover:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Tambah Sparepart
+                        </button>
                         <button type="button" id="add-service"
-                            class="text-blue-500 hover:text-blue-400 flex items-center">
+                            class="mt-3 text-blue-500 hover:text-blue-400 flex items-center">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -373,36 +380,10 @@
                             Tambah Jasa
                         </button>
                     </div>
-
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th class="p-2">Jasa</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="service-items-container">
-                            <!-- Service rows will be added here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mb-6">
-                    <label for="notes" class="block text-sm font-medium text-gray-300">
-                        Catatan
-                    </label>
-                    <textarea type="text" name="notes" id="notes" value="{{ old('notes') }}"
-                        class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                    @error('notes')
-                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @enderror
                 </div>
 
-                <!-- Summary Section -->
+
+
                 <div class="bg-gray-700 p-4 rounded-lg mb-6">
                     <div class="grid grid-cols-1 gap-4">
                         <div class="col-span-1">
@@ -436,7 +417,6 @@
                     </div>
                 </div>
 
-                <!-- Form Actions -->
                 <div class="mt-8 flex justify-end space-x-4">
                     <a href="{{ route('job-orders.index') }}"
                         class="px-4 py-2 text-gray-300 bg-gray-600 hover:bg-gray-500 rounded-lg transition duration-200">
@@ -453,15 +433,15 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    @endpush
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Inisialisasi counter untuk items dan breakdowns
             let itemCounter = 1;
             let breakdownCounter = 1;
-            let customer_form_active = false;
 
-            // Initialize TomSelect for customer vehicle
             new TomSelect('#customer_vehicle_id', {
                 valueField: 'id',
                 labelField: 'text',
@@ -473,40 +453,93 @@
                     fetch(url)
                         .then(response => response.json())
                         .then(json => {
+                            console.log(json)
                             callback(json);
                         }).catch(() => {
+                            console.log('error');
                             callback();
                         });
                 },
                 render: {
                     option: function(item, escape) {
+
                         return `
-                            <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                <div class="ml-2">
-                                    <div class="text-gray-300">${escape(item.text)}</div>
-                                </div>
-                            </div>`;
+                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
+                                    <div class="ml-2">
+                                        <div class="text-gray-300">${escape(item.text)}</div>
+                                    </div>
+                                </div>`;
                     },
                     item: function(item, escape) {
                         return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
                     },
                     no_results: function(data, escape) {
+
                         return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
+                    },
+                    option_create: function(data, escape) {
+                        return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
                     }
-                }
+                },
+                onInitialize: function() {
+                    // Tambahkan class error jika ada validasi error
+                    if (this.input.classList.contains('border-red-500')) {
+                        this.wrapper.classList.add('error');
+                    }
+                },
+
             });
 
-            // Customer vehicle change event
+            // Fungsi untuk menambahkan item baru
+            // document.getElementById('add-item').addEventListener('click', function() {
+            //     const newItem = document.createElement('div');
+            //     newItem.className = 'item-row grid grid-cols-12 gap-4 mb-3';
+            //     newItem.innerHTML = `
+        //     <div class="col-span-6">
+        //         <select name="items[${itemCounter}][product_id]" required
+        //             class="product-select w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        //             <option value="">Pilih Produk</option>
+        //             @foreach ($products as $product)
+        //                 <option value="{{ $product->id }}" data-price="{{ $product->unit_price }}" data-type="{{ $product->tipe }}">
+        //                     {{ $product->name }} ({{ $product->tipe === 'barang' ? 'Sparepart' : 'Jasa' }})
+        //                 </option>
+        //             @endforeach
+        //         </select>
+        //     </div>
+        //     <div class="col-span-3">
+        //         <input type="number" name="items[${itemCounter}][quantity]" required min="1" value="1"
+        //             class="quantity w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        //     </div>
+        //     <div class="col-span-2 flex items-center">
+        //         <span class="price text-gray-300">Rp 0</span>
+        //     </div>
+        //     <div class="col-span-1 flex items-center">
+        //         <button type="button" class="remove-item text-red-500 hover:text-red-400">
+        //             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        //                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        //             </svg>
+        //         </button>
+        //     </div>
+        // `;
+            //     document.getElementById('items-container').appendChild(newItem);
+            //     itemCounter++;
+
+            //     // Tambahkan event listener untuk item baru
+            //     addItemEventListeners(newItem);
+            // });
+
+            // Di dalam DOMContentLoaded, setelah inisialisasi TomSelect
             document.getElementById('customer_vehicle_id').addEventListener('change', function() {
                 const selectedValue = this.value;
                 const detailContainer = document.getElementById('customer-vehicle-detail-container');
 
                 if (selectedValue) {
+                    // Ambil data customer dan kendaraan dari API
                     fetch(`${base_url}/api/customer_vehicles/${selectedValue}/details`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                // Update customer details
+                                // Tampilkan detail customer
                                 document.getElementById('customer-name').textContent = data.customer
                                     .name || '-';
                                 document.getElementById('customer-phone').textContent = data.customer
@@ -516,7 +549,7 @@
                                 document.getElementById('customer-address').textContent = data.customer
                                     .address || '-';
 
-                                // Update vehicle details
+                                // Tampilkan detail kendaraan
                                 document.getElementById('vehicle-merk').textContent = data.vehicle
                                     .merk || '-';
                                 document.getElementById('vehicle-type').textContent = data.vehicle
@@ -526,9 +559,10 @@
                                 document.getElementById('vehicle-year').textContent = data.vehicle
                                     .year || '-';
 
+                                // Tampilkan container
                                 detailContainer.classList.remove('hidden');
 
-                                // Auto-fill form if exists
+                                // Auto-fill form tambah kendaraan jika ada
                                 if (document.getElementById('merk')) {
                                     document.getElementById('merk').value = data.vehicle.merk || '';
                                 }
@@ -551,159 +585,78 @@
                 }
             });
 
-            // Toggle customer form
-            document.getElementById('add-customer').addEventListener('click', function() {
-                customer_form_active = !customer_form_active;
-                document.getElementById('add-customer-section').classList.toggle('hidden');
-            });
-
-            // Add sparepart row
             document.getElementById('add-sparepart').addEventListener('click', function() {
-                addItemRow('barang', 'sparepart-items-container');
+                addItemRow('barang');
             });
 
-            // Add service row
+            var customer_form_active = false;
+
+            $(document).on('click', '#add-customer', function() {
+                if (customer_form_active) {
+                    customer_form_active = false;
+                } else {
+                    customer_form_active = true;
+                }
+                $('#add-customer-section').toggle();
+            })
+            $(document).on('click', '#add-vehicle', function() {
+                $('#add-vehicle-section').toggle();
+            })
             document.getElementById('add-service').addEventListener('click', function() {
-                addItemRow('jasa', 'service-items-container');
+                addItemRow('jasa');
             });
 
-            // Function to add item row
-            function addItemRow(type, containerId) {
-                const tbody = document.getElementById(containerId);
-                const rowId = `item-row-${itemCounter}`;
+            function addItemRow(type) {
+                const tbody = document.getElementById('sparepart-items-container');
 
                 const row = document.createElement('tr');
-                row.id = rowId;
                 row.classList.add('border-b', 'border-gray-600', 'item-row');
-
-                if (type === 'barang') {
-                    row.innerHTML = `
-                        <td class="p-2" width="300px">
-                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
-                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
-                            </select>
-                            <input type="hidden" name="items[${itemCounter}][type]" value="barang">
-                        </td>
-                        <td class="p-2 text-center">
-                            <span class="kategori text-gray-300">-</span>
-                        </td>
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="unit-price text-gray-300">Rp 0</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp 0</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="0"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp 0</span>
-                        </td>
-                        <td class="p-2 text-center">
-                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        </td>
-                    `;
-                } else {
-                    row.innerHTML = `
-                        <td class="p-2" width="300px">
-                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
-                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
-                            </select>
-                            <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
-                        </td>
-                        <td class="p-2 text-center">
-                            <span class="kategori text-gray-300">-</span>
-                        </td>
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                        </td>
-                        
-                        <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp 0</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="0"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp 0</span>
-                        </td>
-                        <td class="p-2 text-center">
-                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        </td>
-                    `;
-                }
-
+                row.innerHTML = `
+        <td class="p-2" width="300px">
+            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" id="tom-autocomplete" required
+                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
+            </select>
+        </td>
+        <td class="p-2 text-center">
+            <span class="kategori text-gray-300">-</span>
+        </td>
+        <td class="p-2" width="100px">
+            <input type="number" name="items[${itemCounter}][quantity]" min="1" ${type !== 'jasa' ? 'value="1"' : ''} ${type == 'jasa' ? 'step="0.1"' : ''}
+                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+        </td>
+        <td class="p-2 text-right">
+            <span class="unit-price text-gray-300">Rp 0</span>
+        </td>
+        <td class="p-2 text-right">
+            <span class="subtotal text-gray-300">Rp 0</span>
+        </td>
+        <td class="p-2 text-right">
+            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
+                value="0"
+                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                placeholder="%">
+        </td>
+        <td class="p-2 text-right">
+            <span class="total-after-diskon text-gray-300">Rp 0</span>
+        </td>
+        <td class="p-2 text-center">
+            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </td>
+    `;
                 tbody.appendChild(row);
-
-                // Initialize TomSelect for the new row
-                const select = row.querySelector('.product-select');
-                initializeProductSelect(select, type);
-
-                // Add event listeners for calculations
-                initItemRowEvents(row, type);
-
                 itemCounter++;
+
+                // Event listener untuk kalkulasi
+                initItemRowEvents(row, type);
             }
 
-            // Initialize product select
-            function initializeProductSelect(element, type) {
-                new TomSelect(element, {
-                    valueField: 'id',
-                    labelField: 'text',
-                    searchField: 'text',
-                    create: false,
-                    load: function(query, callback) {
-                        var url = base_url + '/api/products/search?q=' + encodeURIComponent(query) +
-                            '&tipe=' + encodeURIComponent(type);
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(json => {
-                                callback(json);
-                            }).catch(() => {
-                                callback();
-                            });
-                    },
-                    render: {
-                        option: function(item, escape) {
-                            return `
-                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                        <div class="text-xs text-gray-400">${escape(item.price)}</div>
-                                    </div>
-                                </div>`;
-                        },
-                        item: function(item, escape) {
-                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                        }
-                    }
-                });
-            }
-
-            // Initialize item row events
             function initItemRowEvents(row, type) {
-                const select = row.querySelector('.product-select');
+                const select = row.querySelector('#tom-autocomplete');
                 const qtyInput = row.querySelector('.quantity');
                 const diskonValue = row.querySelector('.diskon-value');
                 const kategori = row.querySelector('.kategori');
@@ -711,36 +664,32 @@
                 const subtotalText = row.querySelector('.subtotal');
                 const totalAfterDiskonText = row.querySelector('.total-after-diskon');
 
+
+                initialTomSelect(select, type);
+
                 const calculateItemTotal = () => {
-                    const data = select.tomselect ? select.tomselect.items[0] : null;
+
+                    const data = select.value ? JSON.parse(select.value) : null;
                     if (!data) return;
 
+                    console.log(type);
+                    console.log(qtyInput.value);
 
-
-                    const jsonData = JSON.parse(data);
-
-                    if (type == 'jasa' & qtyInput.value == '') {
-                        qtyInput.value = jsonData.stok;
+                    if (qtyInput.value == '') {
+                        qtyInput.value = data.stok;
                     }
 
-                    const price = parseFloat(jsonData.unit_price) || 0;
-                    const qty = parseFloat(qtyInput.value) || (type === 'jasa' ? jsonData.stok : 1);
+                    const price = parseFloat(data.unit_price) || 0;
+
+
+                    const qty = parseFloat(qtyInput.value) || 1
                     const diskon = parseFloat(diskonValue.value) || 0;
 
-                    var subtotal = 0;
-                    if (type == 'jasa') {
-                        subtotal = 100000 * qty;
-                    } else {
-                        subtotal = price * qty;
-                    }
-
-
+                    const subtotal = price * qty;
                     const totalAfterDiskon = subtotal * (1 - (diskon / 100));
 
-                    kategori.textContent = type === 'jasa' ? 'Jasa' : 'Sparepart';
-                    if (type != 'jasa') {
-                        priceText.textContent = 'Rp ' + formatNumber(price);
-                    }
+                    kategori.textContent = data.tipe;
+                    priceText.textContent = 'Rp ' + formatNumber(price);
                     subtotalText.textContent = 'Rp ' + formatNumber(subtotal);
                     totalAfterDiskonText.textContent = 'Rp ' + formatNumber(totalAfterDiskon);
 
@@ -757,10 +706,117 @@
                 });
             }
 
-            // Add breakdown row
+            function initialTomSelect(element, type) {
+                console.log((element.tomselect));
+                if (element.tomselect) return;
+                new TomSelect(element, {
+                    valueField: 'id',
+                    labelField: 'text',
+                    searchField: 'text',
+                    create: false,
+                    load: function(query, callback) {
+
+                        var url = base_url + '/api/products/search?q=' + encodeURIComponent(
+                            query) + '&tipe=' + encodeURIComponent(
+                            type);
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(json => {
+                                callback(json);
+                            }).catch(() => {
+                                console.log('error');
+                                callback();
+                            });
+                    },
+                    render: {
+                        option: function(item, escape) {
+
+                            return `
+                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
+                                    <div class="ml-2">
+                                        <div class="text-gray-300">${escape(item.text)}</div>
+                                        <div class="text-xs text-gray-400">${escape(item.price)}</div>
+                                    </div>
+                                </div>`;
+                        },
+                        item: function(item, escape) {
+                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
+                        },
+                        no_results: function(data, escape) {
+
+                            return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
+                        },
+                        option_create: function(data, escape) {
+                            return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                        }
+                    },
+                    onInitialize: function() {
+                        // Tambahkan class error jika ada validasi error
+                        if (this.input.classList.contains('border-red-500')) {
+                            this.wrapper.classList.add('error');
+                        }
+                    },
+
+                });
+            }
+
+            function initialTomSelectGlobal(element, endpoint) {
+                new TomSelect(element, {
+                    valueField: 'id',
+                    labelField: 'text',
+                    searchField: 'text',
+                    create: false,
+                    load: function(query, callback) {
+                        console.log(base_url + endpoint + '?q=');
+                        var url = base_url + endpoint + '?q=' + encodeURIComponent(
+                            query);
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(json => {
+                                callback(json);
+                            }).catch(() => {
+                                console.log('error');
+                                callback();
+                            });
+                    },
+                    render: {
+                        option: function(item, escape) {
+
+                            return `
+                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
+                                    <div class="ml-2">
+                                        <div class="text-gray-300">${escape(item.text)}</div>
+                                    </div>
+                                </div>`;
+                        },
+                        item: function(item, escape) {
+                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
+                        },
+                        no_results: function(data, escape) {
+
+                            return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
+                        },
+                        option_create: function(data, escape) {
+                            return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                        }
+                    },
+                    onInitialize: function() {
+                        // Tambahkan class error jika ada validasi error
+                        if (this.input.classList.contains('border-red-500')) {
+                            this.wrapper.classList.add('error');
+                        }
+                    },
+
+                });
+            }
+
+
+
+
+            // Fungsi untuk menambahkan breakdown baru
             document.getElementById('add-breakdown').addEventListener('click', function() {
                 const newBreakdown = document.createElement('div');
-                newBreakdown.className = 'breakdown-row flex gap-4 mb-3';
+                newBreakdown.className = 'breakdown-row flex gap-4 mt-3';
                 newBreakdown.innerHTML = `
                     <div class="col-span-11 flex-1">
                         <input type="text" name="breakdowns[${breakdownCounter}][name]" placeholder="Nama pemeriksaan"
@@ -777,12 +833,63 @@
                 document.getElementById('breakdowns-container').appendChild(newBreakdown);
                 breakdownCounter++;
 
-                newBreakdown.querySelector('.remove-breakdown').addEventListener('click', function() {
-                    this.closest('.breakdown-row').remove();
-                });
+                // Tambahkan event listener untuk breakdown baru
+                addBreakdownEventListeners(newBreakdown);
             });
 
-            // Calculate total
+            // Fungsi untuk menghapus item
+            // function addItemEventListeners(itemElement) {
+            //     const productSelect = itemElement.querySelector('.product-select');
+            //     const quantityInput = itemElement.querySelector('.quantity');
+            //     const priceDisplay = itemElement.querySelector('.price');
+            //     const removeBtn = itemElement.querySelector('.remove-item');
+
+            //     productSelect.addEventListener('change', function() {
+            //         const selectedOption = this.options[this.selectedIndex];
+            //         const price = selectedOption.dataset.price || 0;
+            //         const quantity = quantityInput.value || 1;
+            //         const total = price * quantity;
+
+            //         priceDisplay.textContent = 'Rp ' + formatNumber(total);
+            //         calculateTotal();
+            //     });
+
+            //     quantityInput.addEventListener('input', function() {
+            //         const productSelect = this.closest('.item-row').querySelector('.product-select');
+            //         const selectedOption = productSelect.options[productSelect.selectedIndex];
+            //         const price = selectedOption.dataset.price || 0;
+            //         const quantity = this.value || 1;
+            //         const total = price * quantity;
+
+            //         this.closest('.item-row').querySelector('.price').textContent = 'Rp ' + formatNumber(
+            //             total);
+            //         calculateTotal();
+            //     });
+
+            //     removeBtn.addEventListener('click', function() {
+            //         this.closest('.item-row').remove();
+            //         calculateTotal();
+            //     });
+            // }
+
+            function formatCurrencyToNumber(currencyString) {
+                // Hapus semua karakter non-digit kecuali titik (untuk desimal)
+                let numberString = currencyString.replace(/[^\d]/g, '');
+
+                // Konversi string menjadi number
+                return parseInt(numberString, 10);
+            }
+
+            // Fungsi untuk menghapus breakdown
+            function addBreakdownEventListeners(breakdownElement) {
+                const removeBtn = breakdownElement.querySelector('.remove-breakdown');
+
+                removeBtn.addEventListener('click', function() {
+                    this.closest('.breakdown-row').remove();
+                });
+            }
+
+            // Fungsi untuk menghitung total
             function calculateTotal() {
                 let totalSparepart = 0;
                 let totalJasa = 0;
@@ -799,7 +906,9 @@
                     const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
                         /\./g, '')) || 0;
 
-                    if (itemType === 'Sparepart') {
+
+
+                    if (itemType != 'jasa') {
                         totalSparepart += subtotalValue;
                     } else {
                         totalJasa += subtotalValue;
@@ -809,70 +918,117 @@
                     subtotal += totalAfterDiskon;
                 });
 
+                // const diskonUnit = document.getElementById('diskon_unit').value;
+                // const diskonValue = parseFloat(document.getElementById('diskon_value').value) || 0;
+                let diskonGlobal = 0;
+                let grandTotal = subtotal;
+
+                // diskonGlobal = subtotal * diskonValue / 100;
+                // grandTotal = subtotal - diskonGlobal;
+
+                // Update tampilan
                 document.getElementById('total-sparepart').value = 'Rp ' + formatNumber(totalSparepart);
                 document.getElementById('total-jasa').value = 'Rp ' + formatNumber(totalJasa);
                 document.getElementById('total-diskon-item').value = 'Rp ' + formatNumber(totalDiskonItem);
-                document.getElementById('total').value = 'Rp ' + formatNumber(subtotal);
+                // document.getElementById('subtotal').value = 'Rp ' + formatNumber(subtotal);
+                // document.getElementById('diskon-text').value = 'Rp ' + formatNumber(diskonGlobal);
+                document.getElementById('total').value = 'Rp ' + formatNumber(grandTotal);
 
-                // Update hidden inputs
-                document.querySelector('input[name="total"]').value = formatNumber(subtotal);
-                document.querySelector('input[name="total_sparepart"]').value = formatNumber(totalSparepart);
-                document.querySelector('input[name="total_jasa"]').value = formatNumber(totalJasa);
-                document.querySelector('input[name="total_diskon_item"]').value = formatNumber(totalDiskonItem);
+                // Update hidden inputs untuk form submit
+                // document.querySelector('input[name="subtotal"]').value = subtotal;
+                document.querySelector('input[name="total"]').value = 'Rp ' + formatNumber(grandTotal);;
             }
 
-            // Format number
+            // Format number dengan separator ribuan
             function formatNumber(num) {
                 return new Intl.NumberFormat('id-ID').format(num);
             }
 
-            // Form validation
-            document.getElementById('jobOrderForm').addEventListener('submit', function(e) {
-                const customer_vehicle_id = document.querySelector('select[name="customer_vehicle_id"]')
-                    .value;
-                const customer_name = document.querySelector('input[name="customer_name"]')?.value;
-                const merk = document.querySelector('input[name="merk"]')?.value;
-                const tipe = document.querySelector('input[name="tipe"]')?.value;
-                const no_pol = document.querySelector('input[name="no_pol"]')?.value;
+            // Enable/disable diskon value berdasarkan jenis diskon
+            // document.getElementById('diskon_unit').addEventListener('change', function() {
+            //     const diskonValueInput = document.getElementById('diskon_value');
+            //     if (this.value) {
+            //         diskonValueInput.disabled = false;
+            //     } else {
+            //         diskonValueInput.disabled = true;
+            //         diskonValueInput.value = '';
+            //     }
+            //     calculateTotal();
+            // });
 
-                if (customer_vehicle_id === '' && customer_form_active) {
-                    if (!customer_name) {
-                        document.getElementById('field-customer_name').insertAdjacentHTML('beforeend',
+            // Hitung ulang saat nilai diskon berubah
+            // document.getElementById('diskon_value').addEventListener('input', calculateTotal);
+
+            // Inisialisasi event listener untuk item pertama
+            document.querySelectorAll('.item-row').forEach(item => {
+                addItemEventListeners(item);
+            });
+
+            // Inisialisasi event listener untuk breakdown pertama
+            document.querySelectorAll('.breakdown-row').forEach(breakdown => {
+                addBreakdownEventListeners(breakdown);
+            });
+
+            // document.getElementById('diskon_value').addEventListener('input', calculateTotal);
+
+            // Set tanggal default ke hari ini
+            document.getElementById('service_at').value = new Date().toISOString().slice(0, 16);
+
+            $('#jobOrderForm').submit(function(e) {
+                // e.preventDefault();
+                // console.log();
+                // e.preventDefault();
+                const customer_vehicle_id = $('select[name="customer_vehicle_id"]').val();
+
+                const customer_name = $('input[name="customer_name"]').val();
+                const merk = $('input[name="merk"]').val();
+                const tipe = $('input[name="tipe"]').val();
+                const no_pol = $('input[name="no_pol"]').val();
+                // const email = $('input[name="email"]').val();
+                // const phone = $('input[name="phone"]').val();
+
+                if (customer_vehicle_id == '' && customer_form_active) {
+
+                    if (customer_name == '') {
+                        $('#field-customer_name').append(
                             `<p class="mt-2 text-sm text-red-400">Nama Pelanggan Tidak Boleh Kosong!</p>`
                         );
                         e.preventDefault();
-                    }
-                    if (!merk) {
-                        document.getElementById('field-merk').insertAdjacentHTML('beforeend',
-                            `<p class="mt-2 text-sm text-red-400">Merk Tidak Boleh Kosong!</p>`);
+                    } else if (merk == '') {
+                        $('#field-merk').append(
+                            `<p class="mt-2 text-sm text-red-400">Merk Tidak Boleh Kosong!</p>`
+                        );
+                        e.preventDefault();
+                    } else if (tipe == '') {
+                        $('#field-tipe').append(
+                            `<p class="mt-2 text-sm text-red-400">Tipe Tidak Boleh Kosong!</p>`
+                        );
+                        e.preventDefault();
+                    } else if (no_pol == '') {
+                        $('#field-no-pol').append(
+                            `<p class="mt-2 text-sm text-red-400">Merk Tidak Boleh Kosong!</p>`
+                        );
                         e.preventDefault();
                     }
-                    if (!tipe) {
-                        document.getElementById('field-tipe').insertAdjacentHTML('beforeend',
-                            `<p class="mt-2 text-sm text-red-400">Tipe Tidak Boleh Kosong!</p>`);
-                        e.preventDefault();
-                    }
-                    if (!no_pol) {
-                        document.getElementById('field-no-pol').insertAdjacentHTML('beforeend',
-                            `<p class="mt-2 text-sm text-red-400">Nomor Polisi Tidak Boleh Kosong!</p>`);
-                        e.preventDefault();
-                    }
-                } else if (customer_vehicle_id === '' && !customer_form_active) {
-                    document.getElementById('field-customer_vehicle_id').insertAdjacentHTML('beforeend',
+
+                } else if (customer_vehicle_id == '' && customer_form_active == false) {
+                    $('#field-customer_vehicle_id').append(
                         `<p class="mt-2 text-sm text-red-400">Pelanggan Tidak Boleh Kosong!</p>`);
                     e.preventDefault();
                 }
 
-                $('input[name="total_sparepart"]').val(originalNumber($('input[name="total_sparepart"]')
-                    .val()));
-                $('input[name="total_jasa"]').val(originalNumber($('input[name="total_jasa"]').val()));
-                $('input[name="total"]').val(originalNumber($('input[name="total"]').val()));
-                $('input[name="total_diskon_item"]').val(originalNumber($('input[name="total_diskon_item"]')
-                    .val()));
-            });
 
-            // Set default date to today
-            document.getElementById('service_at').value = new Date().toISOString().slice(0, 16);
+                // $('input[name="subtotal"]').val($('input[name="subtotal"]').val().replace(/[^0-9]/g, ''));
+                $('input[name="total"]').val($('input[name="total"]').val().replace(/[^0-9]/g, ''));
+                $('input[name="total_sparepart"]').val($('input[name="total_sparepart"]').val().replace(
+                    /[^0-9]/g, ''));
+                $('input[name="total_jasa"]').val($('input[name="total_jasa"]').val().replace(/[^0-9]/g,
+                    ''));
+                $('input[name="total_diskon_item"]').val($('input[name="total_diskon_item"]').val().replace(
+                    /[^0-9]/g, ''));
+
+
+            });
         });
     </script>
 @endpush

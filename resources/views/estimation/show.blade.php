@@ -1,76 +1,31 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Detail Job Order')
+@section('title', 'Detail Estimasi')
 @php
     use App\Models\JobOrder;
 @endphp
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Detail Job Order: {{ $jobOrder->unique_id }}</h2>
+            <h2 class="text-xl font-semibold text-white">Detail Estimasi: {{ $jobOrder->unique_id }}</h2>
             <div class="flex space-x-2">
-                @php
-                    $statusClasses = [
-                        'draft' => 'bg-gray-500',
-                        'estimation' => 'bg-yellow-500',
-                        'progress' => 'bg-blue-800 text-blue-800',
-                        'completed' =>
-                            'bg-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800',
-                        'cancelled' => 'bg-red-500',
-                    ];
-                @endphp
-                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                    class="text-white {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
-                    type="button">{{ $jobOrder->getDisplayStatus() }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 4 4 4-4" />
+
+                <a href="{{ route('to-job-order', $jobOrder->id) }}"
+                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center ">
+                    Buat Job Order
+                </a>
+
+
+                <a href="{{ route('estimation.edit', $jobOrder->id) }}"
+                    class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                </button>
-                <div id="dropdown"
-                    class="z-10 hidden bg-green divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        @foreach ($jobOrder->statuses() as $status)
-                            @php
-                                $new = new JobOrder(['status' => $status]);
-                            @endphp
-                            <li>
-                                <a href="{{ route('job-orders.update-status', ['id' => $jobOrder->id, 'status' => $status]) }}"
-                                    class="btn-update-status block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $new->getDisplayStatusAction() }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    Edit
+                </a>
 
-
-                @if ($jobOrder->status != 'estimation' && $jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
-                    <a href="{{ route('job-orders.edit', $jobOrder->id) }}"
-                        class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Edit
-                    </a>
-                    <a href="{{ route('supplies.create-from-job', $jobOrder->id) }}"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Buat Permintaan Supply
-                    </a>
-                @endif
-                @if ($jobOrder->status == 'completed')
-                    <a href="{{ route('invoices.create-from-service', $jobOrder) }}"
-                        class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center ">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                        </svg>
-                        Buat Invoice
-                    </a>
-                @endif
-                <a href="{{ route('job-orders.index') }}"
+                <a href="{{ route('estimation.index') }}"
                     class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -102,18 +57,12 @@
                             <p class="text-sm text-gray-400">Status</p>
                             @php
                                 $statusClasses = [
-                                    'draft' => 'bg-gray-500',
                                     'estimation' => 'bg-yellow-500',
-                                    'progress' => 'bg-blue-100 text-blue-800',
-                                    'completed' => 'bg-green-500',
-                                    'cancelled' => 'bg-red-500',
+                                    'progress' => 'bg-green-500',
                                 ];
                                 $statusText = [
-                                    'draft' => 'Draft',
                                     'estimation' => 'Estimasi',
                                     'progress' => 'Progress',
-                                    'completed' => 'Selesai',
-                                    'cancelled' => 'Batal',
                                 ];
                             @endphp
                             <span class="px-2 py-1 text-xs rounded-full {{ $statusClasses[$jobOrder->status] }}">
@@ -181,15 +130,6 @@
 
             <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-white">Catatan</h3>
-
-                </div>
-
-                <p class="text-gray-400">{{ $jobOrder->notes ?? 'Tidak Ada Catatan' }}</p>
-            </div>
-
-            <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
-                <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-white">Sparepart/Jasa</h3>
                     <button id="delete-selected"
                         class="hidden bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
@@ -219,50 +159,25 @@
                             </thead>
                             <tbody>
                                 @foreach ($jobOrder->orderItems as $item)
-                                    @if ($item->product->tipe != 'jasa')
-                                        <tr class="border-b border-gray-600">
-                                            <td class="px-4 py-3">
-                                                <input type="checkbox" name="items[]" value="{{ $item->id }}"
-                                                    class="item-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                            </td>
-                                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
-                                            <td class="px-4 py-3">{{ $item->product->name }}</td>
-                                            <td class="px-4 py-3 text-right">{{ $item->quantity }}
-                                            </td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
-                                            </td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                                @foreach ($jobOrder->orderItems as $item)
-                                    @if ($item->product->tipe == 'jasa')
-                                        <tr class="border-b border-gray-600">
-                                            <td class="px-4 py-3">
-                                                <input type="checkbox" name="items[]" value="{{ $item->id }}"
-                                                    class="item-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                            </td>
-                                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
-                                            <td class="px-4 py-3">{{ $item->product->name }}</td>
-                                            <td class="px-4 py-3 text-right">{{ $item->quantity }}
-                                            </td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
-                                            </td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
-                                        </tr>
-                                    @endif
+                                    <tr class="border-b border-gray-600">
+                                        <td class="px-4 py-3">
+                                            <input type="checkbox" name="items[]" value="{{ $item->id }}"
+                                                class="item-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        </td>
+                                        <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                                        <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                        <td class="px-4 py-3 text-right">{{ $item->quantity }}
+                                        </td>
+                                        <td class="px-4 py-3 text-right">Rp
+                                            {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-right">Rp
+                                            {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-right">Rp
+                                            {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-4 py-3 text-right">Rp
+                                            {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

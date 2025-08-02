@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Job Orders')
+@section('title', 'Estimasi')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <style>
@@ -32,49 +32,15 @@
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Job Orders</h2>
-            <div class="flex items-center space-x-4">
-                <form method="GET" class="flex items-center space-x-2" id="form-filter">
-                    <input type="date" name="start_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-                    <span class="text-gray-400">s/d</span>
-                    <input type="date" name="end_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-                    @php
-                        $statusText = [
-                            'draft' => 'Draft',
-                            'progress' => 'Progress',
-                            'completed' => 'Selesai',
-                            'cancelled' => 'Batal',
-                        ];
-                    @endphp
-                    <select name="status" id="status"
-                        class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Semua Status</option>
-                        @foreach ($statusText as $key => $item)
-                            <option value="{{ $key }}">{{ $item }}</option>
-                        @endforeach
-                    </select>
-                    <button type="button" id="reset-filter"
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">
-                        Reset
-                    </button>
-                    <button type="submit" class="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                        Filter
-                    </button>
-                </form>
-                <a href="{{ route('job-orders.create') }}"
-                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                        </path>
-                    </svg>
-                    Buat Job Order
-                </a>
-            </div>
-
-
+            <h2 class="text-xl font-semibold text-white">Estimasi</h2>
+            <a href="{{ route('estimation.create') }}"
+                class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                    </path>
+                </svg>
+                Buat Estimasi
+            </a>
         </div>
 
         <div class="p-4">
@@ -107,17 +73,10 @@
     <script>
         $(document).ready(function() {
             console.log('ok');
-            var table = $('#datatables-index').DataTable({
+            $('#datatables-index').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: {
-                    url: "{{ route('job-orders.index') }}",
-                    data: function(d) {
-                        d.start_date = $('input[name="start_date"]').val();
-                        d.end_date = $('input[name="end_date"]').val();
-                        d.status = $('#status').val();
-                    }
-                },
+                ajax: "{{ route('estimation.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -218,18 +177,6 @@
                     });
                 }
             });
-
-            $('#form-filter').submit(function(e) {
-                e.preventDefault();
-                table.draw();
-            });
-
-            $('#reset-filter').on('click', function() {
-                $('input[name="start_date"]').val('');
-                $('input[name="end_date"]').val('');
-                $('#status').val('');
-                table.draw();
-            });
         });
 
         $(document).on('click', '.delete-jo', function() {
@@ -237,8 +184,8 @@
             const joName = $(this).data('name');
 
             Swal.fire({
-                title: 'Hapus Job Order?',
-                html: `Anda yakin ingin menghapus Job Order <strong>${joName}</strong>?`,
+                title: 'Hapus Estimasi?',
+                html: `Anda yakin ingin menghapus Data Estimasi <strong>${joName}</strong>?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -251,7 +198,7 @@
                     // Buat form delete secara dinamis
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/job-orders/${salesId}`;
+                    form.action = `/estimation/${salesId}`;
 
                     // Tambahkan CSRF token
                     const csrfToken = document.createElement('input');

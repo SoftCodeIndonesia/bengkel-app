@@ -20,6 +20,9 @@ class Product extends Model
         'tipe',
         'unit_price',
         'stok',
+        'supplier_id',
+        'part_number',
+        'barcode',
     ];
 
     public function orderItems()

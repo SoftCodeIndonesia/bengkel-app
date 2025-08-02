@@ -54,7 +54,7 @@ class DashboardController extends Controller
             ->get();
 
         // Slow Moving Products (non-jasa)
-        $slowMovingProducts = Product::where('tipe', 'barang')
+        $slowMovingProducts = Product::where('tipe', '!=', 'jasa')
             ->withCount([
                 'orderItems as total_sold' => function ($query) {
                     $query->whereHas('jobOrder', function ($q) {
@@ -70,21 +70,30 @@ class DashboardController extends Controller
 
         // dd(JobOrder::where('service_at', '<=', now()->subMonths(3))->where('status')->get());
 
-        $followUpVehicles = CustomerVehicle::with(['customer', 'vehicle'])
-            ->whereHas('jobOrders', function ($query) {
-                $query->where('status', 'completed')
-                    ->where('service_at', '<=', now()->subMonths(3));
-            })
-            ->orderByDesc(function ($query) {
-                $query->select('service_at')
-                    ->from('job_orders')
-                    ->whereColumn('customer_vehicle_id', 'customer_vehicle.id')
-                    ->where('status', 'completed')
-                    ->orderByDesc('service_at')
-                    ->limit(1);
-            })
+        // $followUpVehicles = CustomerVehicle::with(['customer', 'vehicle'])
+        //     ->whereHas('jobOrders', function ($query) {
+        //         $query->where('status', 'completed')
+        //             ->where('service_at', '<=', now()->subMonths(3));
+        //     })
+        //     ->orderByDesc(function ($query) {
+        //         $query->select('service_at')
+        //             ->from('job_orders')
+        //             ->whereColumn('customer_vehicle_id', 'customer_vehicle.id')
+        //             ->where('status', 'completed')
+        //             ->orderByDesc('service_at')
+        //             ->limit(1);
+        //     })
+        //     ->take(10)
+        //     ->get();
+        $followUpVehicles = JobOrder::with(['customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle'])
+            ->where('status', 'completed')
+            ->where('service_at', '<=', now()->subMonths(3))
+            ->whereDoesntHave('followUp') // Hanya ambil yang belum punya follow up
+            ->orderByDesc('service_at')
             ->take(10)
             ->get();
+
+        // dd($followUpVehicles[0]);
 
         // dd($followUpVehicles);
         return view('dashboard', compact(

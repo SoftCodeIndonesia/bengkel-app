@@ -33,19 +33,7 @@
                     </div>
 
                     <div>
-                        <label for="unit_price" class="block text-sm font-medium text-gray-300 mb-2">Harga <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="unit_price" id="unit_price"
-                            value="{{ old('unit_price', $service->unit_price) }}"
-                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            required placeholder="Rp 0">
-                        @error('unit_price')
-                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="frt" class="block text-sm font-medium text-gray-300 mb-2">FRT (Menit) <span
+                        <label for="frt" class="block text-sm font-medium text-gray-300 mb-2">FRT <span
                                 class="text-red-500">*</span></label>
                         <input type="number" name="stok" id="frt" value="{{ old('stok', $service->stok) }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('stok') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -54,6 +42,20 @@
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label for="unit_price" class="block text-sm font-medium text-gray-300 mb-2">Harga <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="unit_price" id="unit_price"
+                            value="{{ old('unit_price', $service->unit_price) }}"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            required placeholder="Rp 0" readonly>
+                        @error('unit_price')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
                 </div>
 
                 <div class="mt-8 flex justify-end space-x-4">
@@ -74,11 +76,18 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const base_price = 100000;
             const priceInput = document.getElementById('unit_price');
-
+            const frtInput = document.getElementById('frt');
             priceInput.addEventListener('input', function(e) {
                 let value = this.value.replace(/\D/g, '');
                 this.value = formatRupiah(value);
+            });
+
+            frtInput.addEventListener('input', function(e) {
+                let value = this.value;
+                priceInput.value = formatRupiah(base_price * value);
+                // this.value = formatRupiah(value);
             });
 
             const form = document.querySelector('form');

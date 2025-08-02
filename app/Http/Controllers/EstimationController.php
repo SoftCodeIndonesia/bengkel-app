@@ -2,54 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Vehicle;
 use App\Models\Customer;
 use App\Models\JobOrder;
 use App\Models\OrderItem;
-use App\Models\ReturnItem;
-use App\Models\SupplyItem;
+use App\Models\Estimation;
 use App\Models\MovementItem;
 use Illuminate\Http\Request;
 use App\Models\CustomerVehicle;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Validation\ValidationException;
 
-class JobOrderController extends Controller
+class EstimationController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
 
         if ($request->ajax()) {
-            $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
-            $endDate = $request->input('end_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
-            $status = $request->status;
-
-
-            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
+            $data = Estimation::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
                 ->select('*');
 
-            if ($startDate) {
-                $data->when($startDate, function ($query) use ($startDate) {
-                    $query->whereDate('created_at', '>=', $startDate);
-                });
-            }
-            if ($endDate) {
-                $data->when($endDate, function ($query) use ($endDate) {
-                    $query->whereDate('created_at', '<=', $endDate);
-                });
-            }
-            if ($status) {
-                $data->when($status, function ($query) use ($status) {
-                    $query->where('status', $status);
-                });
-            } else {
-                $data->where('status', '!=', 'estimation');
-            }
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -77,10 +55,10 @@ class JobOrderController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="flex justify-end gap-2">';
-                    $btn .= '<a href="' . route('job-orders.show', $row->id) . '" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">';
+                    $btn .= '<a href="' . route('estimation.show', $row->id) . '" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">';
                     $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>';
                     $btn .= '</a>';
-                    $btn .= '<a href="' . route('job-orders.edit', $row->id) . '" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">';
+                    $btn .= '<a href="' . route('estimation.edit', $row->id) . '" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">';
                     $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>';
                     $btn .= '</a>';
 
@@ -98,48 +76,27 @@ class JobOrderController extends Controller
                 ->make(true);
         }
 
-        return view('job-orders.index');
+        return view('estimation.index');
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
-        $products = Product::all();
-
-        return view('job-orders.create', compact('customerVehicles', 'products'));
+        return view('estimation.create');
     }
 
-    protected function validateRequest(Request $request)
+    public function toJobOrder(string $id)
     {
-        $rules = [
-            'service_at' => 'required|date',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required',
-            'items.*.quantity' => 'required|numeric',
-            'items.*.diskon_value' => 'nullable|numeric|min:0',
-            'breakdowns' => 'nullable|array',
-            'breakdowns.*.name' => 'required|string|max:255',
-            'diskon_unit' => 'nullable|in:percentage,nominal',
-            'diskon_value' => 'nullable|numeric|min:0',
-            'total' => 'required|numeric',
-            'notes' => 'nullable',
-        ];
+        $jobOrder = JobOrder::find($id);
 
-        // Validasi conditional
-        if ($request->customer_vehicle_id == null) {
-            $rules = array_merge($rules, [
-                'customer_name' => 'required|string|max:255',
-                'merk' => 'required|string|max:255',
-                'tipe' => 'required|string|max:255',
-                'no_pol' => 'required|string|max:20',
-            ]);
-        } else {
-            $rules['customer_vehicle_id'] = 'required|exists:customer_vehicle,id';
-        }
-
-        return $request->validate($rules);
+        return view('estimation.to-job-order', compact('jobOrder'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
 
@@ -176,11 +133,11 @@ class JobOrderController extends Controller
             // dd()
 
 
-            $jobOrder = JobOrder::create([
+            $jobOrder = Estimation::create([
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
-                'status' => 'progress',
+                'status' => 'estimation',
                 'subtotal' => $request->total_sparepart + $request->total_jasa,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
@@ -192,13 +149,7 @@ class JobOrderController extends Controller
             foreach ($request->items as $item) {
                 $data_item = json_decode($item['product_id']);
 
-
-                if (is_object($data_item)) {
-                    $product = Product::find($data_item->id);
-                } else {
-                    $product = Product::find($item['product_id']);
-                }
-
+                $product = Product::find($data_item->id);
 
                 $subtotal = $product->unit_price * $item['quantity'];
                 $potongan = ($item['diskon_value'] / 100) * $subtotal;
@@ -206,7 +157,7 @@ class JobOrderController extends Controller
                 if ($product->tipe == 'jasa') {
                     $subtotaljasa = 100000 * $item['quantity'];
                     $data_input = [
-                        'product_id' => $product->id,
+                        'product_id' => $data_item->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => 0,
                         'total_price' => $subtotaljasa,
@@ -215,7 +166,7 @@ class JobOrderController extends Controller
                     ];
                 } else {
                     $data_input = [
-                        'product_id' => $product->id,
+                        'product_id' => $data_item->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => $product->unit_price,
                         'total_price' => $subtotal,
@@ -264,26 +215,27 @@ class JobOrderController extends Controller
                 }
             }
         });
-        return redirect()->route('job-orders.index')->with('success', 'Job Order berhasil dibuat');
+        return redirect()->route('estimation.index')->with('success', 'Job Order berhasil dibuat');
     }
 
-    public function show(JobOrder $jobOrder)
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        $jobOrder->load([
-            'customerVehicle.customer',
-            'customerVehicle.vehicle',
-            'orderItems.product',
-            'breakdowns',
-            'invoice'
-        ]);
-
-
-        return view('job-orders.show', compact('jobOrder'));
+        $jobOrder = Estimation::find($id);
+        return view('estimation.show', compact('jobOrder'));
     }
 
-    public function edit(JobOrder $jobOrder)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $jobOrder->load(['orderItems.product', 'breakdowns', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle']);
+
+        $jobOrder = JobOrder::find($id);
+
+        // $jobOrder->load(['orderItems.product', 'breakdowns', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle']);
         $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
         $products = Product::all();
 
@@ -303,9 +255,12 @@ class JobOrderController extends Controller
             $total_diskon += $diskon_nominal;
         }
 
-        return view('job-orders.edit', compact('jobOrder', 'customerVehicles', 'products', 'total_sparepart', 'total_service', 'total_diskon'));
+        return view('estimation.edit', compact('jobOrder', 'customerVehicles', 'products', 'total_sparepart', 'total_service', 'total_diskon'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, JobOrder $jobOrder)
     {
 
@@ -339,7 +294,7 @@ class JobOrderController extends Controller
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
-                'status' => $jobOrder->status,
+                'status' => 'estimation',
                 'subtotal' => $request->total_sparepart + $request->total_jasa,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
@@ -458,140 +413,56 @@ class JobOrderController extends Controller
                 }
             }
         });
-        return redirect()->route('job-orders.index')->with('success', 'Job Order berhasil dibuat');
+        return redirect()->route('estimation.index')->with('success', 'Estimasi berhasil dibuat');
     }
 
-    public function destroy(JobOrder $jobOrder)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Estimation $estimation)
     {
-
-
         // Kembalikan stok jika ada (untuk sparepart)
-        foreach ($jobOrder->orderItems as $item) {
+        foreach ($estimation->orderItems as $item) {
             if ($item->product->tipe === 'barang') {
                 $item->product->increment('stok', $item->quantity);
             }
         }
 
-        $jobOrder->orderItems()->delete();
-        $jobOrder->breakdowns()->delete();
-        $jobOrder->delete();
+        $estimation->orderItems()->delete();
+        $estimation->breakdowns()->delete();
+        $estimation->delete();
 
-        return redirect()->route('job-orders.index')
-            ->with('success', 'Job Order berhasil dihapus');
+        return redirect()->route('estimation.index')
+            ->with('success', 'Data Estimasi berhasil dihapus');
     }
 
-    public function deleteProduct($id, $joID)
+    protected function validateRequest(Request $request)
     {
-        OrderItem::destroy($id);
-        return redirect()->route('job-orders.edit', $joID);
-    }
+        $rules = [
+            'service_at' => 'required|date',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required',
+            'items.*.quantity' => 'required|numeric',
+            'items.*.diskon_value' => 'nullable|numeric|min:0',
+            'breakdowns' => 'nullable|array',
+            'breakdowns.*.name' => 'required|string|max:255',
+            'diskon_unit' => 'nullable|in:percentage,nominal',
+            'diskon_value' => 'nullable|numeric|min:0',
+            'total' => 'required|numeric',
+        ];
 
-    public function complete($id)
-    {
-        $jobOrder = JobOrder::findOrFail($id);
-
-        if ($jobOrder->status === 'completed') {
-            return redirect()->back()->with('error', 'Job Order sudah diselesaikan sebelumnya.');
+        // Validasi conditional
+        if ($request->customer_vehicle_id == null) {
+            $rules = array_merge($rules, [
+                'customer_name' => 'required|string|max:255',
+                'merk' => 'required|string|max:255',
+                'tipe' => 'required|string|max:255',
+                'no_pol' => 'required|string|max:20',
+            ]);
+        } else {
+            $rules['customer_vehicle_id'] = 'required|exists:customer_vehicle,id';
         }
 
-        $jobOrder->status = 'completed';
-        $jobOrder->save();
-
-        return redirect()->route('job-orders.show', $jobOrder->id)->with('success', 'Job Order berhasil diselesaikan.');
-    }
-
-    public function updateStatus($id, $status)
-    {
-
-        $jobOrder = JobOrder::findOrFail($id);
-        $jobOrder->status = $status;
-        $jobOrder->save();
-
-        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
-    }
-
-
-
-
-    private function calculateTotal($subtotal, $diskonUnit, $diskonValue)
-    {
-        if (!$diskonUnit || !$diskonValue) {
-            return $subtotal;
-        }
-
-        if ($diskonUnit === 'percentage') {
-            return $subtotal - ($subtotal * $diskonValue / 100);
-        }
-
-        return $subtotal - $diskonValue;
-    }
-
-    public function deleteItems(Request $request, JobOrder $jobOrder)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*' => 'exists:order_items,id,order_id,' . $jobOrder->id
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $deletedItems = OrderItem::whereIn('id', $request->items)->get();
-
-            // Check if any completed supplies exist for these items
-            foreach ($deletedItems as $item) {
-                $supplyItems = SupplyItem::where('product_id', $item->product_id)
-                    ->whereHas('supply', function ($q) use ($jobOrder) {
-                        $q->where('job_order_id', $jobOrder->id)
-                            ->where('status', 'completed');
-                    })->get();
-
-                foreach ($supplyItems as $supplyItem) {
-                    // Create return item
-                    ReturnItem::create([
-                        'supply_id' => $supplyItem->supply_id,
-                        'product_id' => $item->product_id,
-                        'order_item_id' => $item->id,
-                        'quantity' => $supplyItem->quantity_fulfilled,
-                        'unit_price' => $supplyItem->unit_price,
-                        'reason' => 'Item dihapus dari job order',
-                        'status' => 'approved'
-                    ]);
-
-                    // Update product stock (optional)
-                    $product = $item->product;
-                    $product->stok += $supplyItem->quantity_fulfilled;
-                    $product->save();
-                }
-            }
-
-            // Delete selected items
-            OrderItem::whereIn('id', $request->items)->delete();
-
-            // Recalculate all totals
-            $jobOrder->recalculateTotals();
-
-            DB::commit();
-            return redirect()->back()->with('success', 'Item terpilih berhasil dihapus. Retur telah dibuat untuk supply yang completed.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menghapus item: ' . $e->getMessage());
-        }
-    }
-
-    public function deleteBreakdowns(Request $request, $id)
-    {
-        $jobOrder = JobOrder::findOrFail($id);
-
-        // Validate request
-        $request->validate([
-            'breakdowns' => 'required|array',
-            'breakdowns.*' => 'exists:breakdowns,id'
-        ]);
-
-        // Delete selected breakdowns
-        $jobOrder->breakdowns()->whereIn('id', $request->breakdowns)->delete();
-
-        return redirect()->back()
-            ->with('success', 'Breakdown terpilih berhasil dihapus');
+        return $request->validate($rules);
     }
 }

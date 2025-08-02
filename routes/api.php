@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerVehicleController;
+use App\Http\Controllers\JobOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,5 +182,60 @@ Route::get('/invoice-reference/search', function (Request $request) {
 })->name('invoice-reference.search');
 Route::get('/suppliers/search', [SupplierController::class, 'search']);
 Route::get('/suppliers/{supplier}', [SupplierController::class, 'getSupplier']);
+Route::post('/suppliers/quick-create', [SupplierController::class, 'quickCreate'])->name('suppliers.quickCreate');
 Route::post('/products/quick-create', [ProductController::class, 'quickCreate'])->name('products.quick-create');
 Route::get('/customer_vehicles/{id}/details', [CustomerVehicleController::class, 'getDetails']);
+Route::get('/job_order/search', function (Request $request) {
+    $search = $request->get('q');
+
+    $jobOrder = JobOrder::when($search, function ($query) use ($search) {
+        return $query->where('unique_id', 'like', "%$search%");
+    })
+        ->limit(10)
+        ->get()
+        ->map(function ($jobOrder) {
+            return [
+                'id' => $jobOrder->id,
+                'text' => $jobOrder->unique_id,
+            ];
+        });
+
+    return response()->json($jobOrder);
+});
+Route::get('/vehicle/search', function (Request $request) {
+    $query = $request->input('q');
+
+
+    $query = CustomerVehicle::with(['customer', 'vehicle'])
+        ->whereHas('customer', function ($q) use ($request) {
+            if ($request->customer_id) {
+                $q->where('customer_id', '=', $request->customer_id);
+            } else {
+                $q->where('name', 'like', '%' . $request->q . '%');
+            }
+        })
+        ->WhereHas('vehicle', function ($q) use ($request) {
+            $q->where('no_pol', 'like', '%' . $request->q . '%')
+                ->orWhere('tipe', 'like', '%' . $request->q . '%')
+                ->orWhere('merk', 'like', '%' . $request->q . '%');
+        })
+        ->limit(10)
+        ->get()
+        ->map(function ($customer) {
+
+            return [
+                'id' => $customer->id,
+                'text' => sprintf(
+                    "%s %s (%s)",
+                    $customer->vehicle->merk,
+                    $customer->vehicle->tipe,
+                    $customer->vehicle->no_pol
+                ),
+                'customer' => $customer->customer,
+            ];
+        });
+
+
+
+    return response()->json($query);
+});

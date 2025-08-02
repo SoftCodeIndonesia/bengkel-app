@@ -21,8 +21,10 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BreakdownController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\MovementItemController;
 use App\Http\Controllers\CustomerVehicleController;
+use App\Http\Controllers\EstimationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/customer-vehicles', [CustomerVehicleController::class, 'destroy'])
         ->name('customer-vehicles.destroy');
 
-    Route::post('/follow-ups', [FollowUpController::class, 'store'])->name('follow-ups.store');
+    Route::resource('/follow-ups', FollowUpController::class);
 
     // Products
     Route::resource('products', ProductController::class);
@@ -225,6 +227,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('roles', RoleController::class)->except(['show']);
+
+    Route::resource('appointments', AppointmentController::class);
+    Route::get('appointments/customer-vehicles/{customerId}', [AppointmentController::class, 'getCustomerVehicles']);
+    Route::get('/estimation/job-order/{id}', [EstimationController::class, 'toJobOrder'])->name('to-job-order');
+    Route::resource('estimation', EstimationController::class);
+    // Route::put('/estimation/{id}', [SupplierController::class, 'update'])->name('estimation.update');
 });
 // Di routes/web.php
 // Route::get('/api/customers/search', function (Request $request) {

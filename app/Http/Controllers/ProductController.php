@@ -201,7 +201,7 @@ class ProductController extends Controller
             'unit_price' => $validated['unit_price'],
             'margin' => $validated['margin'],
             'tipe' => $validated['tipe'],
-            'stock' => 0,
+            'stok' => 0,
             'min_stock' => 1,
             'part_number' => $validated['code'],
             'created_by' => auth()->id(),

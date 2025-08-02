@@ -38,6 +38,30 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')
             ->with('success', 'Supplier berhasil ditambahkan');
     }
+    public function quickCreate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal Menyimpan Data!'
+            ]);
+        }
+
+        $data = Supplier::create($validator->validated());
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
+    }
 
     public function edit(Supplier $supplier)
     {

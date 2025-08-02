@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Buat Job Order')
+@section('title', 'Edit Job Order')
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <style>
@@ -79,7 +79,7 @@
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Buat Job Order Baru</h2>
+            <h2 class="text-xl font-semibold text-white">Edit Job Order</h2>
             <a href="{{ route('job-orders.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,9 +99,9 @@
         @endif
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('job-orders.store') }}" method="POST" id="jobOrderForm">
+            <form action="{{ route('estimation.update', $jobOrder->id) }}" method="POST" id="jobOrderForm">
                 @csrf
-
+                @method('PUT')
                 <!-- Customer Section -->
                 <div class="w-full" id="field-customer_vehicle_id">
                     <label for="customer_vehicle_id" class="block text-sm font-medium text-gray-300 mb-2">
@@ -124,7 +124,7 @@
                 </button>
 
                 <!-- Customer Details -->
-                <div class="mt-4 hidden" id="customer-vehicle-detail-container">
+                <div class="mt-4" id="customer-vehicle-detail-container">
                     <div class="bg-gray-700 p-4 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Customer Details -->
@@ -133,19 +133,23 @@
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Nama:</p>
-                                        <p class="text-white font-medium" id="customer-name">-</p>
+                                        <p class="text-white font-medium" id="customer-name">
+                                            {{ $jobOrder->customerVehicle->customer->name }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-300">Telepon:</p>
-                                        <p class="text-white font-medium" id="customer-phone">-</p>
+                                        <p class="text-white font-medium" id="customer-phone">
+                                            {{ $jobOrder->customerVehicle->customer->phone ?? '-' }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-300">Email:</p>
-                                        <p class="text-white font-medium" id="customer-email">-</p>
+                                        <p class="text-white font-medium" id="customer-email">
+                                            {{ $jobOrder->customerVehicle->customer->email ?? '-' }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-300">Alamat:</p>
-                                        <p class="text-white font-medium" id="customer-address">-</p>
+                                        <p class="text-white font-medium" id="customer-address">
+                                            {{ $jobOrder->customerVehicle->customer->address ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -156,19 +160,18 @@
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Merk:</p>
-                                        <p class="text-white font-medium" id="vehicle-merk">-</p>
+                                        <p class="text-white font-medium" id="vehicle-merk">
+                                            {{ $jobOrder->customerVehicle->vehicle->merk ?? '-' }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-300">Tipe:</p>
-                                        <p class="text-white font-medium" id="vehicle-type">-</p>
+                                        <p class="text-white font-medium" id="vehicle-type">
+                                            {{ $jobOrder->customerVehicle->vehicle->tipe ?? '-' }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-300">Nomor Polisi:</p>
-                                        <p class="text-white font-medium" id="vehicle-plate">-</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-300">Tahun:</p>
-                                        <p class="text-white font-medium" id="vehicle-year">-</p>
+                                        <p class="text-white font-medium" id="vehicle-plate">
+                                            {{ $jobOrder->customerVehicle->vehicle->no_pol }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +187,8 @@
                                 <label for="name" class="block text-sm font-medium text-gray-300">
                                     Nama Lengkap <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="customer_name" id="name" value="{{ old('customer_name') }}"
+                                <input type="text" name="customer_name" id="name"
+                                    value="{{ old('customer_name') }}"
                                     class="mt-1 block w-full bg-gray-700 text-gray-400 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     placeholder="Nama lengkap pelanggan">
                                 @error('customer_name')
@@ -260,7 +264,7 @@
                     <div>
                         <label for="km" class="block text-sm font-medium text-gray-300 mb-2">Kilometer <span
                                 class="text-red-500">*</span></label>
-                        <input type="number" name="km" id="km" value="{{ old('km') }}"
+                        <input type="number" name="km" id="km" value="{{ old('km', $jobOrder->km) }}"
                             placeholder="Contoh: 100000" required min="0"
                             class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
@@ -268,8 +272,9 @@
                     <div>
                         <label for="service_at" class="block text-sm font-medium text-gray-300 mb-2">Tanggal Servis <span
                                 class="text-red-500">*</span></label>
-                        <input type="datetime-local" value="{{ old('service_at') }}" name="service_at" id="service_at"
-                            required
+                        <input type="datetime-local"
+                            value="{{ old('service_at', optional($jobOrder->service_at)->format('Y-m-d\TH:i')) }}"
+                            name="service_at" id="service_at" required
                             class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                 </div>
@@ -279,13 +284,15 @@
                     <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan</h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
-                        @if (old('breakdowns'))
-                            @foreach (old('breakdowns') as $breakdown)
+                        @if (old('breakdowns', $jobOrder->breakdowns))
+                            @foreach (old('breakdowns', $jobOrder->breakdowns) as $breakdown)
                                 <div class="breakdown-row flex gap-4 mb-3">
                                     <div class="col-span-11 flex-1">
                                         <input type="text" name="breakdowns[{{ $breakIndex }}][name]"
                                             value="{{ $breakdown['name'] }}" placeholder="Masukan Kerusakan"
                                             class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        <input type="hidden" name="breakdowns[{{ $breakIndex }}][id]"
+                                            value="{{ $breakdown['id'] ?? '' }}">
                                     </div>
                                     <div class="col-span-1 flex items-center">
                                         <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
@@ -347,15 +354,75 @@
                                 <th class="p-2">Produk</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">QTY</th>
-                                <th class="p-2">Harga Satuan</th>
-                                <th class="p-2">Subtotal</th>
+                                <th class="p-2 text-right">Harga Satuan</th>
+                                <th class="p-2 text-right">Subtotal</th>
                                 <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
+                                <th class="p-2 text-right">Total</th>
                                 <th class="p-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="sparepart-items-container">
-                            <!-- Sparepart rows will be added here -->
+                            @php
+                                $itemIndex = 0;
+                            @endphp
+                            @foreach ($jobOrder->orderItems as $key => $item)
+                                @if ($item->product->tipe != 'jasa')
+                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
+                                        <td class="p-2" width="200px">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
+                                                value="{{ $item->id }}">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
+                                                value="{{ $item->product_id }}">
+                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
+                                                value="{{ $item->product->name }}" disabled
+                                                data-json="{{ $item->product }}"
+                                                class="product-view bg-gray-700 border text-sm border-gray-600 text-white rounded-md py-1 px-2 w-full">
+
+                                        </td>
+                                        <td class="p-2" width="100px">
+                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
+                                        </td>
+                                        <td class="p-2" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                value="{{ $item->quantity }}"
+                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span
+                                                class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 2, ',', '.') }}
+                                            </span>
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span
+                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 text-right" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
+                                                min="0"
+                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
+                                                value="{{ (int) $item->diskon_value }}"
+                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                                placeholder="%">
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span class="total-after-diskon text-gray-300">
+                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 flex justify-center items-center">
+                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $itemIndex++;
+                                    @endphp
+                                @endif
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -380,14 +447,73 @@
                                 <th class="p-2">Jasa</th>
                                 <th class="p-2">Kategori</th>
                                 <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2">Subtotal</th>
+                                <th class="p-2 text-right w-44"></th>
+                                <th class="p-2 text-right">Subtotal</th>
                                 <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
+                                <th class="p-2 text-right">Total</th>
                                 <th class="p-2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="service-items-container">
-                            <!-- Service rows will be added here -->
+                            @php
+                                $itemIndex = 0;
+                            @endphp
+                            @foreach ($jobOrder->orderItems as $key => $item)
+                                @if ($item->product->tipe == 'jasa')
+                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
+                                        <td class="p-2" width="200px">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
+                                                value="{{ $item->id }}">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
+                                                value="{{ $item->product_id }}">
+                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
+                                                value="{{ $item->product->name }}" disabled
+                                                data-json="{{ $item->product }}"
+                                                class="product-view bg-gray-700 border border-gray-600 text-sm text-white rounded-md py-1 px-2 w-full">
+
+                                        </td>
+                                        <td class="p-2 text-center" width="100px">
+                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
+                                        </td>
+                                        <td class="p-2" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                value="{{ $item->quantity }}" step="0.1"
+                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                        </td>
+                                        <td class="p-2 text-right">
+
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span
+                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 text-right" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
+                                                min="0"
+                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
+                                                value="{{ (int) $item->diskon_value }}"
+                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                                placeholder="%">
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span class="total-after-diskon text-gray-300">
+                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 flex justify-center items-center">
+                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $itemIndex++;
+                                    @endphp
+                                @endif
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -396,7 +522,7 @@
                         Catatan
                     </label>
                     <textarea type="text" name="notes" id="notes" value="{{ old('notes') }}"
-                        class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ $jobOrder->notes }}</textarea>
                     @error('notes')
                         <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                     @enderror
@@ -444,7 +570,7 @@
                     </a>
                     <button type="submit"
                         class="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200">
-                        Simpan Job Order
+                        Simpan Estimasi
                     </button>
                 </div>
             </form>
@@ -461,12 +587,32 @@
             let breakdownCounter = 1;
             let customer_form_active = false;
 
+            var job_order = @json($jobOrder);
+            itemCounter = job_order.order_items.length;
+
+            calculateTotal();
+
+            console.log('hallo', );
+
+            document.querySelectorAll('.item-row').forEach(row => {
+                // console.log(row);
+                const type = row.dataset.tipe;
+
+                initItemRowEvents(row, type);
+            });
+
+
             // Initialize TomSelect for customer vehicle
             new TomSelect('#customer_vehicle_id', {
                 valueField: 'id',
                 labelField: 'text',
                 searchField: 'text',
                 create: false,
+                items: [job_order.customer_vehicle_id ?? ''],
+                options: [{
+                    id: job_order.customer_vehicle_id,
+                    text: `${job_order.customer_vehicle.customer.name} - ${job_order.customer_vehicle.vehicle.merk} ${job_order.customer_vehicle.vehicle.tipe} (${job_order.customer_vehicle.vehicle.no_pol})`
+                }],
                 load: function(query, callback) {
                     var url = base_url + '/api/customers_vehicle/search' + '?q=' + encodeURIComponent(
                         query);
@@ -632,6 +778,9 @@
                         </td>
                         
                         <td class="p-2 text-right">
+                            
+                        </td>
+                        <td class="p-2 text-right">
                             <span class="subtotal text-gray-300">Rp 0</span>
                         </td>
                         <td class="p-2 text-right">
@@ -665,6 +814,7 @@
 
                 itemCounter++;
             }
+
 
             // Initialize product select
             function initializeProductSelect(element, type) {
@@ -712,7 +862,8 @@
                 const totalAfterDiskonText = row.querySelector('.total-after-diskon');
 
                 const calculateItemTotal = () => {
-                    const data = select.tomselect ? select.tomselect.items[0] : null;
+                    const data = select?.tomselect ? select.tomselect.items[0] : row.querySelector(
+                        '.product-view').dataset.json;
                     if (!data) return;
 
 
@@ -747,13 +898,40 @@
                     calculateTotal();
                 };
 
-                select.addEventListener('change', calculateItemTotal);
+                if (select) {
+                    select.addEventListener('change', calculateItemTotal);
+                }
                 qtyInput.addEventListener('input', calculateItemTotal);
                 diskonValue.addEventListener('input', calculateItemTotal);
 
                 row.querySelector('.remove-item').addEventListener('click', () => {
-                    row.remove();
-                    calculateTotal();
+                    const itemId = row.querySelector('input[name*="[id]"]')?.value;
+                    if (itemId) {
+                        // Existing item - show confirmation
+                        Swal.fire({
+                            title: 'Hapus Item?',
+                            text: "Anda yakin ingin menghapus item ini?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, Hapus!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Mark for deletion
+                                row.querySelector('input[name*="[id]"]').value =
+                                    'delete_' + itemId;
+                                row.classList.add('to-be-deleted');
+                                row.style.display = 'none';
+                                calculateTotal();
+                            }
+                        });
+                    } else {
+                        // New item - just remove
+                        row.remove();
+                        calculateTotal();
+                    }
                 });
             }
 
@@ -799,7 +977,7 @@
                     const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
                         /\./g, '')) || 0;
 
-                    if (itemType === 'Sparepart') {
+                    if (itemType !== 'jasa' && itemType !== 'Jasa') {
                         totalSparepart += subtotalValue;
                     } else {
                         totalJasa += subtotalValue;

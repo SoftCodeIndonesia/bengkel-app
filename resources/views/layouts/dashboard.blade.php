@@ -15,6 +15,14 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
+
+    <style>
+        .required-field::after {
+            content: " *";
+            color: #ef4444;
+            /* Warna merah */
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased" data-url="{{ url('/') }}">

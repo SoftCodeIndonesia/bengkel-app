@@ -23,7 +23,8 @@ class JobOrder extends Model
         'subtotal',
         'diskon_unit',
         'diskon_value',
-        'total'
+        'total',
+        'notes',
     ];
 
     protected $casts = [
@@ -59,6 +60,11 @@ class JobOrder extends Model
             ->where('tipe', 'service');
     }
 
+    public function followUp()
+    {
+        return $this->hasOne(FollowUp::class, 'job_order_id', 'id');
+    }
+
     public function sparepart()
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'id')
@@ -88,9 +94,12 @@ class JobOrder extends Model
 
             // Ambil job order terakhir di tahun yang sama
             $latest = self::whereYear('created_at', $now->year)
+                ->where('status', '!=', "estimation")
                 ->where('unique_id', 'like', "{$prefix}/%/%/{$tahun}/%")
                 ->orderByDesc('created_at')
                 ->first();
+
+
 
             // Ambil nomor urut dari unique_id terakhir
             if ($latest) {
