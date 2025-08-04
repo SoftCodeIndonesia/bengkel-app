@@ -279,7 +279,9 @@ class JobOrderController extends Controller
             'customerVehicle.vehicle',
             'orderItems.product',
             'breakdowns',
-            'invoice'
+            'invoice',
+            'orderItems',
+            'orderItems.product'
         ]);
 
 
