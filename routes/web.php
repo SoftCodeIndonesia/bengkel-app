@@ -235,6 +235,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('estimation', EstimationController::class);
     Route::resource('service-packages', ServicePackageController::class);
     // Route::put('/estimation/{id}', [SupplierController::class, 'update'])->name('estimation.update');
+
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
 });
 // Di routes/web.php
 // Route::get('/api/customers/search', function (Request $request) {
