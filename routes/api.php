@@ -14,6 +14,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerVehicleController;
 use App\Http\Controllers\JobOrderController;
+use App\Models\ServicePackage;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,11 @@ Route::get('/customer', function (Request $request) {
 
     return response()->json($data);
 })->name('api.customer-vehicle.search');
+Route::get('/package/{id}', function (Request $request) {
+    $data = ServicePackage::with('items', 'items.product')->get()->first();
+
+    return response()->json($data);
+})->name('api.get_package');
 Route::get('/vehicle', function (Request $request) {
 
     $query = $request->q;

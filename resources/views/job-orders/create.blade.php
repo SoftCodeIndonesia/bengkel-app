@@ -102,6 +102,21 @@
             <form action="{{ route('job-orders.store') }}" method="POST" id="jobOrderForm">
                 @csrf
 
+
+                <div class=" mb-5">
+                    <label for="package" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paket
+                        Service</label>
+                    <select id="package"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="custom" selected>Custom</option>
+                        @foreach ($packages as $package)
+                            <option value="{{ $package->id }}">{{ $package->name }} Diskon
+                                ({{ ceil(($package->total_discount / $package->subtotal) * 100) }}%)
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Customer Section -->
                 <div class="w-full" id="field-customer_vehicle_id">
                     <label for="customer_vehicle_id" class="block text-sm font-medium text-gray-300 mb-2">
@@ -461,6 +476,59 @@
             let breakdownCounter = 1;
             let customer_form_active = false;
 
+
+
+            $('#package').change(function(e) {
+                e.preventDefault();
+
+                var id = $(this).val();
+
+                if (id === 'custom') {
+                    document.querySelectorAll('.item-row').forEach(row => {
+                        row.remove();
+                        calculateTotal();
+                    })
+                    return;
+                }
+
+                $.ajax({
+                    type: "get",
+                    url: base_url + "/api/package/" + $(this).val(),
+                    dataType: "json",
+                    success: function(response) {
+                        initialPackage(response);
+                    }
+                });
+            });
+
+            const initialPackage = (package) => {
+                for (let index = 0; index < package.items.length; index++) {
+                    const element = package.items[index];
+                    if (element.product.tipe == 'jasa') {
+                        addItemRowPackage('jasa', 'service-items-container', {
+                            id: element.product,
+                            text: element.product.name,
+                            quantity: element.quantity,
+                            discount: element.discount,
+                            subtotal: element.subtotal,
+                            total: element.total,
+                            ...element.product,
+                        });
+                    } else {
+                        addItemRowPackage('barang', 'sparepart-items-container', {
+                            id: element.product,
+                            text: element.product.name,
+                            quantity: element.quantity,
+                            discount: element.discount,
+                            subtotal: element.subtotal,
+                            total: element.total,
+                            ...element.product,
+                        });
+                    }
+                    calculateTotal();
+                }
+            }
+
             // Initialize TomSelect for customer vehicle
             new TomSelect('#customer_vehicle_id', {
                 valueField: 'id',
@@ -666,12 +734,147 @@
                 itemCounter++;
             }
 
+            function addItemRowPackage(type, containerId, data) {
+                console.log(data);
+                const tbody = document.getElementById(containerId);
+                const rowId = `item-row-${itemCounter}`;
+
+                const row = document.createElement('tr');
+                row.id = rowId;
+                row.classList.add('border-b', 'border-gray-600', 'item-row');
+
+                if (type === 'barang') {
+                    row.innerHTML = `
+                        <td class="p-2" width="300px">
+                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
+                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
+                            </select>
+                            <input type="hidden" name="items[${itemCounter}][type]" value="barang">
+                        </td>
+                        <td class="p-2 text-center">
+                            <span class="kategori text-gray-300">${data.tipe}</span>
+                        </td>
+                        <td class="p-2" width="100px">
+                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="${data.quantity}"
+                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="unit-price text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
+                                value="${data.discount}"
+                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                placeholder="%">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td class="p-2" width="300px">
+                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
+                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
+                            </select>
+                            <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
+                        </td>
+                        <td class="p-2 text-center">
+                            <span class="kategori text-gray-300">${data.tipe}</span>
+                        </td>
+                        <td class="p-2" width="100px">
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1" value="${data.quantity}"
+                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        </td>
+                        
+                        <td class="p-2 text-right">
+                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
+                                value="${data.discount}"
+                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                placeholder="%">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </td>
+                    `;
+                }
+
+                tbody.appendChild(row);
+
+                // Initialize TomSelect for the new row
+                const select = row.querySelector('.product-select');
+                initializeProductSelectPackage(select, type, data);
+
+                // Add event listeners for calculations
+                initItemRowEvents(row, type);
+
+                itemCounter++;
+            }
+
             // Initialize product select
             function initializeProductSelect(element, type) {
                 new TomSelect(element, {
                     valueField: 'id',
                     labelField: 'text',
                     searchField: 'text',
+                    create: false,
+                    load: function(query, callback) {
+                        var url = base_url + '/api/products/search?q=' + encodeURIComponent(query) +
+                            '&tipe=' + encodeURIComponent(type);
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(json => {
+                                callback(json);
+                            }).catch(() => {
+                                callback();
+                            });
+                    },
+                    render: {
+                        option: function(item, escape) {
+                            return `
+                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
+                                    <div class="ml-2">
+                                        <div class="text-gray-300">${escape(item.text)}</div>
+                                        <div class="text-xs text-gray-400">${escape(item.price)}</div>
+                                    </div>
+                                </div>`;
+                        },
+                        item: function(item, escape) {
+                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
+                        }
+                    }
+                });
+            }
+
+            function initializeProductSelectPackage(element, type, value) {
+                new TomSelect(element, {
+                    valueField: 'id',
+                    labelField: 'text',
+                    searchField: 'text',
+                    items: [value.id],
+                    options: [value],
                     create: false,
                     load: function(query, callback) {
                         var url = base_url + '/api/products/search?q=' + encodeURIComponent(query) +
@@ -799,7 +1002,7 @@
                     const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
                         /\./g, '')) || 0;
 
-                    if (itemType === 'Sparepart') {
+                    if (itemType !== 'jasa' && itemType !== 'Jasa') {
                         totalSparepart += subtotalValue;
                     } else {
                         totalJasa += subtotalValue;

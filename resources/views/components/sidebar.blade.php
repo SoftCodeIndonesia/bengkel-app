@@ -4,8 +4,8 @@
     <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <div class="pb-2 px-2">
             <a href="{{ route('dashboard') }}" class="flex items-center">
-                <img src="{{ asset('images/logo-bengkel.png') }}" class="h-8 mr-3" alt="Logo Bengkel">
-                <span class="text-xl font-semibold">BengBeng</span>
+                <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" class="h-12 w-full mr-3" alt="Logo Bengkel">
+                {{-- <span class="text-xl font-semibold">BengBeng</span> --}}
             </a>
         </div>
         <ul class="space-y-2 font-medium">
@@ -124,6 +124,11 @@
                         <a href="{{ route('estimation.index') }}"
                             class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700">Daftar
                             Estimasi</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('service-packages.index') }}"
+                            class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700">Paket
+                            Service</a>
                     </li>
                 </ul>
             </li>

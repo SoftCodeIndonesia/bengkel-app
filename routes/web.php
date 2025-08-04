@@ -21,10 +21,11 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BreakdownController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\MovementItemController;
+use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\CustomerVehicleController;
-use App\Http\Controllers\EstimationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -232,6 +233,7 @@ Route::middleware('auth')->group(function () {
     Route::get('appointments/customer-vehicles/{customerId}', [AppointmentController::class, 'getCustomerVehicles']);
     Route::get('/estimation/job-order/{id}', [EstimationController::class, 'toJobOrder'])->name('to-job-order');
     Route::resource('estimation', EstimationController::class);
+    Route::resource('service-packages', ServicePackageController::class);
     // Route::put('/estimation/{id}', [SupplierController::class, 'update'])->name('estimation.update');
 });
 // Di routes/web.php

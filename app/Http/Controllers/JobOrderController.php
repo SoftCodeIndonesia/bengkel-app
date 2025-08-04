@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\CustomerVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ServicePackage;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\ValidationException;
@@ -105,8 +106,9 @@ class JobOrderController extends Controller
     {
         $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
         $products = Product::all();
+        $packages = ServicePackage::all();
 
-        return view('job-orders.create', compact('customerVehicles', 'products'));
+        return view('job-orders.create', compact('customerVehicles', 'products', 'packages'));
     }
 
     protected function validateRequest(Request $request)
