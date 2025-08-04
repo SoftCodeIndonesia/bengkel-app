@@ -16,7 +16,7 @@
         </div>
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('services.update', $service->id) }}" method="POST">
+            <form action="{{ route('services.update', $service->id) }}" method="POST" id="form-edit">
                 @csrf
                 @method('PUT')
 
@@ -90,7 +90,7 @@
                 // this.value = formatRupiah(value);
             });
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-edit');
             form.addEventListener('submit', function(e) {
                 priceInput.value = priceInput.value.replace(/\D/g, '');
             });

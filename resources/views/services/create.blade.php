@@ -16,7 +16,7 @@
         </div>
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('services.store') }}" method="POST">
+            <form action="{{ route('services.store') }}" method="POST" id="form-service">
                 @csrf
 
                 <div class="grid grid-cols-1 gap-6">
@@ -77,10 +77,7 @@
             const priceInput = document.getElementById('unit_price');
             const frtInput = document.getElementById('frt');
 
-            // priceInput.addEventListener('input', function(e) {
-            //     let value = this.value.replace(/\D/g, '');
-            //     this.value = formatRupiah(value);
-            // });
+
 
             frtInput.addEventListener('input', function(e) {
                 let value = this.value;
@@ -88,7 +85,7 @@
                 // this.value = formatRupiah(value);
             });
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-service');
             form.addEventListener('submit', function(e) {
                 priceInput.value = priceInput.value.replace(/\D/g, '');
             });

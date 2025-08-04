@@ -106,7 +106,7 @@
         @endif
 
         <form action="{{ route('purchases.update', $purchase->id) }}" method="POST" enctype="multipart/form-data"
-            class="p-4">
+            class="p-4" id="form-edit">
             @csrf
             @method('PUT') <!-- Tambahkan method spoofing untuk PUT -->
 
@@ -592,12 +592,11 @@
             // Set today's date as default
             // document.getElementById('purchase_date').valueAsDate = new Date();
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-edit');
             form.addEventListener('submit', function(e) {
                 // e.preventDefault();
                 document.querySelectorAll('#items-container tr').forEach(row => {
                     const priceInput = row.querySelector('.unit-price');
-                    console.log(priceInput);
                     priceInput.value = originalNumber(priceInput.value);
                 });
 

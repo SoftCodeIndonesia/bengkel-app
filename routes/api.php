@@ -75,7 +75,7 @@ Route::get('/products/search', function (Request $request) {
     $query = $request->input('q');
     $tipe = $request->input('tipe') == 'barang' ? ['barang', 'part', 'oli', 'material'] : ['jasa'];
 
-    $products = DB::table('products')->whereIn('tipe', $tipe)->where('name', 'like', "%$query%")
+    $products = DB::table('products')->whereIn('tipe', $tipe)->where('name', 'like', "%$query%")->whereNull('deleted_at')
         ->limit(20)
         ->get()
         ->map(function ($product) {
