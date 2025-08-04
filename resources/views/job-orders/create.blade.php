@@ -105,11 +105,12 @@
 
                 <div class="mb-6">
                     <label for="package" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipe</label>
-                    <select id="package"
+                    <select id="package" name="package"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="custom" selected>Custom</option>
+                        <option value="custom" selected>Normal</option>
                         @foreach ($packages as $package)
-                            <option value="{{ $package->id }}">{{ $package->name }}
+                            <option value="{{ $package->id }}" {{ $package->id == old('package') ? 'selected' : '' }}>
+                                {{ $package->name }}
                             </option>
                         @endforeach
                     </select>
@@ -289,7 +290,8 @@
 
                 <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan</h3>
+                    <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan <span
+                            class="text-red-500">*</span></label></h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
                         @if (old('breakdowns'))
@@ -298,7 +300,7 @@
                                     <div class="col-span-11 flex-1">
                                         <input type="text" name="breakdowns[{{ $breakIndex }}][name]"
                                             value="{{ $breakdown['name'] }}" placeholder="Masukan Kerusakan"
-                                            class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            class="w-full breakdown-kerusakan bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                     </div>
                                     <div class="col-span-1 flex items-center">
                                         <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
@@ -316,7 +318,8 @@
                             <div class="breakdown-row flex gap-4 mb-3">
                                 <div class="col-span-11 flex-1">
                                     <input type="text" name="breakdowns[0][name]" placeholder="Masukan Kerusakan"
-                                        class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        required
+                                        class="w-full breakdown-kerusakan bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div class="col-span-1 flex items-center">
                                     <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
@@ -481,6 +484,11 @@
 
                 var id = $(this).val();
 
+                fetchPackage(id);
+
+            });
+
+            const fetchPackage = (id) => {
                 if (id === 'custom') {
                     document.querySelectorAll('.item-row').forEach(row => {
                         row.remove();
@@ -491,15 +499,52 @@
 
                 $.ajax({
                     type: "get",
-                    url: base_url + "/api/package/" + $(this).val(),
+                    url: base_url + "/api/package/" + id,
                     dataType: "json",
                     success: function(response) {
                         initialPackage(response);
                     }
                 });
-            });
+            }
+
+            const packageId = "{{ old('package') }}";
+            const items = {!! json_encode(old('items')) !!};
+            console.log(items);
+
+            if (items) {
+                // for (let index = 0; index < items.length; index++) {
+                //     const element = items[index];
+                //     if (element.tipe == 'jasa') {
+                //         addItemRowPackage('jasa', 'service-items-container', {
+                //             id: element,
+                //             text: element.name,
+                //             quantity: element.quantity,
+                //             discount: element.discount,
+                //             subtotal: element.subtotal,
+                //             total: element.total,
+                //             ...element,
+                //         });
+                //     } else {
+                //         addItemRowPackage('barang', 'sparepart-items-container', {
+                //             id: element,
+                //             text: element.name,
+                //             quantity: element.quantity,
+                //             discount: element.discount,
+                //             subtotal: element.subtotal,
+                //             total: element.total,
+                //             ...element,
+                //         });
+                //     }
+                //     calculateTotal();
+                // }
+            }
+
+            if (packageId !== '') {
+                fetchPackage(packageId);
+            }
 
             const initialPackage = (package) => {
+                $('.breakdown-kerusakan').val(package.name);
                 for (let index = 0; index < package.items.length; index++) {
                     const element = package.items[index];
                     if (element.product.tipe == 'jasa') {
@@ -733,7 +778,7 @@
             }
 
             function addItemRowPackage(type, containerId, data) {
-                console.log(data);
+
                 const tbody = document.getElementById(containerId);
                 const rowId = `item-row-${itemCounter}`;
 

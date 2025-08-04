@@ -115,6 +115,7 @@ class JobOrderController extends Controller
     {
         $rules = [
             'service_at' => 'required|date',
+            'package' => 'nullable',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required',
             'items.*.quantity' => 'required|numeric',
@@ -139,7 +140,9 @@ class JobOrderController extends Controller
             $rules['customer_vehicle_id'] = 'required|exists:customer_vehicle,id';
         }
 
-        return $request->validate($rules);
+        return $request->validate($rules, [
+            'breakdowns.*.name.required' => 'Kolom nama breakdown tidak boleh kosong.',
+        ]);
     }
 
     public function store(Request $request)
