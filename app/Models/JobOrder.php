@@ -32,8 +32,8 @@ class JobOrder extends Model
     ];
 
     protected $statuses = [
-        'estimation',
         'draft',
+        'new',
         'progress',
         'completed',
         'cancelled'
@@ -127,8 +127,8 @@ class JobOrder extends Model
 
     public function getDisplayStatusAction()
     {
-        if ($this->status == 'estimation') {
-            return 'Estimasi';
+        if ($this->status == 'new') {
+            return 'New';
         } else if ($this->status == 'draft') {
             return 'Draft';
         } else if ($this->status == 'progress') {
@@ -141,8 +141,8 @@ class JobOrder extends Model
     }
     public function getDisplayStatus()
     {
-        if ($this->status == 'estimation') {
-            return 'Estimasi';
+        if ($this->status == 'new') {
+            return 'New';
         } else if ($this->status == 'draft') {
             return 'Draft';
         } else if ($this->status == 'progress') {
@@ -156,8 +156,8 @@ class JobOrder extends Model
 
     public function toStatus()
     {
-        if ($this->status == 'Estimasi') {
-            return 'estimation';
+        if ($this->status == 'New') {
+            return 'new';
         } else if ($this->status == 'Draft') {
             return 'draft';
         } else if ($this->status == 'Proses' || $this->status == 'Diproses') {

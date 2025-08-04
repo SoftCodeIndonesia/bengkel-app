@@ -185,7 +185,7 @@ class JobOrderController extends Controller
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
-                'status' => 'progress',
+                'status' => 'draft',
                 'subtotal' => $request->total_sparepart + $request->total_jasa,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,

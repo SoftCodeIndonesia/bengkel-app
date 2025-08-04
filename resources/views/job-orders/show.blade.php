@@ -12,7 +12,7 @@
                 @php
                     $statusClasses = [
                         'draft' => 'bg-gray-500',
-                        'estimation' => 'bg-yellow-500',
+                        'new' => 'bg-yellow-500',
                         'progress' => 'bg-blue-800 text-blue-800',
                         'completed' =>
                             'bg-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800',
@@ -103,14 +103,14 @@
                             @php
                                 $statusClasses = [
                                     'draft' => 'bg-gray-500',
-                                    'estimation' => 'bg-yellow-500',
+                                    'new' => 'bg-yellow-500',
                                     'progress' => 'bg-blue-100 text-blue-800',
                                     'completed' => 'bg-green-500',
                                     'cancelled' => 'bg-red-500',
                                 ];
                                 $statusText = [
                                     'draft' => 'Draft',
-                                    'estimation' => 'Estimasi',
+                                    'new' => 'Estimasi',
                                     'progress' => 'Progress',
                                     'completed' => 'Selesai',
                                     'cancelled' => 'Batal',

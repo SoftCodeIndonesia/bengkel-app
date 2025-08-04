@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpController;
 use App\Http\Controllers\JobOrderController;
 use App\Http\Controllers\PurchaseController;
@@ -238,6 +239,17 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    Route::prefix('employees')->group(function () {
+        Route::get('/', [EmployeeController::class, 'index'])->name('employees.index');
+        Route::get('/create', [EmployeeController::class, 'create'])->name('employees.create');
+        Route::post('/', [EmployeeController::class, 'store'])->name('employees.store');
+        Route::get('/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
+        Route::get('/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+        Route::put('/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+        Route::delete('/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+        Route::get('/datatable', [EmployeeController::class, 'datatable'])->name('employees.datatable');
+    });
 });
 // Di routes/web.php
 // Route::get('/api/customers/search', function (Request $request) {
