@@ -199,9 +199,9 @@ class JobOrderController extends Controller
 
 
                 if (is_object($data_item)) {
-                    $product = Product::find($data_item->id);
+                    $product = Product::withTrashed()->find($data_item->id);
                 } else {
-                    $product = Product::find($item['product_id']);
+                    $product = Product::withTrashed()->find($item['product_id']);
                 }
 
 
