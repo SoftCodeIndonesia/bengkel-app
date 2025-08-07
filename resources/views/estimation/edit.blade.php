@@ -828,7 +828,8 @@
                     create: false,
                     load: function(query, callback) {
                         var url = base_url + '/api/products/search?q=' + encodeURIComponent(query) +
-                            '&tipe=' + encodeURIComponent(type);
+                            '&tipe=' + encodeURIComponent(type != 'jasa' || tipe != 'Jasa' ? 'barang' :
+                                'jasa');
                         fetch(url)
                             .then(response => response.json())
                             .then(json => {
