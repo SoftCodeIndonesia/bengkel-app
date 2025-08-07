@@ -19,28 +19,32 @@
                         'cancelled' => 'bg-red-500',
                     ];
                 @endphp
-                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                    class="text-white {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
-                    type="button">{{ $jobOrder->getDisplayStatus() }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 4 4 4-4" />
-                    </svg>
-                </button>
-                <div id="dropdown"
-                    class="z-10 hidden bg-green divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        @foreach ($jobOrder->statuses() as $status)
-                            @php
-                                $new = new JobOrder(['status' => $status]);
-                            @endphp
-                            <li>
-                                <a href="{{ route('job-orders.update-status', ['id' => $jobOrder->id, 'status' => $status]) }}"
-                                    class="btn-update-status block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $new->getDisplayStatusAction() }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
+
+                @if ($jobOrder->status != 'completed' && $jobOrder->status != 'progress')
+                    <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+                        class="text-white {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
+                        type="button">{{ $jobOrder->getDisplayStatus() }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 4 4 4-4" />
+                        </svg>
+                    </button>
+                    <div id="dropdown"
+                        class="z-10 hidden bg-green divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                            @foreach ($jobOrder->statuses() as $status)
+                                @php
+                                    $new = new JobOrder(['status' => $status]);
+                                @endphp
+                                <li>
+                                    <a href="{{ route('job-orders.update-status', ['id' => $jobOrder->id, 'status' => $status]) }}"
+                                        class="btn-update-status block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $new->getDisplayStatusAction() }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
 
 
                 @if ($jobOrder->status != 'estimation' && $jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
@@ -295,22 +299,25 @@
                 </div>
             </div>
 
-            <div class="flex justify-end space-x-4">
-                <form action="{{ route('job-orders.destroy', $jobOrder->id) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg flex items-center"
-                        onclick="return confirm('Apakah Anda yakin ingin menghapus job order ini?')">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Hapus
-                    </button>
-                </form>
+            @if ($jobOrder->status != 'completed' && $jobOrder->status != 'progress')
+                <div class="flex justify-end space-x-4">
+                    <form action="{{ route('job-orders.destroy', $jobOrder->id) }}" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg flex items-center"
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus job order ini?')">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Hapus
+                        </button>
+                    </form>
 
-            </div>
+                </div>
+            @endif
+
         </div>
     </div>
 @endsection
