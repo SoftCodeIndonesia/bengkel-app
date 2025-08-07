@@ -56,7 +56,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-1">Supplier</label>
                             <div class="bg-gray-600 text-white p-2 rounded capitalize">
-                                {{ $movement_item->purchase_item->purchase->supplier->name }}</div>
+                                {{ $movement_item->purchase_item->purchase->supplier->name ?? '-' }}</div>
                         </div>
 
                         <div>
