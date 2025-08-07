@@ -38,11 +38,7 @@ class ExpenseController extends Controller
                 return '
                 <a href="' . route('expenses.edit', $expense->id) . '" 
                    class="text-blue-400 hover:text-blue-300 mr-2">Edit</a>
-                <form action="' . route('expenses.destroy', $expense->id) . '" method="POST" class="inline">
-                    ' . csrf_field() . '
-                    ' . method_field('DELETE') . '
-                    <button type="submit" class="text-red-400 hover:text-red-300">Hapus</button>
-                </form>
+                <button type="button" data-id="' . $expense->id . '" data-name="' . $expense->description . '" class="text-red-400 btn-delete hover:text-red-300">Hapus</button>
             ';
             })
             ->rawColumns(['action'])
@@ -93,15 +89,18 @@ class ExpenseController extends Controller
      */
     public function edit(Expense $expense)
     {
+        // dd($expense);
+        // dd();
         $categories = ExpenseCategory::orderBy('name')->get();
-        return view('expenses.create', compact('expense', 'categories'));
+        return view('expenses.edit', compact('expense', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Expense $expense)
     {
+        // dd($expense);
         $validated = $request->validate([
             'date' => 'required|date',
             'expense_category_id' => 'required|exists:expense_categories,id',
@@ -122,8 +121,13 @@ class ExpenseController extends Controller
      */
     public function destroy(string $id)
     {
-        $expense->delete();
-        return back()->with('success', 'Pengeluaran berhasil dihapus');
+        $expense = Expense::find($id);
+        if ($expense) {
+            $expense->delete();
+            return back()->with('success', 'Pengeluaran berhasil dihapus');
+        } else {
+            return back()->with('error', 'Data Tidak Di Temukan!');
+        }
     }
 
     public function report(Request $request)
