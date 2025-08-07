@@ -238,7 +238,7 @@ class PurchaseController extends Controller
                     $purchaseItem = PurchaseItem::find($item['id']);
 
                     // Hitung selisih quantity untuk update stok
-                    $quantityDiff = $item['quantity'] - $purchaseItem->quantity;
+                    // $quantityDiff = $item['quantity'] - $purchaseItem->quantity;
 
                     $purchaseItem->update([
                         'product_id' => $item['product_id'],
@@ -248,7 +248,7 @@ class PurchaseController extends Controller
                     ]);
 
                     $movementItem = MovementItem::where(['reference' => 'purchase_items', 'reference_id' => $purchaseItem->id])->get()->first();
-                    $movementItem->quantity = $item['quantity'];
+                    $movementItem->est_quantity = $item['quantity'];
                     $movementItem->total_price = $totalItem;
                     $movementItem->grand_total = $totalItem;
                     $movementItem->save();
