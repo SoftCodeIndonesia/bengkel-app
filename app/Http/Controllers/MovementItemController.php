@@ -102,7 +102,9 @@ class MovementItemController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $movement_item = MovementItem::find($id);
+        // dd($movement_item->purchase_item->purchase);
+        return view('sparepart.move_in.detail', compact('movement_item'));
     }
 
     /**

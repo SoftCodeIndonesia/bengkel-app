@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MovementItem extends Model
 {
@@ -32,6 +33,21 @@ class MovementItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class)->withTrashed();
+    }
+
+    public function relatedPurchaseItem()
+    {
+        return $this->belongsTo(PurchaseItem::class, 'reference_id')
+            ->withTrashed();
+    }
+
+    public function getPurchaseItemAttribute()
+    {
+        if ($this->reference === 'purchase_items') {
+            return $this->relatedPurchaseItem;
+        }
+
+        return null;
     }
 
     public function creator()

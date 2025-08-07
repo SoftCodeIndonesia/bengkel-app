@@ -37,7 +37,7 @@
                                 class="text-red-500">*</span></label>
                         <input type="number" name="stok" id="frt" value="{{ old('stok', $service->stok) }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('stok') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            required min="0">
+                            required min="0" step="0.01">
                         @error('stok')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
@@ -86,7 +86,7 @@
 
             frtInput.addEventListener('input', function(e) {
                 let value = this.value;
-                priceInput.value = formatRupiah(base_price * value);
+                priceInput.value = formatRupiah(Math.ceil(base_price * value));
                 // this.value = formatRupiah(value);
             });
 
