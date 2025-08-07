@@ -68,7 +68,7 @@ class JobOrderController extends Controller
                 })
                 ->addColumn('status_badge', function ($row) {
                     $statusClass = [
-                        'estimation' => 'bg-yellow-100 text-yellow-800',
+                        'new' => 'bg-yellow-100 text-yellow-800',
                         'draft' => 'bg-gray-100 text-gray-800',
                         'progress' => 'bg-blue-100 text-blue-800',
                         'completed' => 'bg-green-100 text-green-800',
