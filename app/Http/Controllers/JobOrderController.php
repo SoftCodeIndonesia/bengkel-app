@@ -285,6 +285,8 @@ class JobOrderController extends Controller
             'orderItems.product'
         ]);
 
+        // dd($jobOrder->statuses());
+
 
         return view('job-orders.show', compact('jobOrder'));
     }

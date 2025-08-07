@@ -39,6 +39,11 @@ class JobOrder extends Model
         'cancelled'
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function customerVehicle()
     {
         return $this->belongsTo(CustomerVehicle::class);
@@ -122,20 +127,28 @@ class JobOrder extends Model
 
     public function statuses()
     {
+        if ($this->status == 'progress') {
+            $this->statuses = [
+                'completed',
+            ];
+        } else {
+            $this->statuses = [];
+        }
         return $this->statuses;
     }
 
-    public function getDisplayStatusAction()
+    public function getDisplayStatusAction($status)
     {
-        if ($this->status == 'new') {
+        // dd($this->status);
+        if ($status == 'new') {
             return 'New';
-        } else if ($this->status == 'draft') {
+        } else if ($status == 'draft') {
             return 'Draft';
-        } else if ($this->status == 'progress') {
+        } else if ($status == 'progress') {
             return 'Proses';
-        } else if ($this->status == 'completed') {
+        } else if ($status == 'completed') {
             return 'Selesai';
-        } else if ($this->status == 'cancelled') {
+        } else if ($status == 'cancelled') {
             return 'Batalkan';
         }
     }
