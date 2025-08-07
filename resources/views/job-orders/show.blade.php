@@ -110,7 +110,7 @@
                                 ];
                                 $statusText = [
                                     'draft' => 'Draft',
-                                    'new' => 'Estimasi',
+                                    'new' => 'New',
                                     'progress' => 'Progress',
                                     'completed' => 'Selesai',
                                     'cancelled' => 'Batal',
