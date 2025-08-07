@@ -177,6 +177,7 @@
                                         <td class="px-4 py-3 whitespace-nowrap text-sm text-white">
                                             @php
                                                 $statusColors = [
+                                                    'new' => 'bg-yellow-600 text-yellow-300',
                                                     'draft' => 'bg-gray-600 text-gray-300',
                                                     'progress' => 'bg-blue-600 text-blue-100',
                                                     'completed' => 'bg-green-600 text-green-100',
