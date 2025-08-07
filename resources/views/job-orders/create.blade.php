@@ -290,7 +290,7 @@
 
                 <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan <span
+                    <h3 class="section-title dark:text-white mb-2">Deskripsi Kerusakan <span
                             class="text-red-500">*</span></label></h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
@@ -342,6 +342,38 @@
                     </button>
                 </div>
 
+                <!-- Services Section -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
+                        <button type="button" id="add-service"
+                            class="text-blue-500 hover:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Tambah Jasa
+                        </button>
+                    </div>
+
+                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
+                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th class="p-2">Jasa</th>
+                                <th class="p-2">Kategori</th>
+                                <th class="p-2">FRT (Jam)</th>
+                                <th class="p-2">Subtotal</th>
+                                <th class="p-2">Diskon (%)</th>
+                                <th class="p-2">Total</th>
+                                <th class="p-2">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="service-items-container">
+                            <!-- Service rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+
                 <!-- Spareparts Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
@@ -376,37 +408,8 @@
                     </table>
                 </div>
 
-                <!-- Services Section -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
-                        <button type="button" id="add-service"
-                            class="text-blue-500 hover:text-blue-400 flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Tambah Jasa
-                        </button>
-                    </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th class="p-2">Jasa</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="service-items-container">
-                            <!-- Service rows will be added here -->
-                        </tbody>
-                    </table>
-                </div>
+
                 <div class="mb-6">
                     <label for="notes" class="block text-sm font-medium text-gray-300">
                         Catatan

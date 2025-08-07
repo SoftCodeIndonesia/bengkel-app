@@ -332,12 +332,12 @@ class PurchaseController extends Controller
         DB::beginTransaction();
 
         try {
-            // Kembalikan stok
-            foreach ($purchase->items as $item) {
-                $product = Product::find($item->product_id);
-                $product->stok -= $item->quantity;
-                $product->save();
-            }
+            // // Kembalikan stok
+            // foreach ($purchase->items as $item) {
+            //     $product = Product::withTrashed()->find($item->product_id);
+            //     $product->stok -= $item->quantity;
+            //     $product->save();
+            // }
 
             $purchase->items()->delete();
             $purchase->delete();

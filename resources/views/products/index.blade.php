@@ -200,6 +200,47 @@
                 }
             }
 
+            $(document).on('click', '.remove-produk', function() {
+                const salesId = $(this).data('id');
+                const joName = $(this).data('name');
+
+                Swal.fire({
+                    title: 'Hapus Data Sparepart?',
+                    html: `Anda yakin ingin menghapus Sparepart <strong>${joName}</strong>?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form delete secara dinamis
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/products/${salesId}`;
+
+                        // Tambahkan CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = $('meta[name="csrf-token"]').attr('content');
+                        form.appendChild(csrfToken);
+
+                        // Tambahkan method spoofing
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+
             $('#delete-selected').on('click', function() {
                 Swal.fire({
                     title: 'Hapus Sparepart?',

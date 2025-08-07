@@ -281,7 +281,7 @@
 
                 <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Breakdown Kerusakan</h3>
+                    <h3 class="section-title dark:text-white mb-2">Deskripsi Kerusakan</h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
                         @if (old('breakdowns', $jobOrder->breakdowns))
@@ -331,6 +331,97 @@
                         </svg>
                         Tambah Breakdown
                     </button>
+                </div>
+
+                <!-- Services Section -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
+                        <button type="button" id="add-service"
+                            class="text-blue-500 hover:text-blue-400 flex items-center">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Tambah Jasa
+                        </button>
+                    </div>
+
+                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
+                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th class="p-2">Jasa</th>
+                                <th class="p-2">Kategori</th>
+                                <th class="p-2">FRT (Jam)</th>
+                                <th class="p-2 text-right w-44"></th>
+                                <th class="p-2 text-right">Subtotal</th>
+                                <th class="p-2">Diskon (%)</th>
+                                <th class="p-2 text-right">Total</th>
+                                <th class="p-2">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="service-items-container">
+                            @php
+                                $itemIndex = 0;
+                            @endphp
+                            @foreach ($jobOrder->orderItems as $key => $item)
+                                @if ($item->product->tipe == 'jasa')
+                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
+                                        <td class="p-2" width="200px">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
+                                                value="{{ $item->id }}">
+                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
+                                                value="{{ $item->product_id }}">
+                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
+                                                value="{{ $item->product->name }}" disabled
+                                                data-json="{{ $item->product }}"
+                                                class="product-view bg-gray-700 border border-gray-600 text-sm text-white rounded-md py-1 px-2 w-full">
+
+                                        </td>
+                                        <td class="p-2 text-center" width="100px">
+                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
+                                        </td>
+                                        <td class="p-2" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                value="{{ $item->quantity }}" step="0.1"
+                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                        </td>
+                                        <td class="p-2 text-right">
+
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span
+                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 text-right" width="100px">
+                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
+                                                min="0"
+                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
+                                                value="{{ (int) $item->diskon_value }}"
+                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                                placeholder="%">
+                                        </td>
+                                        <td class="p-2 text-right">
+                                            <span class="total-after-diskon text-gray-300">
+                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
+                                        </td>
+                                        <td class="p-2 flex justify-center items-center">
+                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $itemIndex++;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Spareparts Section -->
@@ -427,96 +518,8 @@
                     </table>
                 </div>
 
-                <!-- Services Section -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
-                        <button type="button" id="add-service"
-                            class="text-blue-500 hover:text-blue-400 flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Tambah Jasa
-                        </button>
-                    </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th class="p-2">Jasa</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2 text-right w-44"></th>
-                                <th class="p-2 text-right">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2 text-right">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="service-items-container">
-                            @php
-                                $itemIndex = 0;
-                            @endphp
-                            @foreach ($jobOrder->orderItems as $key => $item)
-                                @if ($item->product->tipe == 'jasa')
-                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
-                                        <td class="p-2" width="200px">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
-                                                value="{{ $item->id }}">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
-                                                value="{{ $item->product_id }}">
-                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
-                                                value="{{ $item->product->name }}" disabled
-                                                data-json="{{ $item->product }}"
-                                                class="product-view bg-gray-700 border border-gray-600 text-sm text-white rounded-md py-1 px-2 w-full">
 
-                                        </td>
-                                        <td class="p-2 text-center" width="100px">
-                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
-                                        </td>
-                                        <td class="p-2" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
-                                                value="{{ $item->quantity }}" step="0.1"
-                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                                        </td>
-                                        <td class="p-2 text-right">
-
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span
-                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 text-right" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
-                                                min="0"
-                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
-                                                value="{{ (int) $item->diskon_value }}"
-                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                                placeholder="%">
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span class="total-after-diskon text-gray-300">
-                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 flex justify-center items-center">
-                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @php
-                                        $itemIndex++;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
                 <div class="mb-6">
                     <label for="notes" class="block text-sm font-medium text-gray-300">
                         Catatan
@@ -773,7 +776,7 @@
                             <span class="kategori text-gray-300">-</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.01"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         

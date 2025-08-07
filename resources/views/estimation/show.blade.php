@@ -101,10 +101,10 @@
 
             <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-white">Breakdown Pemeriksaan</h3>
+                    <h3 class="text-lg font-medium text-white">Deskripsi Kerusakan</h3>
                     <button id="delete-selected-breakdowns"
                         class="hidden bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
-                        Hapus Breakdown Terpilih
+                        Hapus Terpilih
                     </button>
                 </div>
 

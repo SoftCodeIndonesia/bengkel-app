@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -107,7 +107,8 @@
             </div>
         @endif
 
-        <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data" class="p-4">
+        <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data" class="p-4"
+            id="form-purchase">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -613,7 +614,7 @@
             // Set today's date as default
             document.getElementById('purchase_date').valueAsDate = new Date();
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-purchase');
             form.addEventListener('submit', function(e) {
                 // e.preventDefault();
                 document.querySelectorAll('#items-container tr').forEach(row => {

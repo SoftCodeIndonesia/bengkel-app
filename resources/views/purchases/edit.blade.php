@@ -199,7 +199,7 @@
                         <tbody id="items-container">
                             <!-- Item yang sudah ada akan dimuat di sini -->
                             @foreach ($purchase->items as $index => $item)
-                                <tr id="item-{{ $index }}" class="border-b border-gray-700">
+                                <tr id="item-{{ $index }}" class="border-b border-gray-700 item-row">
                                     <input type="hidden" name="items[{{ $index }}][id]"
                                         value="{{ $item->id }}">
                                     <td class="px-4 py-3">
@@ -527,6 +527,8 @@
                 updateGrandTotal();
             });
 
+
+
             // Calculate row total
             const calculateRowTotal = (row) => {
                 console.log(row);
@@ -535,6 +537,13 @@
                 const total = quantity * unitPrice;
                 row.querySelector('.total-price').textContent = formatRupiah(total);
             };
+            document.querySelectorAll('.item-row').forEach(row => {
+                const quantityInput = row.querySelector('.quantity');
+                quantityInput.addEventListener('input', () => {
+                    calculateRowTotal(row);
+                    updateGrandTotal();
+                });
+            })
 
             // Update grand total
             const updateGrandTotal = () => {
