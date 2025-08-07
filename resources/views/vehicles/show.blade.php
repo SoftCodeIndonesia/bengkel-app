@@ -124,7 +124,8 @@
                                                     'progress' => 'bg-blue-600 text-blue-100',
                                                     'completed' => 'bg-green-600 text-green-100',
                                                     'cancelled' => 'bg-red-600 text-red-100',
-                                                    'estimation' => 'bg-yellow-600 text-yellow-100',
+                                                    'estimation' => 'bg-stone-600 text-stone-300',
+                                                    'new' => 'bg-yellow-600 text-yellow-300',
                                                 ];
                                             @endphp
                                             <span
