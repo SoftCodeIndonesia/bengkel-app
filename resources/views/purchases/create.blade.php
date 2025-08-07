@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -374,12 +374,12 @@
 
 
 
-            // Fetch products from API
-            fetch("{{ route('api.product.search') }}")
-                .then(response => response.json())
-                .then(data => {
-                    products = data;
-                });
+            // // Fetch products from API
+            // fetch("{{ route('api.product.search') }}")
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         products = data;
+            //     });
 
             // Add item row
             let itemCount = 0;
@@ -431,7 +431,6 @@
                     valueField: 'id',
                     labelField: 'text',
 
-                    options: products,
                     create: false,
                     load: function(query, callback) {
                         var url = base_url + '/api/products/search?q=' + encodeURIComponent(

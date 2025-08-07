@@ -409,12 +409,12 @@
                 });
             });
 
-            // Fetch products from API
-            fetch("{{ route('api.product.search') }}")
-                .then(response => response.json())
-                .then(data => {
-                    products = data;
-                });
+            // // Fetch products from API
+            // fetch("{{ route('api.product.search') }}")
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         products = data;
+            //     });
 
             // Add item row
             let itemCount = 0;
@@ -458,8 +458,6 @@
                 new TomSelect(`#${rowId} .product-select`, {
                     valueField: 'id',
                     labelField: 'text',
-
-                    options: products,
                     load: function(query, callback) {
                         var url = base_url + '/api/products/search?q=' + encodeURIComponent(
                             query) + '&tipe=barang'
