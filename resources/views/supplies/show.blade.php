@@ -8,7 +8,7 @@
                 <h2 class="text-xl font-semibold text-white">Detail Permintaan Supply</h2>
                 <p class="text-gray-400 text-sm">Job Order: #{{ $supply->jobOrder->unique_id }}</p>
             </div>
-            <div>
+            <div class="flex space-x-2">
                 @php
                     $statusClasses = [
                         'pending' => 'bg-yellow-500 text-white',
@@ -17,10 +17,20 @@
                         'cancelled' => 'bg-red-500 text-white',
                     ];
                 @endphp
-                <span class="px-3 py-1 rounded-full text-sm {{ $statusClasses[$supply->status] }}">
+                <button class="px-3 py-2 rounded-md text-sm {{ $statusClasses[$supply->status] }}">
                     {{ ucfirst($supply->status) }}
-                </span>
+                </button>
+                <a href="{{ route('supplies.index') }}"
+                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Kembali ke Daftar
+                </a>
+
             </div>
+
         </div>
 
         <div class="p-4 space-y-4">

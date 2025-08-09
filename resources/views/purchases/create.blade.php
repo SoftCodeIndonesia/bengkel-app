@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -127,7 +127,6 @@
                 <div>
                     <label for="invoice_number" class="block mb-2 text-sm font-medium text-gray-300">No Invoice </label>
                     <input type="text" id="invoice_number" value="{{ old('invoice_number') }}" name="invoice_number"
-                        required
                         class="bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="INV-001">
                 </div>

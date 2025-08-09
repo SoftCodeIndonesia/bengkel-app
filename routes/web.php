@@ -4,6 +4,7 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\SupplyController;
@@ -22,8 +23,10 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BreakdownController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\MovementItemController;
 use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\CustomerVehicleController;
@@ -250,6 +253,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
         Route::get('/datatable', [EmployeeController::class, 'datatable'])->name('employees.datatable');
     });
+
+    Route::get('attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
+    Route::resource('attendances', AttendanceController::class);
+
+    Route::get('stock-opname/products', [StockOpnameController::class, 'getProducts'])->name('stock-opname.products');
+    Route::resource('stock-opname', StockOpnameController::class);
 });
 // Di routes/web.php
 // Route::get('/api/customers/search', function (Request $request) {

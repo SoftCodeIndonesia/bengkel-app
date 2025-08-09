@@ -28,9 +28,11 @@
 
 <body class="font-sans antialiased" data-url="{{ url('/') }}">
     <div class="flex dark:bg-gray-900">
-        <x-sidebar class="flex-grow-0 w-72 min-h-screen flex-shrink-0 hidden md:block" />
-        <main class="w-full p-3">
-            @yield('content')
+        <x-sidebar />
+        <main class="w-full md:ml-72 min-h-screen flex-1 overflow-x-hidden">
+            <div class="p-3">
+                @yield('content')
+            </div>
         </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"

@@ -1,7 +1,6 @@
-<!-- resources/views/employees/index.blade.php -->
 @extends('layouts.dashboard')
 
-@section('title', 'Data Karyawan')
+@section('title', 'Data Absensi Karyawan')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <style>
@@ -33,15 +32,26 @@
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Karyawan</h2>
-            <a href="{{ route('employees.create') }}"
-                class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                    </path>
-                </svg>
-                Tambah Karyawan
-            </a>
+            <h2 class="text-xl font-semibold text-white">Data Absensi Karyawan</h2>
+            <div class="flex space-x-2">
+                <a href="{{ route('attendances.report') }}"
+                    class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    Laporan
+                </a>
+                <a href="{{ route('attendances.create') }}"
+                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Tambah Absensi
+                </a>
+            </div>
         </div>
 
         <div class="p-4">
@@ -51,15 +61,18 @@
                     <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
-                            <th class="p-3 text-sm font-semibold">Foto</th>
-                            <th class="p-3 text-sm font-semibold">Nama</th>
-                            <th class="p-3 text-sm font-semibold">Email</th>
-                            <th class="p-3 text-sm font-semibold">Posisi</th>
-                            <th class="p-3 text-sm font-semibold">Telepon</th>
+                            <th class="p-3 text-sm font-semibold">Tanggal</th>
+                            <th class="p-3 text-sm font-semibold">Karyawan</th>
+                            <th class="p-3 text-sm font-semibold">Check In</th>
+                            <th class="p-3 text-sm font-semibold">Check Out</th>
+                            <th class="p-3 text-sm font-semibold">Status</th>
+                            <th class="p-3 text-sm font-semibold">Catatan</th>
                             <th class="p-3 text-sm font-semibold text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
+
+
                     </tbody>
                 </table>
             </div>
@@ -72,9 +85,14 @@
     <script>
         $(document).ready(function() {
             $('#datatables-index').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('employees.index') }}",
+                ajax: {
+                    url: "{{ route('attendances.index') }}",
+                    // data: function(d) {
+                    // d.start_date = $('input[name="start_date"]').val();
+                    // d.end_date = $('input[name="end_date"]').val();
+                    // d.status = $('#status').val();
+                    // }
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -82,33 +100,41 @@
                         searchable: false
                     },
                     {
-                        data: 'photo',
-                        name: 'photo',
+                        data: 'format_date',
+                        name: 'format_date',
+                        orderable: true,
+                    },
+                    {
+                        data: 'employee_name',
+                        name: 'employee_name',
                         orderable: false,
-                        searchable: false
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'check_in',
+                        name: 'check_in',
+                        orderable: true,
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'check_out',
+                        name: 'check_out',
+                        orderable: true,
                     },
                     {
-                        data: 'position',
-                        name: 'position'
+                        data: 'status_badge',
+                        name: 'status',
+                        orderable: false
                     },
                     {
-                        data: 'phone',
-                        name: 'phone'
+                        data: 'notes',
+                        name: 'notes',
+                        orderable: false
                     },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false,
                         searchable: false
-                    }
+                    },
                 ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
@@ -145,47 +171,6 @@
                             $(this).addClass('opacity-50 cursor-not-allowed');
                         }
                     });
-                }
-            });
-        });
-
-        $(document).on('click', '.delete-karyawan', function() {
-            const employeeId = $(this).data('id');
-            const joName = $(this).data('name');
-
-            Swal.fire({
-                title: 'Hapus Karyawan?',
-                html: `Anda yakin ingin menghapus Data <strong>${joName}</strong>?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Buat form delete secara dinamis
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = `/employees/${employeeId}`;
-
-                    // Tambahkan CSRF token
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = $('meta[name="csrf-token"]').attr('content');
-                    form.appendChild(csrfToken);
-
-                    // Tambahkan method spoofing
-                    const methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'DELETE';
-                    form.appendChild(methodInput);
-
-                    document.body.appendChild(form);
-                    form.submit();
                 }
             });
         });

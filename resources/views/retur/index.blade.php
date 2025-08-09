@@ -295,6 +295,47 @@
                     }
                 });
             });
+
+            $(document).on('click', '.delete-retur', function() {
+                const id = $(this).data('id');
+
+
+                Swal.fire({
+                    title: 'Hapus Data Retur?',
+                    html: `Anda yakin ingin menghapus Retur?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form delete secara dinamis
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/returns/${id}`;
+
+                        // Tambahkan CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = $('meta[name="csrf-token"]').attr('content');
+                        form.appendChild(csrfToken);
+
+                        // Tambahkan method spoofing
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 @endpush
