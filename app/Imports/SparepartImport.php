@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -31,7 +32,7 @@ class SparepartImport implements ToCollection, WithStartRow
                 foreach ($row as $key => $part) {
                     if ($part !== null) {
                         $product = [
-                            'name' => strtolower($part),
+                            'name' => $part,
                             'tipe' => $categories[$key],
                             'buying_price' => 0,
                             'part_number' => null,
@@ -41,7 +42,9 @@ class SparepartImport implements ToCollection, WithStartRow
                             'stok' => 0,
                         ];
 
-                        $exist = Product::where('name', strtolower($part))->get()->first();
+                        $slug = Str::slug($part);
+
+                        $exist = Product::where('slug', $slug)->get()->first();
 
                         if ($exist == null) {
                             Product::create($product);
