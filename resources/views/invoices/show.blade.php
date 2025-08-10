@@ -2,6 +2,7 @@
 
 @section('title', 'Detail Invoice')
 @section('content')
+
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <div>
@@ -51,7 +52,8 @@
                         </div>
                         <div>
                             <span class="text-gray-400">Referensi:</span>
-                            <span class="text-white ml-2">{{ $invoice->reference->unique_id }} ({{ $invoice->tipe }})</span>
+                            <span class="text-white ml-2">{{ $invoice->reference->unique_id ?? 'Tidak ada referensi' }}
+                                ({{ $invoice->tipe }})</span>
                         </div>
                     </div>
                 </div>
@@ -96,7 +98,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-600">
                             @if ($invoice->tipe === 'sales')
-                                @foreach ($invoice->reference->items as $item)
+                                @foreach ($invoice->reference->items ?? [] as $item)
                                     <tr>
                                         <td class="py-3 px-4 text-white">{{ $item->product->name }}</td>
                                         <td class="py-3 px-4 text-right text-white">Rp
@@ -130,7 +132,8 @@
                 <div class="bg-gray-700 p-4 rounded-lg">
                     <div class="flex justify-between py-2">
                         <span class="text-gray-300">Subtotal:</span>
-                        <span class="text-white font-medium">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
+                        <span class="text-white font-medium">Rp
+                            {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
                     </div>
                     @if ($invoice->diskon_unit)
                         <div class="flex justify-between py-2">

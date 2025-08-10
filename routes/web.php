@@ -86,6 +86,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/follow-ups', FollowUpController::class);
 
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
+
     // Products
     Route::resource('products', ProductController::class);
 

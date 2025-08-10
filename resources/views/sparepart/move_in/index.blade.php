@@ -23,6 +23,10 @@
             background-color: transparent !important;
             /* Background dark dan border */
         }
+
+        .dataTables_info {
+            color: #f3f4f6 !important;
+        }
     </style>
 @endpush
 
@@ -30,12 +34,44 @@
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Barang Masuk</h2>
+            <div class="flex items-center space-x-4">
+                <form method="GET" class="flex items-center space-x-2" id="form-filter">
+                    <input type="date" name="start_date"
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
+                    <span class="text-gray-400">s/d</span>
+                    <input type="date" name="end_date"
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
+                    @php
+                        $statusText = [
+                            'draft' => 'Draft',
+                            'pending' => 'Pending',
+                            'done' => 'Selesai',
+                            'cancelled' => 'Batal',
+                        ];
+                    @endphp
+                    <select name="status" id="status"
+                        class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Semua Status</option>
+                        @foreach ($statusText as $key => $item)
+                            <option value="{{ $key }}">{{ $item }}</option>
+                        @endforeach
+                    </select>
+                    <button type="button" id="reset-filter"
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">
+                        Reset
+                    </button>
+                    <button type="submit" class="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                        Filter
+                    </button>
+                </form>
+
+            </div>
         </div>
 
         <div class="p-4">
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead class="uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3">No</th>
                             <th class="p-3">Nama Produk</th>
@@ -62,7 +98,7 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#datatables-index').DataTable({
+            var table = $('#datatables-index').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 10, // Default 10 data/halaman
@@ -74,6 +110,9 @@
                     url: "{{ route('movement-items.index') }}",
                     data: function(d) {
                         d.move = 'in';
+                        d.start_date = $('input[name="start_date"]').val();
+                        d.end_date = $('input[name="end_date"]').val();
+                        d.status = $('#status').val();
                     }
                 },
                 columns: [{
@@ -179,6 +218,18 @@
                         }
                     });
                 }
+            });
+            $('#form-filter').submit(function(e) {
+                e.preventDefault();
+                table.draw();
+            });
+
+
+            $('#reset-filter').on('click', function() {
+                $('input[name="start_date"]').val('');
+                $('input[name="end_date"]').val('');
+                $('#status').val('');
+                table.draw();
             });
 
             $(document).on('click', '.btn-delete', function() {

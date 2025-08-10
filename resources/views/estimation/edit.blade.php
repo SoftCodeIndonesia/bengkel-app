@@ -80,7 +80,7 @@
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Edit Job Order</h2>
-            <a href="{{ route('job-orders.index') }}"
+            <a href="{{ route('estimation.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -129,7 +129,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Customer Details -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Pelanggan</h4>
+                                <h4 class="section-title text-white mb-2">Detail Pelanggan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Nama:</p>
@@ -156,7 +156,7 @@
 
                             <!-- Vehicle Details -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Kendaraan</h4>
+                                <h4 class="section-title text-white mb-2">Detail Kendaraan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Merk:</p>
@@ -266,7 +266,7 @@
                                 class="text-red-500">*</span></label>
                         <input type="number" name="km" id="km" value="{{ old('km', $jobOrder->km) }}"
                             placeholder="Contoh: 100000" required min="0"
-                            class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
 
                     <div>
@@ -275,13 +275,13 @@
                         <input type="datetime-local"
                             value="{{ old('service_at', optional($jobOrder->service_at)->format('Y-m-d\TH:i')) }}"
                             name="service_at" id="service_at" required
-                            class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                 </div>
 
                 <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Deskripsi Kerusakan</h3>
+                    <h3 class="section-title text-white mb-2">Deskripsi Kerusakan</h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
                         @if (old('breakdowns', $jobOrder->breakdowns))
@@ -290,7 +290,7 @@
                                     <div class="col-span-11 flex-1">
                                         <input type="text" name="breakdowns[{{ $breakIndex }}][name]"
                                             value="{{ $breakdown['name'] }}" placeholder="Masukan Kerusakan"
-                                            class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            class="w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                         <input type="hidden" name="breakdowns[{{ $breakIndex }}][id]"
                                             value="{{ $breakdown['id'] ?? '' }}">
                                     </div>
@@ -310,7 +310,7 @@
                             <div class="breakdown-row flex gap-4 mb-3">
                                 <div class="col-span-11 flex-1">
                                     <input type="text" name="breakdowns[0][name]" placeholder="Masukan Kerusakan"
-                                        class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        class="w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div class="col-span-1 flex items-center">
                                     <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
@@ -336,7 +336,7 @@
                 <!-- Services Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
+                        <h3 class="section-title text-white">Jasa (Service)</h3>
                         <button type="button" id="add-service"
                             class="text-blue-500 hover:text-blue-400 flex items-center">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -348,7 +348,7 @@
                     </div>
 
                     <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="p-2">Jasa</th>
                                 <th class="p-2">Kategori</th>
@@ -427,7 +427,7 @@
                 <!-- Spareparts Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Sparepart (Barang)</h3>
+                        <h3 class="section-title text-white">Sparepart (Barang)</h3>
                         <button type="button" id="add-sparepart"
                             class="text-blue-500 hover:text-blue-400 flex items-center">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +440,7 @@
 
                     <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
                         id="sparepart-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="p-2">Produk</th>
                                 <th class="p-2">Kategori</th>
@@ -946,7 +946,7 @@
                 newBreakdown.innerHTML = `
                     <div class="col-span-11 flex-1">
                         <input type="text" name="breakdowns[${breakdownCounter}][name]" placeholder="Nama pemeriksaan"
-                            class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                     <div class="col-span-1 flex items-center">
                         <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">

@@ -90,8 +90,7 @@
         </div>
 
         @if ($errors->any())
-            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                role="alert">
+            <div class="p-4 mb-4 text-sm rounded-lg bg-gray-800 text-red-400" role="alert">
                 @foreach ($errors->all() as $error)
                     <span class="font-medium">{{ $error }}</span>
                 @endforeach
@@ -104,9 +103,9 @@
 
 
                 <div class="mb-6">
-                    <label for="package" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipe</label>
+                    <label for="package" class="block mb-2 text-sm font-medium text-white">Tipe</label>
                     <select id="package" name="package"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        class=" border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
                         <option value="custom" selected>Normal</option>
                         @foreach ($packages as $package)
                             <option value="{{ $package->id }}" {{ $package->id == old('package') ? 'selected' : '' }}>
@@ -143,7 +142,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Customer Details -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Pelanggan</h4>
+                                <h4 class="section-title text-white mb-2">Detail Pelanggan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Nama:</p>
@@ -166,7 +165,7 @@
 
                             <!-- Vehicle Details -->
                             <div>
-                                <h4 class="section-title dark:text-white mb-2">Detail Kendaraan</h4>
+                                <h4 class="section-title text-white mb-2">Detail Kendaraan</h4>
                                 <div class="space-y-3">
                                     <div>
                                         <p class="text-sm text-gray-300">Merk:</p>
@@ -276,7 +275,7 @@
                                 class="text-red-500">*</span></label>
                         <input type="number" name="km" id="km" value="{{ old('km') }}"
                             placeholder="Contoh: 100000" required min="0"
-                            class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
 
                     <div>
@@ -284,13 +283,13 @@
                                 class="text-red-500">*</span></label>
                         <input type="datetime-local" value="{{ old('service_at') }}" name="service_at" id="service_at"
                             required
-                            class="mt-1 block w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                 </div>
 
                 <!-- Breakdown Section -->
                 <div class="mb-6">
-                    <h3 class="section-title dark:text-white mb-2">Deskripsi Kerusakan <span
+                    <h3 class="section-title text-white mb-2">Deskripsi Kerusakan <span
                             class="text-red-500">*</span></label></h3>
                     <div id="breakdowns-container">
                         @php $breakIndex = 0; @endphp
@@ -319,7 +318,7 @@
                                 <div class="col-span-11 flex-1">
                                     <input type="text" name="breakdowns[0][name]" placeholder="Masukan Kerusakan"
                                         required
-                                        class="w-full breakdown-kerusakan bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        class="w-full breakdown-kerusakan bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div class="col-span-1 flex items-center">
                                     <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
@@ -345,7 +344,7 @@
                 <!-- Services Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Jasa (Service)</h3>
+                        <h3 class="section-title text-white">Jasa (Service)</h3>
                         <button type="button" id="add-service"
                             class="text-blue-500 hover:text-blue-400 flex items-center">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +356,7 @@
                     </div>
 
                     <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="p-2">Jasa</th>
                                 <th class="p-2">Kategori</th>
@@ -377,7 +376,7 @@
                 <!-- Spareparts Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="section-title dark:text-white">Sparepart (Barang)</h3>
+                        <h3 class="section-title text-white">Sparepart (Barang)</h3>
                         <button type="button" id="add-sparepart"
                             class="text-blue-500 hover:text-blue-400 flex items-center">
                             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -390,7 +389,7 @@
 
                     <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
                         id="sparepart-table">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="p-2">Produk</th>
                                 <th class="p-2">Kategori</th>
@@ -1014,7 +1013,7 @@
                 newBreakdown.innerHTML = `
                     <div class="col-span-11 flex-1">
                         <input type="text" name="breakdowns[${breakdownCounter}][name]" placeholder="Nama pemeriksaan"
-                            class="w-full bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                     <div class="col-span-1 flex items-center">
                         <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">

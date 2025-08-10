@@ -206,7 +206,7 @@
         </div>
     </div>
 
-    <div id="followUpModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
+    <div id="followUpModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center">
         <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-md">
             <div class="p-4 border-b border-gray-600 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-white">Follow Up Pelanggan</h3>

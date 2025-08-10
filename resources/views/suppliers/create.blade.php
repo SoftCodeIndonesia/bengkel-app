@@ -15,7 +15,7 @@
                     <div>
                         <label for="name" class="block text-gray-300 mb-2">Nama Supplier</label>
                         <input type="text" name="name" id="name" required
-                            class="w-full dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-gray-700 text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             value="{{ old('name') }}" placeholder="Masukan nama supplier">
                         @error('name')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -25,7 +25,7 @@
                     <div>
                         <label for="phone" class="block text-gray-300 mb-2">Telepon</label>
                         <input type="text" name="phone" id="phone" required
-                            class="w-full dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full bg-gray-700 text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             value="{{ old('phone') }}" placeholder="Masukan Nomor Telepon supplier">
                         @error('phone')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -36,7 +36,7 @@
                 <div class="mb-6">
                     <label for="email" class="block text-gray-300 mb-2">Email</label>
                     <input type="email" name="email" id="email"
-                        class="w-full dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full bg-gray-700 text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         value="{{ old('email') }}" placeholder="Masukan email supplier">
                     @error('email')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -46,7 +46,7 @@
                 <div class="mb-6">
                     <label for="address" class="block text-gray-300 mb-2">Alamat</label>
                     <textarea name="address" id="address" rows="3" required
-                        class="w-full dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('address') }}</textarea>
+                        class="w-full bg-gray-700 text-gray-400 dark:placeholder-gray-400  border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('address') }}</textarea>
                     @error('address')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror

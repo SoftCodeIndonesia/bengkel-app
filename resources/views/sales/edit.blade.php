@@ -121,7 +121,7 @@
                     </label>
                     <input type="datetime-local" name="sales_date" id="sales_date" required
                         value="{{ old('sales_date', $sale->sales_date->format('Y-m-d\TH:i')) }}"
-                        class="mt-1 block w-full dark:placeholder-gray-400 dark:text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        class="mt-1 block w-full placeholder-gray-400 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
 
                 <div class="mb-6">

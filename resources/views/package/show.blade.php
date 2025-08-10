@@ -72,7 +72,7 @@
                 @if ($servicePackage->items->where('product.tipe', '!=', 'jasa')->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm">
-                            <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
                                 <tr>
                                     <th class="px-4 py-3">Nama Sparepart</th>
                                     <th class="px-4 py-3 text-center">QTY</th>
@@ -123,7 +123,7 @@
                 @if ($servicePackage->items->where('product.tipe', 'jasa')->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm">
-                            <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
                                 <tr>
                                     <th class="px-4 py-3">Nama Jasa</th>
                                     <th class="px-4 py-3 text-center">FRT</th>

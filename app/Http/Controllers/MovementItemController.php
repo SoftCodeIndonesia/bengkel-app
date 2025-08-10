@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\MovementItem;
 use Illuminate\Http\Request;
@@ -18,6 +19,10 @@ class MovementItemController extends Controller
         if ($request->ajax()) {
             $query = MovementItem::with('creator');
 
+            $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+            $endDate = $request->input('end_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+            $status = $request->status;
+
 
             if ($request->has('move')) {
                 $query->where('move', $request->move);
@@ -28,6 +33,22 @@ class MovementItemController extends Controller
             }
             if ($request->has('name')) {
                 $query->where('name', $request->name);
+            }
+
+            if ($startDate) {
+                $query->when($startDate, function ($query) use ($startDate) {
+                    $query->whereDate('created_at', '>=', $startDate);
+                });
+            }
+            if ($endDate) {
+                $query->when($endDate, function ($query) use ($endDate) {
+                    $query->whereDate('created_at', '<=', $endDate);
+                });
+            }
+            if ($status) {
+                $query->when($status, function ($query) use ($status) {
+                    $query->where('status', $status);
+                });
             }
 
             $query->orderBy('created_at', 'desc');

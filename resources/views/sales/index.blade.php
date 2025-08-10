@@ -6,16 +6,26 @@
     <style>
         .dataTables_wrapper .dataTables_filter input {
             background-color: #374151;
+            /* bg-gray-700 */
             border-color: #4b5563;
+            /* border-gray-600 */
             color: #f3f4f6;
+            /* text-gray-300 */
         }
+
 
         #datatables-index {
             border-bottom: 1px solid #4b5563 !important;
         }
 
+        /* Tambahan styling untuk dark mode */
         #datatables-index tbody tr {
             background-color: transparent !important;
+            /* Background dark dan border */
+        }
+
+        .dataTables_info {
+            color: #f3f4f6 !important;
         }
     </style>
 @endpush
@@ -38,7 +48,7 @@
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
                     id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead class="uppercase  bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
                             <th class="p-3 text-sm font-semibold">Kode</th>

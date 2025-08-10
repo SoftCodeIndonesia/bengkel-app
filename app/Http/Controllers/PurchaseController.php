@@ -11,6 +11,7 @@ use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,7 +20,29 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $purchases = Purchase::with(['supplier'])->latest();
+            $purchases = Purchase::with(['supplier']);
+
+            $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+            $endDate = $request->input('end_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+            $status = $request->status;
+
+            if ($startDate) {
+                $purchases->when($startDate, function ($query) use ($startDate) {
+                    $query->whereDate('created_at', '>=', $startDate);
+                });
+            }
+            if ($endDate) {
+                $purchases->when($endDate, function ($query) use ($endDate) {
+                    $query->whereDate('created_at', '<=', $endDate);
+                });
+            }
+            if ($status) {
+                $purchases->when($status, function ($query) use ($status) {
+                    $query->where('status', $status);
+                });
+            }
+
+            $purchases->latest();
 
             return datatables()->of($purchases)
                 ->addIndexColumn()
@@ -44,16 +67,15 @@ class PurchaseController extends Controller
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
                         </button>
-                        <a href="' . route('purchases.print', $purchase->id) . '" target="_blank" class="text-green-500 hover:text-green-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                            </svg>
-                        </a>
+                        
                     </div>
                 ';
                 })
                 ->editColumn('purchase_date', function ($purchase) {
                     return Carbon::parse($purchase->date)->translatedFormat('d F Y');
+                })
+                ->editColumn('status_tag', function ($row) {
+                    return '<span class="px-2 py-1 text-xs font-semibold rounded-full ' . $row->statusColor() . '">' . ucfirst($row->statusText()) . '</span>';
                 })
                 ->editColumn('total', function ($purchase) {
                     return 'Rp ' . number_format($purchase->total, 0, ',', '.');
@@ -61,7 +83,7 @@ class PurchaseController extends Controller
                 ->addColumn('supplier_name', function ($purchase) {
                     return $purchase->supplier->name ?? '-';
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'status_tag'])
                 ->toJson();
         }
         return view('purchases.index');

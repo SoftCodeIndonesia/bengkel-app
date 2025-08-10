@@ -3,7 +3,6 @@
 @section('title', 'Data Invoice')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <style>
         .dataTables_wrapper .dataTables_filter input {
             background-color: #374151;
@@ -23,6 +22,10 @@
         #datatables-index tbody tr {
             background-color: transparent !important;
             /* Background dark dan border */
+        }
+
+        .dataTables_info {
+            color: #f3f4f6 !important;
         }
     </style>
 @endpush
@@ -99,7 +102,7 @@
                 <div class="relative overflow-x-auto">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         id="datatables-index">
-                        <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="p-3 text-sm font-semibold">No</th>
                                 <th class="p-3 text-sm font-semibold">No. Invoice</th>

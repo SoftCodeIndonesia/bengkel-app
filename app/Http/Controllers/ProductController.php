@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Imports\SparepartImport;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
@@ -208,5 +210,16 @@ class ProductController extends Controller
             'success' => true,
             'product' => $product
         ]);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new SparepartImport, $request->file('file'));
+
+        return redirect()->route('products.index')->with('success', 'Data sparepart berhasil diimport!');
     }
 }

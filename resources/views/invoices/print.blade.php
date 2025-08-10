@@ -1,67 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-app-layout>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice {{ $invoice->unique_id }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
 
-        body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="bg-white text-gray-800 p-8">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto" style="width: 100%">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between">
+            <p class="text-2xl font-bold">Invoice<span class=""> #{{ $invoice->unique_id }}</span></p>
+            <p class="text-gray-600">{{ $invoice->created_at->format('d/m/Y') }}</p>
+        </div>
         <div class="flex justify-between items-start mb-8">
             <div>
-                <h1 class="text-2xl font-bold">INVOICE</h1>
-                <p class="text-gray-600">Bengkel Mobil Maju Jaya</p>
+
+                <p class="text-gray-600">Bengkel 88AutoCare</p>
                 <p class="text-gray-600">Jl. Raya No. 123, Jakarta</p>
                 <p class="text-gray-600">Telp: 021-12345678</p>
             </div>
             <div class="text-right">
-                <p class="text-lg font-semibold">No. {{ $invoice->unique_id }}</p>
-                <p class="text-gray-600">Tanggal: {{ $invoice->created_at->format('d/m/Y') }}</p>
-                <p class="text-gray-600">Status:
-                    <span
-                        class="px-2 py-1 rounded-full text-xs {{ $invoice->status === 'paid' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-white' }}">
-                        {{ $invoice->status }}
-                    </span>
-                </p>
+
+                <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" alt="logo" width="200px">
             </div>
         </div>
 
+        <!-- Customer Info Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="border border-gray-200 p-4 rounded">
+            <div class=" rounded">
                 <h2 class="text-lg font-semibold mb-2">Kepada:</h2>
                 <p class="font-medium">{{ $invoice->customer_name }}</p>
                 <p class="text-gray-600">{{ $invoice->customer_address }}</p>
             </div>
 
-            <div class="border border-gray-200 p-4 rounded">
-                <h2 class="text-lg font-semibold mb-2">Detail:</h2>
-                <p class="text-gray-600">Tipe: {{ ucfirst($invoice->tipe) }}</p>
-                <p class="text-gray-600">Referensi: {{ $invoice->reference_id }}</p>
-            </div>
         </div>
 
+        <!-- Transaction Details Table -->
         <div class="mb-8">
             <h2 class="text-lg font-semibold mb-4">Detail Transaksi</h2>
-            <table class="w-full border-collapse">
+            <table class="w-full border-collapse" style="width: 100%; border-collapse: collapse;">
                 <thead>
-                    <tr class="bg-gray-100">
-                        <th class="py-2 px-4 border border-gray-300 text-left">Deskripsi</th>
-                        <th class="py-2 px-4 border border-gray-300 text-right">Harga Satuan</th>
-                        <th class="py-2 px-4 border border-gray-300 text-right">Qty</th>
-                        <th class="py-2 px-4 border border-gray-300 text-right">Total</th>
+                    <tr class="bg-gray-100" style="background-color: #f3f4f6;">
+                        <th class="py-2 px-4 border border-gray-300 text-left"
+                            style="width: 200px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: left;">
+                            Deskripsi</th>
+                        <th class="py-2 px-4 border border-gray-300 text-right"
+                            style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Harga Satan
+                        </th>
+                        <th class="py-2 px-4 border border-gray-300 text-right"
+                            style="width: 100px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Qty
+                        </th>
+                        <th class="py-2 px-4 border border-gray-300 text-right"
+                            style="width: 150px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Total
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,24 +56,36 @@
                     @endphp
 
                     @if ($invoice->tipe === 'sales')
-                        @foreach ($reference->items as $item)
+                        @foreach ($reference->items ?? [] as $item)
                             <tr>
-                                <td class="py-2 px-4 border border-gray-300">{{ $item->product->name }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">Rp
+                                <td class="py-2 px-4 border border-gray-300"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                </td>
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
                                     {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">{{ $item->quantity }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">Rp
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                    {{ $item->quantity }}</td>
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
                                     {{ number_format($item->total_price, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     @else
-                        @foreach ($reference->items as $item)
+                        @foreach ($reference->items ?? [] as $item)
                             <tr>
-                                <td class="py-2 px-4 border border-gray-300">{{ $item->product->name }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">Rp
+                                <td class="py-2 px-4 border border-gray-300"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                </td>
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
                                     {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">{{ $item->quantity }}</td>
-                                <td class="py-2 px-4 border border-gray-300 text-right">Rp
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                    {{ $item->quantity }}</td>
+                                <td class="py-2 px-4 border border-gray-300 text-right"
+                                    style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
                                     {{ number_format($item->total_price, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
@@ -96,9 +94,10 @@
             </table>
         </div>
 
+        <!-- Total Section -->
         <div class="flex justify-end">
             <div class="w-full md:w-1/3">
-                <div class="border-t-2 border-gray-300 pt-4">
+                <div class="border-t-2 border-gray-300 pt-4" style="border-top: 2px solid #d1d5db; padding-top: 16px;">
                     <div class="flex justify-between mb-2">
                         <span class="font-medium">Subtotal:</span>
                         <span>Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
@@ -117,7 +116,9 @@
             </div>
         </div>
 
-        <div class="mt-16 pt-8 border-t border-gray-300">
+        <!-- Footer Section -->
+        <div class="mt-16 pt-8 border-t border-gray-300"
+            style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #d1d5db;">
             <div class="text-center">
                 <p class="mb-4">Terima kasih atas kepercayaan Anda</p>
                 <div class="mt-12">
@@ -127,6 +128,9 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
+    @push('scripts')
+        <script>
+            window.print();
+        </script>
+    @endpush
+</x-app-layout>

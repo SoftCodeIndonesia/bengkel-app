@@ -287,7 +287,10 @@ class InvoiceController extends Controller
 
     public function print(Invoice $invoice)
     {
-        $pdf = Pdf::loadView('invoices.print', compact('invoice'));
-        return $pdf->stream('invoice-' . $invoice->unique_id . '.pdf');
+        $invoice->load(['reference']);
+
+        // $pdf = Pdf::loadView('invoices.print', compact('invoice'));
+        // return $pdf->stream('invoice-' . $invoice->unique_id . '.pdf');
+        return view('invoices.print', compact('invoice'));
     }
 }

@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -127,7 +127,7 @@
                 <div>
                     <label for="invoice_number" class="block mb-2 text-sm font-medium text-gray-300">No Invoice </label>
                     <input type="text" id="invoice_number" value="{{ old('invoice_number') }}" name="invoice_number"
-                        class="bg-gray-700 border border-gray-600 dark:placeholder-gray-400 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        class="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="INV-001">
                 </div>
 
@@ -140,10 +140,10 @@
                 </div>
 
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="user_avatar">Upload
+                    <label class="block mb-2 text-sm font-medium text-white" for="user_avatar">Upload
                         file Pendukung</label>
                     <input
-                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        class="block w-full text-sm  border  rounded-lg cursor-pointer  text-gray-400 focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
                         aria-describedby="source_document" name="source_document" id="source_document" type="file">
                     <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="source_document">Upload file bukti
                         pembelian atau dokumen lainya</div>

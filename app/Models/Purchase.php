@@ -24,6 +24,17 @@ class Purchase extends Model
         'original_filename',
     ];
 
+    protected $statusColors = [
+        'draft' => 'bg-blue-600 text-white',
+        'unpaid' => 'bg-grey-600 text-white',
+        'paid' => 'bg-green-600 text-white',
+    ];
+    protected $statusText = [
+        'draft' => 'Draft',
+        'unpaid' => 'Belum Lunas',
+        'paid' => 'Lunas',
+    ];
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
@@ -32,5 +43,16 @@ class Purchase extends Model
     public function items()
     {
         return $this->hasMany(PurchaseItem::class);
+    }
+
+    public function statusText()
+    {
+        return $this->statusText[$this->status];
+    }
+    public function statusColor()
+    {
+
+
+        return $this->statusColors[$this->status];
     }
 }
