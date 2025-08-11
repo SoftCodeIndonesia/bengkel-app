@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Imports\SparepartImport;
 use App\Http\Controllers\Controller;
+use App\Imports\SparepartAndServiceImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -218,7 +219,7 @@ class ProductController extends Controller
             'file' => 'required|mimes:xlsx,xls'
         ]);
 
-        Excel::import(new SparepartImport, $request->file('file'));
+        Excel::import(new SparepartAndServiceImport, $request->file('file'));
 
         return redirect()->route('products.index')->with('success', 'Data sparepart berhasil diimport!');
     }

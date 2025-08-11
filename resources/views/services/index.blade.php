@@ -13,6 +13,7 @@
             /* text-gray-300 */
         }
 
+
         #datatables-index {
             border-bottom: 1px solid #4b5563 !important;
         }
@@ -22,20 +23,34 @@
             background-color: transparent !important;
             /* Background dark dan border */
         }
+
+        .dataTables_info {
+            color: #f3f4f6 !important;
+        }
     </style>
 @endpush
 @section('content')
     <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Daftar Jasa</h2>
-            <a href="{{ route('services.create') }}"
-                class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                    </path>
-                </svg>
-                Tambah Jasa
-            </a>
+            <div class="flex justify-between gap-3">
+                <a href="{{ route('services.create') }}"
+                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                        </path>
+                    </svg>
+                    Tambah Jasa
+                </a>
+                <button onclick="document.getElementById('importModal').classList.remove('hidden')"
+                    class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12h16"></path>
+                    </svg>
+                    Import Sparepart/Jasa
+                </button>
+            </div>
         </div>
 
         <div class="p-4">
@@ -45,7 +60,7 @@
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
                     id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead class="uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3">No</th>
                             <th class="p-3">Nama Jasa</th>
@@ -59,6 +74,30 @@
                 </table>
             </div>
 
+        </div>
+
+    </div>
+
+    <div id="importModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 class="text-xl font-semibold text-white mb-4">Import Data Sparepart</h2>
+
+            <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="file" accept=".xlsx,.xls"
+                    class="block w-full text-gray-300 border border-gray-600 rounded p-2 bg-gray-700 focus:outline-none focus:border-blue-500 mb-4"
+                    required>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('importModal').classList.add('hidden')"
+                        class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
+                        Batal
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        Import
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

@@ -49,19 +49,11 @@ class SparepartImport implements ToCollection, WithStartRow
                         if ($exist == null) {
                             Product::create($product);
                         }
-
-                        // dd($product);
                     }
                 }
             }
             $index++;
-
-            // User::create([
-            //     'name' => $row[0],
-            // ]);
         }
-        // dump($categories);
-        // die;
     }
 
     public function startRow(): int
