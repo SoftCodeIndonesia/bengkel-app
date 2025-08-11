@@ -47,15 +47,15 @@
 
                     {{-- Quantity Awal --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Quantity Real</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Quantity Diterima</label>
                         <input type="number"
                             class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
-                            value="{{ old('quantity', 0) }}" name="quantity">
+                            value="{{ old('quantity', 0) }}" max="{{ $movementItem->est_quantity }}" name="quantity">
                     </div>
 
                     {{-- Estimasi Quantity --}}
                     <div>
-                        <label for="est_quantity" class="block text-sm font-medium text-gray-300 mb-2">Estimasi Quantity
+                        <label for="est_quantity" class="block text-sm font-medium text-gray-300 mb-2">Quantity Beli
                             <span class="text-red-500">*</span></label>
                         <input type="number" name="est_quantity" id="est_quantity"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('est_quantity') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
@@ -65,26 +65,7 @@
                         @enderror
                     </div>
 
-                    {{-- Status --}}
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-300 mb-2">Status <span
-                                class="text-red-500">*</span></label>
-                        <select name="status" id="status"
-                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('status') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
-                            required>
-                            <option value="draft" {{ old('status', $movementItem->status) == 'draft' ? 'selected' : '' }}>
-                                Draft</option>
-                            <option value="pending"
-                                {{ old('status', $movementItem->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="done" {{ old('status', $movementItem->status) == 'done' ? 'selected' : '' }}>
-                                Done</option>
-                            <option value="cancel"
-                                {{ old('status', $movementItem->status) == 'cancel' ? 'selected' : '' }}>Cancel</option>
-                        </select>
-                        @error('status')
-                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
+
 
                     {{-- Catatan --}}
                     <div class="md:col-span-2">
@@ -115,6 +96,14 @@
             const estQuantityInput = document.getElementById('est_quantity');
             const statusSelect = document.getElementById('status');
             const form = document.querySelector('form');
+
+            $('input[name="quantity"]').keyup(function(e) {
+                const quantity = $(this).val();
+
+                if (parseInt(quantity) > estQuantityInput.value) {
+                    $(this).val(estQuantityInput.value);
+                }
+            });
 
             form.addEventListener('submit', function(e) {
                 if (statusSelect.value === 'done' && estQuantityInput.value <= 0) {

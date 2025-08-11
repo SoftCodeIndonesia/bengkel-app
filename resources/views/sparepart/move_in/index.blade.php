@@ -187,7 +187,7 @@
 
                     // Styling untuk length menu
                     $('.dataTables_length select').addClass(
-                        'bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                        'bg-gray-700 border border-gray-600 text-green-600 rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
                     );
                     $('.dataTables_processing')
                         .css({

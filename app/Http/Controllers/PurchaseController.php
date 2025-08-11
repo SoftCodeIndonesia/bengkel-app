@@ -181,7 +181,7 @@ class PurchaseController extends Controller
                     'discount' => $item['discount'] ?? 0,
                     'grand_total' => $purchaseItem->total_price,
                     'created_by' => Auth::id(),
-                    'status' => 'draft',
+                    'status' => 'pending',
                     'est_quantity' => $item['quantity'],
                     'note' => null,
                 ]);

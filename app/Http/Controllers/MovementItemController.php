@@ -77,9 +77,14 @@ class MovementItemController extends Controller
                     $btn .= '<a href="' . route('movement-items.show', $row->id) . '" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">';
                     $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>';
                     $btn .= '</a>';
-                    $btn .= '<a href="' . route('movement-items.edit', $row->id) . '" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">';
-                    $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>';
-                    $btn .= '</a>';
+
+                    if ($row->status == 'pending') {
+
+                        $btn .= '<a href="' . route('movement-items.edit', $row->id) . '" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">';
+                        $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>';
+                        $btn .= '</a>';
+                    }
+
 
 
                     $btn .= '<button type="button" data-id="' . $row->id . '" data-name="' . $row->id . '"class="delete-jo p-2 text-red-600 hover:bg-green-50 rounded-lg">';
@@ -145,24 +150,30 @@ class MovementItemController extends Controller
     {
         $validated = $request->validate([
             'quantity' => 'required|integer|min:0',
-            'status' => 'required|in:draft,pending,done,cancel',
         ]);
 
-        // dd($movementItem);
+        $dataEdit = [
+            'quantity' => $request->quantity,
+            'status' => 'done',
+        ];
 
-        // Simpan perubahan
-        $movementItem->update($validated);
-
-        // Jika status diubah menjadi 'done', update product quantity
-        if ($request->status == 'done') {
-            $product = Product::find($movementItem->product_id);
-            // dd($product);
-            if ($movementItem->move == 'in') {
-                $product->increment('stok', $movementItem->quantity);
-            } elseif ($movementItem->move == 'out') {
-                $product->decrement('stok', $movementItem->quantity);
-            }
+        if ($movementItem->est_quantity == $request->quantity) {
+            $dataEdit['status'] = 'done';
+        } else {
+            $dataEdit['status'] = 'pending';
         }
+
+        $diff = $request->quantity - $movementItem->quantity;
+
+        $product = Product::find($movementItem->product_id);
+        // dd($product);
+        if ($movementItem->move == 'in') {
+            $product->increment('stok', $diff);
+        } elseif ($movementItem->move == 'out') {
+            $product->decrement('stok', $diff);
+        }
+
+        $movementItem->update($dataEdit);
 
         return redirect()->route('movement-items.index')
             ->with('success', 'Movement item updated successfully');
