@@ -1,13 +1,8 @@
 <aside id="sidebar-multi-level-sidebar" {{ $attributes }}
-    class="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
+    class="fixed top-0 left-0 z-40 w-72 pt-14 h-screen border-r border-gray-700 transition-transform -translate-x-full sm:translate-x-0"
     aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-800">
-        <div class="pb-2 px-2">
-            <a href="{{ route('dashboard') }}" class="flex items-center">
-                <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" class="h-12 w-full mr-3" alt="Logo Bengkel">
-                {{-- <span class="text-xl font-semibold">BengBeng</span> --}}
-            </a>
-        </div>
+    <div class="h-full px-3 py-6 overflow-y-auto bg-gray-800">
+
         <ul class="space-y-2 font-medium">
             <li>
                 <a href="{{ route('dashboard') }}"
@@ -350,20 +345,7 @@
                 </ul>
             </li>
 
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                        class="btn btn-danger flex items-center p-2 text-red-400 rounded-lg hover:bg-red-700">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
-                        </svg> Logout
-                    </button>
-                </form>
 
-            </li>
         </ul>
     </div>
 </aside>

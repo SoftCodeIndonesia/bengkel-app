@@ -17,7 +17,7 @@
         .ts-wrapper .item {
             background: none !important;
             /* padding: 0 !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin: 0 !important; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        margin: 0 !important; */
             border: none !important;
             color: #f3f4f6 !important;
         }
@@ -93,7 +93,7 @@
     </style>
 @endpush
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Tambah Pembelian</h2>
         </div>

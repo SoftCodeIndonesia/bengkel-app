@@ -2,7 +2,7 @@
 
 @section('title', 'Detail Retur Sparepart')
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-white">Detail Retur Sparepart</h2>
             <a href="{{ route('returns.index') }}"

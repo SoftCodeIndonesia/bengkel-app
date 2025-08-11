@@ -85,7 +85,7 @@
     </style>
 @endpush
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600 flex items-center justify-between">
             <h2 class="text-xl font-semibold text-white">Edit Pembelian</h2>
             <a href="{{ route('purchases.index') }}"

@@ -2,7 +2,7 @@
 
 @section('title', 'Penuhi Permintaan Supply')
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Penuhi Permintaan Supply</h2>
             <p class="text-gray-400 text-sm">Job Order: #{{ $supply->jobOrder->unique_id }}</p>

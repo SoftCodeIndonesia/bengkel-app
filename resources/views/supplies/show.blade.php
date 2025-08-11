@@ -2,7 +2,7 @@
 
 @section('title', 'Detail Permintaan Supply')
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-semibold text-white">Detail Permintaan Supply</h2>

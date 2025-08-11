@@ -24,7 +24,7 @@
     </style>
 @endpush
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Appointments</h2>
             <a href="{{ route('appointments.create') }}"

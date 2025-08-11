@@ -30,40 +30,11 @@
     </style>
 @endpush
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Pembelian</h2>
+    <div class="bg-gray-800 shadow overflow-hidden">
+        <div class="p-4 justify-between items-center border-b border-gray-600">
 
-
-            <div class="flex items-center space-x-4">
-                <form method="GET" class="flex items-center space-x-2" id="form-filter">
-                    <input type="date" name="start_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-                    <span class="text-gray-400">s/d</span>
-                    <input type="date" name="end_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-                    @php
-                        $statusText = [
-                            'draft' => 'Draft',
-                            'unpaid' => 'Belum Lunas',
-                            'paid' => 'Lunas',
-                        ];
-                    @endphp
-                    <select name="status" id="status"
-                        class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Semua Status</option>
-                        @foreach ($statusText as $key => $item)
-                            <option value="{{ $key }}">{{ $item }}</option>
-                        @endforeach
-                    </select>
-                    <button type="button" id="reset-filter"
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">
-                        Reset
-                    </button>
-                    <button type="submit" class="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                        Filter
-                    </button>
-                </form>
+            <div class="flex items-center justify-between">
+                <h2 class="md:text-xl sm:text-sm font-semibold text-white">Data Pembelian</h2>
                 <a href="{{ route('purchases.create') }}"
                     class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +46,38 @@
                 </a>
             </div>
 
+
         </div>
+        <form method="GET" class="grid md:grid-cols-3 sm:grid-cols-2 gap-4 p-4" id="form-filter">
+            <div class="flex items-center flex-col sm:flex-row">
+                <input type="date" name="start_date"
+                    class="bg-gray-700 border border-gray-600 w-full text-white rounded-md md:px-3 sm:px-1 py-2">
+                <div class="text-gray-400 ">s/d</div>
+                <input type="date" name="end_date"
+                    class="bg-gray-700 border border-gray-600 w-full text-white rounded-md md:px-3 sm:px-1 py-2">
+            </div>
+            @php
+                $statusText = [
+                    'draft' => 'Draft',
+                    'unpaid' => 'Belum Lunas',
+                    'paid' => 'Lunas',
+                ];
+            @endphp
+            <select name="status" id="status"
+                class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Semua Status</option>
+                @foreach ($statusText as $key => $item)
+                    <option value="{{ $key }}">{{ $item }}</option>
+                @endforeach
+            </select>
+            <button type="button" id="reset-filter" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">
+                Reset
+            </button>
+            <button type="submit" class="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                Filter
+            </button>
+        </form>
+
 
         <div class="p-4">
             @if (session('success'))

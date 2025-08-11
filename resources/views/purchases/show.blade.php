@@ -4,9 +4,9 @@
 @endphp
 @section('title', 'Detail Pembelian')
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Detail Pembelian #{{ $purchase->invoice_number }}</h2>
+    <div class="bg-gray-800 shadow overflow-hidden">
+        <div class="p-4 flex justify-between flex-col sm:flex-row items-start md:items-center border-b border-gray-600">
+            <h2 class="text-sm sm:text-xl text-left font-semibold mb-2 sm:mb-0 text-white">Detail Pembelian </h2>
             <div class="flex space-x-2">
                 <a href="{{ route('purchases.edit', $purchase->id) }}"
                     class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center">
