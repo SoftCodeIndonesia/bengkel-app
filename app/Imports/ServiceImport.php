@@ -17,27 +17,30 @@ class ServiceImport implements ToCollection, WithStartRow
     {
         $index = 0;
         foreach ($collection as $row) {
-            $name = $row[1];
-            $frt = $row[2];
-            $unit_price = 100000 * $frt;
-            // dump($row);
-            $product = [
-                'name' => $name,
-                'tipe' => 'jasa',
-                'buying_price' => 0,
-                'part_number' => null,
-                'description' => '-',
-                'margin' => 0,
-                'unit_price' => $unit_price,
-                'stok' => $frt,
-            ];
 
-            $slug = Str::slug($name);
+            if ($row[1] != null) {
+                $name = $row[1];
+                $frt = $row[2];
+                $unit_price = 100000 * $frt;
+                // dump($row);
+                $product = [
+                    'name' => $name,
+                    'tipe' => 'jasa',
+                    'buying_price' => 0,
+                    'part_number' => null,
+                    'description' => '-',
+                    'margin' => 0,
+                    'unit_price' => $unit_price,
+                    'stok' => $frt,
+                ];
 
-            $exist = Product::where('slug', $slug)->get()->first();
+                $slug = Str::slug($name);
 
-            if ($exist == null) {
-                Product::create($product);
+                $exist = Product::where('slug', $slug)->get()->first();
+
+                if ($exist == null) {
+                    Product::create($product);
+                }
             }
             $index++;
         }
