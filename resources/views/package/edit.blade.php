@@ -311,7 +311,7 @@
                             <span class="kategori text-gray-300">-</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1" step="0.01"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1" step="1"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
@@ -350,7 +350,7 @@
                             <span class="kategori text-gray-300">-</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.01"
+                            <input type="number" inputmode="decimal" name="items[${itemCounter}][quantity]" min="0.1" step="0.01"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         
@@ -412,7 +412,7 @@
                             <span class="kategori text-gray-300">${item.product.tipe}</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="${item.quantity}"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="1" step="1" value="${item.quantity}"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
@@ -452,7 +452,7 @@
                             <span class="kategori text-gray-300">jasa</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1" value="${item.quantity}"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.01" value="${item.quantity}"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         
@@ -659,23 +659,26 @@
                 let subtotal = 0;
 
                 document.querySelectorAll('.item-row').forEach(row => {
-                    const itemType = row.querySelector('.kategori').textContent;
-                    const subtotalText = row.querySelector('.subtotal').textContent;
-                    const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
+                    if (row.classList.contains('to-be-deleted') == false) {
+                        const itemType = row.querySelector('.kategori').textContent;
+                        const subtotalText = row.querySelector('.subtotal').textContent;
+                        const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
 
-                    const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g, '')) ||
-                        0;
-                    const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
-                        /\./g, '')) || 0;
+                        const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g,
+                                '')) ||
+                            0;
+                        const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
+                            /\./g, '')) || 0;
 
-                    if (itemType != 'jasa' && itemType != 'Jasa') {
-                        totalSparepart += subtotalValue;
-                    } else {
-                        totalJasa += subtotalValue;
+                        if (itemType != 'jasa' && itemType != 'Jasa') {
+                            totalSparepart += subtotalValue;
+                        } else {
+                            totalJasa += subtotalValue;
+                        }
+
+                        totalDiskonItem += (subtotalValue - totalAfterDiskon);
+                        subtotal += totalAfterDiskon;
                     }
-
-                    totalDiskonItem += (subtotalValue - totalAfterDiskon);
-                    subtotal += totalAfterDiskon;
                 });
 
                 document.getElementById('total-sparepart').value = 'Rp ' + formatNumber(totalSparepart);

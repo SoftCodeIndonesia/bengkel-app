@@ -972,23 +972,26 @@
                 let subtotal = 0;
 
                 document.querySelectorAll('.item-row').forEach(row => {
-                    const itemType = row.querySelector('.kategori').textContent;
-                    const subtotalText = row.querySelector('.subtotal').textContent;
-                    const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
+                    if (row.classList.contains('to-be-deleted') == false) {
+                        const itemType = row.querySelector('.kategori').textContent;
+                        const subtotalText = row.querySelector('.subtotal').textContent;
+                        const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
 
-                    const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g, '')) ||
-                        0;
-                    const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
-                        /\./g, '')) || 0;
+                        const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g,
+                            '')) ||
+                            0;
+                        const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
+                            /\./g, '')) || 0;
 
-                    if (itemType !== 'jasa' && itemType !== 'Jasa') {
-                        totalSparepart += subtotalValue;
-                    } else {
-                        totalJasa += subtotalValue;
+                        if (itemType !== 'jasa' && itemType !== 'Jasa') {
+                            totalSparepart += subtotalValue;
+                        } else {
+                            totalJasa += subtotalValue;
+                        }
+
+                        totalDiskonItem += (subtotalValue - totalAfterDiskon);
+                        subtotal += totalAfterDiskon;
                     }
-
-                    totalDiskonItem += (subtotalValue - totalAfterDiskon);
-                    subtotal += totalAfterDiskon;
                 });
 
                 document.getElementById('total-sparepart').value = 'Rp ' + formatNumber(totalSparepart);
