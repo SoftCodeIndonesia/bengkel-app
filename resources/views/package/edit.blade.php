@@ -311,7 +311,7 @@
                             <span class="kategori text-gray-300">-</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1" step="0.01"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
@@ -350,7 +350,7 @@
                             <span class="kategori text-gray-300">-</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.01"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         
@@ -484,7 +484,7 @@
                 // Initialize TomSelect for the new row
                 const select = row.querySelector('.product-select');
                 // console.log(service_selected);
-                initializeProductSelectExit(select, type);
+                initializeProductSelectExit(select, type, item);
 
                 // Add event listeners for calculations
                 initItemRowEvents(row, type);
@@ -528,7 +528,7 @@
                 });
             }
 
-            function initializeProductSelectExit(element, type) {
+            function initializeProductSelectExit(element, type, item) {
 
 
 
@@ -536,7 +536,7 @@
                     valueField: 'id',
                     labelField: 'text',
                     searchField: 'text',
-                    items: type == 'jasa' ? [service_selected[0].id ?? ''] : [product_selected[0].id ?? ''],
+                    items: item.product.id,
                     options: type == 'jasa' ? service_selected : product_selected,
                     create: false,
                     load: function(query, callback) {
