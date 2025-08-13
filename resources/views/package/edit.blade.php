@@ -579,12 +579,12 @@
 
                 const calculateItemTotal = () => {
                     const data = select.tomselect ? select.tomselect.items[0] : null;
-                    console.log(select.tomselect);
                     if (!data) return;
 
 
 
                     const jsonData = JSON.parse(data);
+                    console.log(jsonData);
 
                     if (type == 'jasa' & qtyInput.value == '') {
                         qtyInput.value = jsonData.stok;
@@ -604,7 +604,8 @@
 
                     const totalAfterDiskon = subtotal * (1 - (diskon / 100));
 
-                    kategori.textContent = type === 'jasa' ? 'Jasa' : 'Sparepart';
+
+                    kategori.textContent = jsonData.tipe;
                     if (type != 'jasa') {
                         priceText.textContent = 'Rp ' + formatNumber(price);
                     }

@@ -136,6 +136,8 @@ class ServicePackageController extends Controller
     {
 
         // dd($request->all());
+
+        // dd($request->all());
         DB::transaction(function () use ($request, $servicePackage) {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -194,6 +196,12 @@ class ServicePackageController extends Controller
                     // dd($data_input);
                     $servicePackage->items()->create($data_input);
                 } else {
+
+
+                    $data_item = json_decode($item['product_id']);
+                    $product = Product::find($data_item->id);
+
+
                     $orderItem = ServicePackageItem::find($item['id']);
 
                     if ($orderItem->product->tipe == 'jasa') {
@@ -204,6 +212,7 @@ class ServicePackageController extends Controller
 
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;
 
+                    $orderItem->product_id = $product->id;
                     $orderItem->quantity = $item['quantity'];
                     $orderItem->subtotal = $subtotal;
                     $orderItem->discount = $item['diskon_value'];

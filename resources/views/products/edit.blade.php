@@ -73,7 +73,7 @@
                         <input type="text" name="unit_price" id="unit_price"
                             value="{{ old('unit_price', $product->unit_price) }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
-                            required readonly>
+                            required>
                         @error('unit_price')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
