@@ -536,7 +536,7 @@
                     valueField: 'id',
                     labelField: 'text',
                     searchField: 'text',
-                    items: item.product.id,
+                    items: JSON.stringify(item.product),
                     options: type == 'jasa' ? service_selected : product_selected,
                     create: false,
                     load: function(query, callback) {
