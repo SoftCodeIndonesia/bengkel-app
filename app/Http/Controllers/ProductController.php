@@ -163,7 +163,19 @@ class ProductController extends Controller
             'margin' => 'required|numeric|min:0',
         ]);
 
-        $product->update($request->all());
+        $productData = [
+            'name' => $request->name,
+            'tipe' => $request->tipe,
+            'buying_price' => $request->buying_price,
+            'part_number' => $request->part_number,
+            'description' => $request->description ?? '-',
+            'margin' => $request->margin,
+            'unit_price' => $request->unit_price,
+        ];
+
+
+
+        $product->update($productData);
 
         return redirect()->route('products.index')->with('success', 'Sparepart berhasil diperbarui');
     }

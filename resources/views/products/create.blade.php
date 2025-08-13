@@ -15,7 +15,7 @@
         </div>
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('products.store') }}" method="POST">
+            <form action="{{ route('products.store') }}" method="POST" id="form-create">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +69,7 @@
                                 class="text-red-500">*</span></label>
                         <input type="text" name="unit_price" id="unit_price" value="{{ old('unit_price') }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
-                            required>
+                            required readonly>
                         @error('unit_price')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
@@ -132,7 +132,7 @@
             });
 
             // Format ke angka saat submit
-            const form = document.querySelector('form');
+            const form = document.querySelector('form-create');
             form.addEventListener('submit', function(e) {
                 priceInput.value = priceInput.value.replace(/\D/g, '');
                 buyingInput.value = buyingInput.value.replace(/\D/g, '');

@@ -92,6 +92,7 @@ Route::get('/products/search', function (Request $request) {
 
     return response()->json($products);
 })->name('api.product.search');
+Route::get('/products/list', [App\Http\Controllers\Api\ProductController::class, 'productList'])->name('api.product.list');
 
 Route::post('/products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulk-delete');
 

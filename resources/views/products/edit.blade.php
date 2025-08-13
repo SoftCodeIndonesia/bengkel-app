@@ -15,7 +15,7 @@
         </div>
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('products.update', $product->id) }}" method="POST">
+            <form action="{{ route('products.update', $product->id) }}" method="POST" id="form-edit">
                 @csrf
                 @method('PUT')
 
@@ -73,7 +73,7 @@
                         <input type="text" name="unit_price" id="unit_price"
                             value="{{ old('unit_price', $product->unit_price) }}"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('unit_price') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3"
-                            required>
+                            required readonly>
                         @error('unit_price')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
@@ -126,15 +126,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const priceInput = document.getElementById('unit_price');
-
+            const buyingInput = document.getElementById('buying_price');
+            const marginInput = document.getElementById('margin');
             // Format ke Rupiah saat input
             priceInput.addEventListener('input', function(e) {
                 let value = this.value.replace(/\D/g, '');
                 this.value = formatRupiah(value);
             });
 
+
+            buyingInput.addEventListener('input', hitungHargaJual);
+            marginInput.addEventListener('input', hitungHargaJual);
             // Format ke angka saat submit
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-edit');
             form.addEventListener('submit', function(e) {
                 const buyingPrice = document.getElementById('buying_price');
                 const priceInput = document.getElementById('unit_price');
@@ -148,6 +152,13 @@
 
                 angka = parseInt(angka, 10);
                 return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+
+            function hitungHargaJual() {
+                const beli = parseFloat(buyingInput.value.replace(/\D/g, '')) || 0;
+                const margin = parseFloat(marginInput.value) || 0;
+                const jual = beli + (beli * (margin / 100));
+                priceInput.value = formatRupiah(Math.round(jual)); // atau jual.toFixed(0) jika ingin string
             }
 
             // Format nilai awal jika ada (untuk edit)

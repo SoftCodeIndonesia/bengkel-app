@@ -135,30 +135,34 @@
                     },
                     {
                         data: 'part_number',
-                        name: 'PN'
+                        name: 'part_number',
+                        orderable: false
                     },
                     {
                         data: 'stok',
-                        name: 'stok'
+                        name: 'stok',
+                        orderable: true
                     },
                     {
                         data: 'buying_price',
-                        name: 'buying_price'
+                        name: 'buying_price',
+                        orderable: true
                     },
 
                     {
                         data: 'formatted_price',
-                        name: 'unit_price'
+                        name: 'unit_price',
+                        orderable: true
                     },
                     {
                         data: 'margin',
-                        name: 'margin'
+                        name: 'margin',
+                        orderable: true
                     },
 
                     {
                         data: 'action',
                         name: 'action',
-                        orderable: false,
                         searchable: false
                     },
                 ],
