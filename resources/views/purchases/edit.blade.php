@@ -118,12 +118,8 @@
                     <select id="supplier_id" name="supplier_id" required
                         class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         <option value="">Pilih Supplier</option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}"
-                                {{ $purchase->supplier_id == $supplier->id ? 'selected' : '' }}>
-                                {{ $supplier->name }}
-                            </option>
-                        @endforeach
+
+
                     </select>
                 </div>
 
@@ -193,59 +189,23 @@
                                 <th class="px-4 py-3">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
+                                <th class="px-4 py-3">Margin (%)</th>
+                                <th class="px-4 py-3">Harga Jual</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="items-container">
                             <!-- Item yang sudah ada akan dimuat di sini -->
-                            @foreach ($purchase->items as $index => $item)
-                                <tr id="item-{{ $index }}" class="border-b border-gray-700 item-row">
-                                    <input type="hidden" name="items[{{ $index }}][id]"
-                                        value="{{ $item->id }}">
-                                    <td class="px-4 py-3">
-                                        <select name="items[{{ $index }}][product_id]" required
-                                            class="product-select bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                            <option value="">Pilih Barang</option>
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->id }}"
-                                                    {{ $item->product_id == $product->id ? 'selected' : '' }}
-                                                    data-price="{{ $product->buying_price }}">
-                                                    {{ $product->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <input type="number" name="items[{{ $index }}][quantity]" min="1"
-                                            value="{{ old('items.' . $index . '.quantity', $item->quantity) }}" required
-                                            class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <input type="text" name="items[{{ $index }}][unit_price]"
-                                            value="{{ old('items.' . $index . '.unit_price', number_format($item->unit_price, 0, ',', '.')) }}"
-                                            required
-                                            class="unit-price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </td>
-                                    <td class="px-4 py-3 total-price">
-                                        {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="px-4 py-3">
-                                        <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
+
+
                         </tbody>
                         <tfoot class="bg-gray-700">
                             <tr>
                                 <td colspan="3" class="px-4 py-3 text-right font-semibold">Total Pembelian</td>
                                 <td id="grand-total" class="px-4 py-3 font-semibold">
                                     {{ number_format($purchase->total, 0, ',', '.') }}</td>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -272,18 +232,64 @@
             </div>
         </form>
     </div>
+
+    <!-- Product Selection Modal -->
+    <div id="product-selection-modal"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl h-full max-h-full flex flex-col">
+            <div class="p-4 border-b border-gray-700">
+                <h3 class="text-xl font-semibold text-white">Pilih Produk</h3>
+            </div>
+
+            <div class="relative overflow-x-auto flex-1 p-6">
+                <table class="w-full text-sm text-left text-gray-400" id="product-table-list" style="width: 100%;">
+                    <thead class="text-xs uppercase bg-gray-700 text-gray-400
+                    sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3" width="1%">
+                                <input type="checkbox" id="select-all"
+                                    class=" h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            </th>
+                            <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="10%">Harga</th>
+                            <th class="px-4 py-3" width="10%">Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-list">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-700 flex justify-end">
+                <button type="button" id="cancel-selection"
+                    class="mr-2 px-4 py-2 bg-gray-600 text-white rounded-lg">Batal</button>
+                <button type="button" id="confirm-selection"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg">Tambahkan</button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Tom Select for product search
             let products = [];
+            let selectedProducts = [];
+            let itemCount = 0;
 
             const purchase = @json($purchase);
 
-            console.log(purchase);
+            purchase.items.forEach(element => {
+                const marginNominal = element.movement_item.selling_price - element.movement_item
+                    .buying_price;
+                const markupPersen = (marginNominal / element.movement_item.buying_price) * 100;
+
+                addItemRow(element.id, element.product_id, element.product.name, element.unit_price,
+                    markupPersen);
+            });
 
             const supplierSelect = new TomSelect('#supplier_id', {
                 valueField: 'id',
@@ -347,67 +353,103 @@
                 }
             });
 
-            document.querySelectorAll('.product-select').forEach((select, index) => {
 
-                new TomSelect(select, {
-                    onChange: function(value) {
-                        const row = this.input.closest('.item-row');
-                        const selectedOption = this.options[value];
-                        if (selectedOption) {
-                            const price = selectedOption.price || 0;
-                            // const type = selectedOption.dataset.type || '';
+            var table = $('#product-table-list').DataTable({
+                processing: true,
+                serverSide: true,
+                columnDefs: [{
+                    width: '30px',
+                    targets: 1,
+                }],
+                ajax: "{{ route('api.product.list') }}",
+                columns: [{
+                        data: 'checkbox',
+                        name: 'checkbox',
+                        orderable: false,
+                        searchable: false,
+                        className: 'px-4 py-3 ',
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'formatted_price',
+                        name: 'unit_price',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'stok',
+                        name: 'stok',
+                        className: 'px-4 py-3'
+                    },
 
-                            // Update tampilan
-                            row.querySelector('.unit-price').textContent = 'Rp ' +
-                                formatNumber(
-                                    price);
-                            // row.querySelector('.item-type').textContent = type === 'barang' ?
-                            //     'Barang' : 'Jasa';
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
+                },
+                dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"<"mb-2 md:mb-0"l><"flex items-center"f>>rt<"flex flex-col md:flex-row justify-between items-center mt-4"<"mb-2 md:mb-0"i><"pagination-container"p>>',
+                initComplete: function() {
+                    // Styling untuk search input
+                    $('.dataTables_length label').addClass(
+                        'text-gray-400'
+                    );
+                    $('.dataTables_filter label').addClass(
+                        'text-gray-400'
+                    );
 
-                            // Hitung total
-                            calculateItemTotal(row);
+                    $('.dataTables_info').addClass(
+                        'text-gray-400'
+                    );
+
+
+                    $('.dataTables_filter input').addClass(
+                        'bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+
+                    // Styling untuk length menu
+                    $('.dataTables_length select').addClass(
+                        'bg-gray-700 border border-gray-600 text-green-600 rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_processing')
+                        .css({
+                            'background': 'transparent', // bg-gray-800/90
+                            'color': 'white',
+                        });
+                },
+                drawCallback: function() {
+                    // Styling data info
+                    $('.dataTables_info').addClass('text-gray-400');
+                    // Styling untuk pagination setelah draw
+                    $('.pagination-container .paginate_button').addClass(
+                        'px-3 py-1 mx-1 text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition duration-150'
+                    );
+                    $('.pagination-container .paginate_button.current').addClass(
+                        'bg-blue-600 text-white border-blue-600');
+
+                    $('.dataTables_paginate').addClass('flowbite-pagination');
+                    $('.paginate_button').each(function() {
+                        // Hapus class bawaan DataTables
+                        $(this).removeClass('paginate_button previous next first last');
+
+                        // Tambahkan class sesuai jenis tombol
+                        if ($(this).hasClass('current')) {
+                            $(this).addClass('active bg-blue-600 text-white');
+                        } else if ($(this).hasClass('disabled')) {
+                            $(this).addClass('opacity-50 cursor-not-allowed');
                         }
-                    },
-                    valueField: 'id',
-                    labelField: 'text',
-                    items: [purchase.items[index].product_id ?? ''],
-                    options: [{
-                        'id': purchase.items[index].product_id,
-                        'text': purchase.items[index].product.name,
-                    }],
-                    load: function(query, callback) {
-                        var url = base_url + '/api/products/search?q=' + encodeURIComponent(
-                            query) + '&tipe=barang'
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(json => {
-                                console.log(json);
-                                callback(json);
-                            }).catch(() => {
-                                console.log('error');
-                                callback();
-                            });
-                    },
-                    render: {
-                        option: function(item, escape) {
-
-                            return `
-                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                    </div>
-                                </div>`;
-                        },
-                        item: function(item, escape) {
-                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                        },
-                        no_results: function(data, escape) {
-
-                            return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
-                        },
-                    },
-                });
+                    });
+                }
             });
+
+            // Update selling price based on margin
+            function updateSellingPrice(row) {
+                const unitPrice = parseFloat(originalNumber(row.querySelector('.unit-price').value)) || 0;
+                const margin = parseFloat(row.querySelector('.margin').value) || 0;
+                const sellingPrice = unitPrice * (1 + (margin / 100));
+                row.querySelector('.selling_price').value = formatRupiah(sellingPrice);
+            }
 
             // // Fetch products from API
             // fetch("{{ route('api.product.search') }}")
@@ -417,30 +459,35 @@
             //     });
 
             // Add item row
-            let itemCount = 0;
-            const addItemRow = () => {
+
+
+            function addItemRow(item_id, productId, productName, unitPrice, margin) {
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
-
+                const selling_price = unitPrice * (1 + (margin / 100));
                 const row = document.createElement('tr');
                 row.id = rowId;
                 row.className = 'border-b border-gray-700';
                 row.innerHTML = `
                     <td class="px-4 py-3">
-                        <select name="items[${itemCount}][product_id]" required
-                            class="product-select bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option value="">Pilih Barang</option>
-                        </select>
+                        <input type="hidden" name="items[${itemCount}][id]" value="${item_id ?? null}">
+                        <input type="hidden" name="items[${itemCount}][product_id]" value="${productId}">
+                        <span>${productName}</span>
                     </td>
                     <td class="px-4 py-3">
-                        <input type="number" name="items[${itemCount}][quantity]" min="1" value="1" required
-                            class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="number" name="items[${itemCount}][quantity]" min="1" value="1" required class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
-                        <input type="number" name="items[${itemCount}][unit_price]" min="0" step="0.01" required
-                            class="unit-price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="text" name="items[${itemCount}][unit_price]" value="${formatRupiah(unitPrice)}" required class="unit-price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
-                    <td class="px-4 py-3 total-price">Rp 0</td>
+                    <td class="px-4 py-3 total-price">${formatRupiah(unitPrice)}</td>
+                    
+                    <td class="px-4 py-3">
+                        <input type="number" value="${margin ?? 0}" name="items[${itemCount}][margin]" required class="margin bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </td>
+                    <td class="px-4 py-3">
+                        <input type="text" name="items[${itemCount}][selling_price]" value="${formatRupiah(selling_price) ?? 0}" readonly class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </td>
                     <td class="px-4 py-3">
                         <button type="button" class="remove-item text-red-500 hover:text-red-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,55 +499,10 @@
 
                 container.appendChild(row);
 
-
-
-                // Initialize Tom Select for this row
-                new TomSelect(`#${rowId} .product-select`, {
-                    valueField: 'id',
-                    labelField: 'text',
-                    load: function(query, callback) {
-                        var url = base_url + '/api/products/search?q=' + encodeURIComponent(
-                            query) + '&tipe=barang'
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(json => {
-                                console.log(json);
-                                callback(json);
-                            }).catch(() => {
-                                console.log('error');
-                                callback();
-                            });
-                    },
-                    render: {
-                        option: function(item, escape) {
-
-                            return `
-                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                    </div>
-                                </div>`;
-                        },
-                        item: function(item, escape) {
-                            return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                        },
-                        no_results: function(data, escape) {
-
-                            return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
-                        },
-                    },
-
-                });
-
-                $('.product-select').change(function(e) {
-                    e.preventDefault();
-                    const item = JSON.parse($(this).val());
-                    console.log(item);
-                });
-
                 // Add event listeners for quantity and price changes
                 const quantityInput = row.querySelector('.quantity');
                 const unitPriceInput = row.querySelector('.unit-price');
+                const marginInput = row.querySelector('.margin');
 
                 quantityInput.addEventListener('input', () => {
                     calculateRowTotal(row);
@@ -509,11 +511,16 @@
 
                 unitPriceInput.addEventListener('input', () => {
                     calculateRowTotal(row);
+                    updateSellingPrice(row);
                     updateGrandTotal();
                 });
 
+                marginInput.addEventListener('input', () => {
+                    updateSellingPrice(row);
+                });
+
                 itemCount++;
-            };
+            }
 
             $('.quantity').change(function(e) {
                 e.preventDefault();
@@ -592,19 +599,68 @@
             });
 
 
+            // Show product selection modal
+            document.getElementById('add-item').addEventListener('click', function() {
+                // fetchProducts();
+                table.draw()
+                document.getElementById('product-selection-modal').classList.remove('hidden');
+            });
 
-            // Add item button click handler
-            document.getElementById('add-item').addEventListener('click', addItemRow);
+            // Close product selection modal
+            document.getElementById('cancel-selection').addEventListener('click', function() {
+                document.getElementById('product-selection-modal').classList.add('hidden');
+                resetSelection();
+            });
 
-            // Set today's date as default
-            // document.getElementById('purchase_date').valueAsDate = new Date();
+            // Select all products
+            document.getElementById('select-all').addEventListener('change', function(e) {
+                const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
+            });
+
+            // Confirm product selection
+            document.getElementById('confirm-selection').addEventListener('click', function() {
+                const checkboxes = document.querySelectorAll(
+                    '#product-list input[type="checkbox"]:checked');
+                checkboxes.forEach(checkbox => {
+                    const productId = checkbox.value;
+                    const productRow = checkbox.closest('tr');
+                    const productName = productRow.querySelector('td:nth-child(2)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    // console.log(originalNumber(productPrice));
+                    if (!selectedProducts.includes(productId)) {
+                        selectedProducts.push(productId);
+                        addItemRow(null, productId, productName, originalNumber(productPrice), 0,
+                            originalNumber(productPrice));
+                    }
+                });
+
+                document.getElementById('product-selection-modal').classList.add('hidden');
+                resetSelection();
+            });
+
+
+            // Reset product selection
+            function resetSelection() {
+                document.getElementById('select-all').checked = false;
+                document.getElementById('product-search').value = '';
+                const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+
 
             const form = document.getElementById('form-edit');
             form.addEventListener('submit', function(e) {
                 // e.preventDefault();
                 document.querySelectorAll('#items-container tr').forEach(row => {
                     const priceInput = row.querySelector('.unit-price');
+                    const selling_price = row.querySelector('.selling_price');
                     priceInput.value = originalNumber(priceInput.value);
+                    selling_price.value = originalNumber(selling_price.value);
                 });
 
 

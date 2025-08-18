@@ -104,7 +104,7 @@ class EstimationController extends Controller
 
         $validated = $this->validateRequest($request);
 
-
+        // dd($request->all());
 
 
         DB::transaction(function () use ($request) {
@@ -148,8 +148,14 @@ class EstimationController extends Controller
             // Simpan items
             foreach ($request->items as $item) {
                 $data_item = json_decode($item['product_id']);
+                $product = null;
+                if (gettype($data_item) == 'object') {
+                    $product = Product::find($data_item->id);
+                } else {
+                    $product = Product::find($data_item);
+                }
 
-                $product = Product::find($data_item->id);
+
 
                 $subtotal = $product->unit_price * $item['quantity'];
                 $potongan = ($item['diskon_value'] / 100) * $subtotal;
@@ -157,7 +163,7 @@ class EstimationController extends Controller
                 if ($product->tipe == 'jasa') {
                     $subtotaljasa = 100000 * $item['quantity'];
                     $data_input = [
-                        'product_id' => $data_item->id,
+                        'product_id' => $product->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => 0,
                         'total_price' => $subtotaljasa,
@@ -166,7 +172,7 @@ class EstimationController extends Controller
                     ];
                 } else {
                     $data_input = [
-                        'product_id' => $data_item->id,
+                        'product_id' => $product->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => $product->unit_price,
                         'total_price' => $subtotal,
@@ -233,7 +239,7 @@ class EstimationController extends Controller
     public function edit(string $id)
     {
 
-        $jobOrder = JobOrder::find($id);
+        $jobOrder = JobOrder::with('orderItems', 'orderItems.product')->find($id);
 
         // $jobOrder->load(['orderItems.product', 'breakdowns', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle']);
         $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
@@ -244,6 +250,7 @@ class EstimationController extends Controller
 
         $total_diskon = 0;
 
+        // dd($jobOrder->orderItems);
         foreach ($jobOrder->orderItems as $key => $value) {
             if ($value->product->tipe != 'jasa') {
                 $total_sparepart += $value->total_price;
@@ -261,12 +268,12 @@ class EstimationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JobOrder $jobOrder)
+    public function update(Request $request, string $id)
     {
 
-        // dd($request->all());
-        $validated = $this->validateRequest($request);
 
+        $validated = $this->validateRequest($request);
+        $jobOrder   = JobOrder::find($id);
         DB::transaction(function () use ($request, $jobOrder) {
 
             if ($request->customer_vehicle_id) {
@@ -315,7 +322,12 @@ class EstimationController extends Controller
                     OrderItem::find($id)->delete();
                 } elseif (empty($item['id'])) {
                     $data_item = json_decode($item['product_id']);
-                    $product = Product::find($data_item->id);
+                    $product = null;
+                    if (gettype($data_item) == 'object') {
+                        $product = Product::find($data_item->id);
+                    } else {
+                        $product = Product::find($data_item);
+                    }
 
                     $subtotal = $product->unit_price * $item['quantity'];
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;
@@ -324,7 +336,7 @@ class EstimationController extends Controller
                     if ($product->tipe == 'jasa') {
                         $subtotaljasa = 100000 * $item['quantity'];
                         $data_input = [
-                            'product_id' => $data_item->id,
+                            'product_id' => $product->id,
                             'quantity' => $item['quantity'],
                             'unit_price' => 0,
                             'total_price' => $subtotaljasa,
@@ -363,33 +375,6 @@ class EstimationController extends Controller
                     $orderItem->save();
                 }
             }
-
-            // Simpan items
-            // foreach (array_merge($request->service, $request->items) as $item) {
-
-            //     if (isset($item['id'])) {
-            //         $data = OrderItem::find($item['id']);
-            //         $data->quantity = $item['quantity'];
-            //         $data->total_price = $data->unit_price * $item['quantity'];
-            //         $data->save();
-            //     } else {
-            //         $data_item = json_decode($item['product_id']);
-
-            //         $product = Product::find($data_item->value);
-
-            //         $jobOrder->orderItems()->create([
-            //             'product_id' => $data_item->value,
-            //             'quantity' => $item['quantity'],
-            //             'unit_price' => $product->unit_price,
-            //             'total_price' => $product->unit_price * $item['quantity']
-            //         ]);
-
-            //         // Kurangi stok jika produk adalah sparepart
-            //         if ($product->tipe === 'barang') {
-            //             $product->decrement('stok', $item['quantity']);
-            //         }
-            //     }
-            // }
 
             if ($request->has('breakdowns')) {
                 foreach ($request->breakdowns as $breakdown) {
@@ -464,5 +449,12 @@ class EstimationController extends Controller
         }
 
         return $request->validate($rules);
+    }
+
+    public function print(string $id)
+    {
+        $jobOrder = JobOrder::with('orderItems', 'orderItems.product', 'invoice', 'breakdowns', 'orderItems.product', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle')->find($id);
+
+        return view('estimation.print', compact('jobOrder'));
     }
 }

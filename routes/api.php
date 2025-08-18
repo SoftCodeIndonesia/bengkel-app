@@ -192,6 +192,7 @@ Route::get('/suppliers/{supplier}', [SupplierController::class, 'getSupplier']);
 Route::post('/suppliers/quick-create', [SupplierController::class, 'quickCreate'])->name('suppliers.quickCreate');
 Route::post('/products/quick-create', [ProductController::class, 'quickCreate'])->name('products.quick-create');
 Route::get('/customer_vehicles/{id}/details', [CustomerVehicleController::class, 'getDetails']);
+Route::get('/customer/{id}', [CustomerController::class, 'getDetails']);
 Route::get('/job_order/search', function (Request $request) {
     $search = $request->get('q');
 

@@ -32,4 +32,10 @@ class PurchaseItem extends Model
     {
         return $this->belongsTo(Product::class)->withTrashed();
     }
+
+    public function movement_item()
+    {
+        return $this->hasOne(MovementItem::class, 'reference_id', 'id')
+            ->where('reference', 'purchase_items');
+    }
 }

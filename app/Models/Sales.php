@@ -37,7 +37,7 @@ class Sales extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(SalesItem::class, 'sales_id')->withTrashed();
+        return $this->hasMany(SalesItem::class, 'sales_id');
     }
 
     protected static function boot()

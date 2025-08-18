@@ -9,6 +9,22 @@
                 <h2 class="text-xl font-semibold text-white">Detail Penjualan</h2>
                 <div class="flex items-center gap-3">
                     <div class="text-gray-300">No. Transaksi: {{ $sale->unique_id }}</div>
+                    <a href="{{ route('sales.edit', $sale->id) }}"
+                        class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit
+                    </a>
+                    <a href="{{ route('print_so', $sale->id) }}"
+                        class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Cetak
+                    </a>
                     <a href="{{ route('sales.index') }}"
                         class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,27 +112,11 @@
                         <span class="text-gray-300">Subtotal:</span>
                         <span class="text-white font-medium">Rp {{ number_format($sale->subtotal, 0, ',', '.') }}</span>
                     </div>
-                    @if ($sale->diskon_unit)
-                        <div class="flex justify-between py-2">
-                            <span class="text-gray-300">Diskon
-                                ({{ $sale->diskon_unit === 'percentage' ? $sale->diskon_value . '%' : 'Rp ' . number_format($sale->diskon_value, 0, ',', '.') }}):</span>
-                            <span class="text-white font-medium">
-                                @if ($sale->diskon_unit === 'percentage')
-                                    -Rp {{ number_format($sale->subtotal * ($sale->diskon_value / 100), 0, ',', '.') }}
-                                @else
-                                    -Rp {{ number_format($sale->diskon_value, 0, ',', '.') }}
-                                @endif
-                            </span>
-                        </div>
-                    @endif
+
                     <div class="flex justify-between mb-2">
                         <span class="text-gray-300">Diskon:</span>
-                        @if ($sale->diskon_unit == 'percentage')
-                            <span id="subtotal" class="text-gray-300">({{ $sale->diskon_value }}%)</span>
-                        @else
-                            <span id="subtotal" class="text-gray-300">Rp
-                                {{ number_format($sale->diskon_value, 0, ',', '.') }}</span>
-                        @endif
+                        <span id="subtotal" class="text-gray-300">Rp
+                            {{ number_format($sale->diskon_value, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-t border-gray-600">
                         <span class="text-gray-300 font-semibold">Total:</span>
@@ -126,8 +126,8 @@
             </div>
 
             <div class="mt-6 flex justify-end space-x-3">
-                <a href="{{ route('sales.index') }}"
-                    class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Kembali</a>
+                <a href="{{ route('sales.destroy', $sale->id) }}" data-id="{{ $sale->id }}" id="btn-delete"
+                    class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</a>
                 <a href="{{ route('invoices.create-from-sale', $sale) }}"
                     class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center ">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,3 +141,49 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).on('click', '#btn-delete', function(e) {
+            e.preventDefault();
+            const salesId = $(this).data('id');
+
+
+            Swal.fire({
+                title: 'Hapus Penjualan?',
+                html: `Anda yakin ingin menghapus Data Penjualan?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Buat form delete secara dinamis
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/sales/${salesId}`;
+
+                    // Tambahkan CSRF token
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = $('meta[name="csrf-token"]').attr('content');
+                    form.appendChild(csrfToken);
+
+                    // Tambahkan method spoofing
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    form.appendChild(methodInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    </script>
+@endpush

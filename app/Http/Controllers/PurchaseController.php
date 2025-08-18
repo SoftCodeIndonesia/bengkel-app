@@ -91,9 +91,8 @@ class PurchaseController extends Controller
 
     public function create()
     {
-        $suppliers = Supplier::all();
-        $products = Product::where(['tipe' => 'barang'])->get();
-        return view('purchases.create', compact('suppliers', 'products'));
+
+        return view('purchases.create');
     }
 
     public function store(Request $request)
@@ -212,30 +211,27 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase)
     {
-        $purchase->load('items.product', 'supplier');
-        $suppliers = Supplier::all();
-        $products = Product::where(['tipe' => 'barang'])->get();
+        $purchase->load('items.product', 'supplier', 'items.movement_item');
 
-
-        return view('purchases.edit', compact('purchase', 'suppliers', 'products'));
+        return view('purchases.edit', compact('purchase'));
     }
 
     public function update(Request $request, Purchase $purchase)
     {
-        // dd($request->all());
-        DB::beginTransaction();
 
-        try {
-            $request->validate([
-                'supplier_id' => 'required|exists:suppliers,id',
-                'purchase_date' => 'required|date',
-                'invoice_number' => 'required|unique:purchases,invoice_number,' . $purchase->id,
-                'items' => 'required|array',
-                'items.*.product_id' => 'required',
-                'items.*.quantity' => 'required|numeric|min:1',
-                'items.*.unit_price' => 'required|numeric|min:0',
-                'notes' => 'nullable|string',
-            ]);
+        $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
+            'purchase_date' => 'required|date',
+            'invoice_number' => 'required|unique:purchases,invoice_number,' . $purchase->id,
+            'items' => 'required|array',
+            'items.*.product_id' => 'required',
+            'items.*.quantity' => 'required|numeric|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
+        ]);
+
+        DB::transaction(function () use ($request, $purchase) {
+
 
             // Array untuk menyimpan ID item yang akan dihapus
             $itemsToDelete = [];
@@ -254,7 +250,7 @@ class PurchaseController extends Controller
                 $total += $totalItem;
 
 
-                if (isset($item['id']) && !empty($item['id'])) {
+                if (isset($item['id']) && !empty($item['id']) && $item['id'] != 'null') {
 
                     // Update item yang sudah ada
                     $purchaseItem = PurchaseItem::find($item['id']);
@@ -269,18 +265,29 @@ class PurchaseController extends Controller
                         'total_price' => $totalItem,
                     ]);
 
+
                     $movementItem = MovementItem::where(['reference' => 'purchase_items', 'reference_id' => $purchaseItem->id])->get()->first();
                     $movementItem->est_quantity = $item['quantity'];
+                    $movementItem->selling_price = $item['selling_price'];
                     $movementItem->total_price = $totalItem;
                     $movementItem->grand_total = $totalItem;
                     $movementItem->save();
                 } else {
-                    $product_convert = json_decode($item['product_id']);
+                    $product = json_decode($item['product_id']);
+                    $product_convert = null;
+
+                    if (gettype($product) == 'object') {
+                        $product_convert = Product::find($product->id);
+                    } else {
+                        $product_convert = Product::find($product);
+                    }
+
+
 
                     // Buat item baru
                     $purchaseItem = PurchaseItem::create([
                         'purchase_id' => $purchase->id,
-                        'product_id' => $product_convert->value,
+                        'product_id' => $product_convert->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['unit_price'],
                         'total_price' => $totalItem,
@@ -338,15 +345,9 @@ class PurchaseController extends Controller
 
 
             $purchase->update($data_update);
-
-            DB::commit();
-
-            return redirect()->route('purchases.show', $purchase->id)
-                ->with('success', 'Pembelian berhasil diperbarui');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal memperbarui pembelian: ' . $e->getMessage());
-        }
+        });
+        return redirect()->route('purchases.show', $purchase->id)
+            ->with('success', 'Pembelian berhasil diperbarui');
     }
 
     public function destroy(Purchase $purchase)

@@ -5,7 +5,7 @@
     use App\Models\JobOrder;
 @endphp
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Detail Job Order: {{ $jobOrder->unique_id }}</h2>
             <div class="flex space-x-2">
@@ -29,12 +29,12 @@
                     </svg>
                 </button>
                 <div id="dropdown"
-                    class="z-10 hidden bg-green divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                    class="z-10 hidden bg-green divide-y divide-gray-100 rounded-lg shadow-sm w-44 bg-gray-700">
                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                         @foreach ($jobOrder->statuses() as $status)
                             <li>
                                 <a href="{{ route('job-orders.update-status', ['id' => $jobOrder->id, 'status' => $status]) }}"
-                                    class="btn-update-status block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $jobOrder->getDisplayStatusAction($status) }}</a>
+                                    class="btn-update-status text-white block px-4 py-2  hover:bg-gray-600 hover:text-white">{{ $jobOrder->getDisplayStatusAction($status) }}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -69,6 +69,14 @@
                         Buat Invoice
                     </a>
                 @endif
+                <a href="{{ route('job-orders.print', $jobOrder->id) }}"
+                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Cetak
+                </a>
                 <a href="{{ route('job-orders.index') }}"
                     class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,14 +109,14 @@
                             <p class="text-sm text-gray-400">Status</p>
                             @php
                                 $statusClasses = [
-                                    'draft' => 'bg-gray-500',
+                                    'draft' => 'bg-blue-500 text-white',
                                     'new' => 'bg-yellow-500',
                                     'progress' => 'bg-blue-100 text-blue-800',
                                     'completed' => 'bg-green-500',
                                     'cancelled' => 'bg-red-500',
                                 ];
                                 $statusText = [
-                                    'draft' => 'Draft',
+                                    'draft' => 'New',
                                     'new' => 'New',
                                     'progress' => 'Progress',
                                     'completed' => 'Selesai',
@@ -255,9 +263,15 @@
                                                 {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                                             <td class="px-4 py-3 text-right">Rp
                                                 {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
-                                            </td>
+                                            @if ($item->product->tipe != 'jasa')
+                                                <td class="px-4 py-3 text-right">Rp
+                                                    {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
+                                                </td>
+                                            @elseif($item->product->tipe == 'jasa')
+                                                <td class="px-4 py-3 text-right">Rp
+                                                    {{ number_format(100000 * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
+                                                </td>
+                                            @endif
                                             <td class="px-4 py-3 text-right">Rp
                                                 {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
                                         </tr>

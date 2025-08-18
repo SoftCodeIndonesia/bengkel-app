@@ -168,4 +168,13 @@ class CustomerController extends Controller
 
         return response()->json($customers);
     }
+
+    public function getDetails(string $id)
+    {
+        $customer = Customer::find($id);
+        return response()->json([
+            'success' => true,
+            'customer' => $customer,
+        ]);
+    }
 }

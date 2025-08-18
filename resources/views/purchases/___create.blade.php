@@ -94,6 +94,10 @@
             max-height: 60vh;
             overflow-y: auto;
         }
+
+        #product-table-list_wrapper {
+            height: 100% !important;
+        }
     </style>
 @endpush
 
@@ -231,21 +235,23 @@
     <!-- Product Selection Modal -->
     <div id="product-selection-modal"
         class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl max-h-[60vh] mt-20 flex flex-col">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl h-full max-h-full flex flex-col">
             <div class="p-4 border-b border-gray-700">
                 <h3 class="text-xl font-semibold text-white">Pilih Produk</h3>
             </div>
 
-            <div class="flex-1 overflow-y-auto">
-                <table class="w-full text-sm text-left text-gray-400" id="product-table-list">
+            <div class="relative overflow-x-auto flex-1 p-6">
+                <table class="w-full text-sm text-left text-gray-400" id="product-table-list"
+                    style="width: 100%;height: 100%">
                     <thead class="text-xs uppercase bg-gray-700 text-gray-400 sticky top-0">
                         <tr>
-                            <th class="px-4 py-3 w-10"><input type="checkbox" id="select-all"
-                                    class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            <th class="px-4 py-3" width="1%">
+                                <input type="checkbox" id="select-all"
+                                    class=" h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
                             </th>
-                            <th class="px-4 py-3">Part</th>
-                            <th class="px-4 py-3">Harga</th>
-                            <th class="px-4 py-3">Stok</th>
+                            <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="10%">Harga</th>
+                            <th class="px-4 py-3" width="10%">Stok</th>
                         </tr>
                     </thead>
                     <tbody id="product-list">
@@ -334,20 +340,20 @@
                 }).format(number);
             };
 
-            // Convert formatted Rupiah back to number
-            const originalNumber = (formatted) => {
-                return parseFloat(formatted.replace(/[^0-9.-]+/g, ""));
-            };
 
             var table = $('#product-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                columnDefs: [{
+                    width: '30px',
+                    targets: 1,
+                }],
                 ajax: "{{ route('api.product.list') }}",
                 columns: [{
                         data: 'checkbox',
                         name: 'checkbox',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
                     },
                     {
                         data: 'name',
@@ -419,6 +425,7 @@
                     });
                 }
             });
+
 
             // Initialize supplier select
             const supplierSelect = new TomSelect('#supplier_id', {
@@ -504,7 +511,7 @@
                     const productRow = checkbox.closest('tr');
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
                     const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
-
+                    // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
                         addItemRow(productId, productName, originalNumber(productPrice));
@@ -515,21 +522,7 @@
                 resetSelection();
             });
 
-            // Search products
-            document.getElementById('product-search').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const rows = document.querySelectorAll('#product-list tr');
 
-                rows.forEach(row => {
-                    const productName = row.querySelector('td:nth-child(2)').textContent
-                        .toLowerCase();
-                    if (productName.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
 
 
 
@@ -644,14 +637,19 @@
 
             // Set today's date as default
             document.getElementById('purchase_date').valueAsDate = new Date();
-
+            // console.log('create')
             // Format prices before form submission
             const form = document.getElementById('form-purchase');
             form.addEventListener('submit', function(e) {
+                // e.preventDefault();
                 document.querySelectorAll('#items-container tr').forEach(row => {
                     const priceInput = row.querySelector('.unit-price');
+                    const selingPrice = row.querySelector('.selling_price');
                     priceInput.value = originalNumber(priceInput.value);
+                    selingPrice.value = originalNumber(selingPrice.value);
                 });
+
+
             });
 
             // Quick product form submission

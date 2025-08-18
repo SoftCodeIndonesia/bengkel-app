@@ -290,6 +290,14 @@ class JobOrderController extends Controller
 
         return view('job-orders.show', compact('jobOrder'));
     }
+    public function print(string $id)
+    {
+
+
+        $jobOrder = JobOrder::with('orderItems', 'orderItems.product', 'invoice', 'breakdowns', 'orderItems.product', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle')->find($id);
+
+        return view('job-orders.print', compact('jobOrder'));
+    }
 
     public function edit(JobOrder $jobOrder)
     {

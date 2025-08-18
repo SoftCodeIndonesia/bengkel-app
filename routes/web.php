@@ -95,6 +95,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('info-detail/{id}', [ProductController::class, 'infoDetail'])->name('info-detail');
 
     // Job Orders
+    Route::get('job-orders/print/{id}', [JobOrderController::class, 'print'])->name('job-orders.print');
     Route::resource('job-orders', JobOrderController::class);
 
     // Job Orders
@@ -219,6 +220,7 @@ Route::middleware('auth')->group(function () {
     // sales
     Route::resource('sales', \App\Http\Controllers\SalesController::class);
     Route::get('sales/delete_item/{id}/{sale_id}', [\App\Http\Controllers\SalesController::class, 'delete_item'])->name('delete_item_sales');
+    Route::get('sales/{id}/print', [\App\Http\Controllers\SalesController::class, 'print'])->name('print_so');
     Route::delete('/sales-items/{id}', [SaleController::class, 'destroyItem'])->name('sales-items.destroy');
 
     Route::resource('returns', \App\Http\Controllers\ReturnController::class);
@@ -237,8 +239,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('appointments', AppointmentController::class);
     Route::get('appointments/customer-vehicles/{customerId}', [AppointmentController::class, 'getCustomerVehicles']);
+
+
+    Route::get('/estimation/print/{id}', [EstimationController::class, 'print'])->name('estimation.print');
     Route::get('/estimation/job-order/{id}', [EstimationController::class, 'toJobOrder'])->name('to-job-order');
     Route::resource('estimation', EstimationController::class);
+
+
     Route::resource('service-packages', ServicePackageController::class);
     // Route::put('/estimation/{id}', [SupplierController::class, 'update'])->name('estimation.update');
 

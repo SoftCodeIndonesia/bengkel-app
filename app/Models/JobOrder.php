@@ -131,6 +131,12 @@ class JobOrder extends Model
             $this->statuses = [
                 'completed',
             ];
+        } else if ($this->status == 'draft') {
+            $this->statuses = [
+                'progress',
+                'completed',
+                'cancelled',
+            ];
         } else {
             $this->statuses = [];
         }

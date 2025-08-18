@@ -77,7 +77,7 @@
 @endpush
 
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Edit Job Order</h2>
             <a href="{{ route('estimation.index') }}"
@@ -332,7 +332,9 @@
                         Tambah Breakdown
                     </button>
                 </div>
-
+                @php
+                    $itemIndex = 0;
+                @endphp
                 <!-- Services Section -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-3">
@@ -361,9 +363,7 @@
                             </tr>
                         </thead>
                         <tbody id="service-items-container">
-                            @php
-                                $itemIndex = 0;
-                            @endphp
+
                             @foreach ($jobOrder->orderItems as $key => $item)
                                 @if ($item->product->tipe == 'jasa')
                                     <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
@@ -372,10 +372,7 @@
                                                 value="{{ $item->id }}">
                                             <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
                                                 value="{{ $item->product_id }}">
-                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
-                                                value="{{ $item->product->name }}" disabled
-                                                data-json="{{ $item->product }}"
-                                                class="product-view bg-gray-700 border border-gray-600 text-sm text-white rounded-md py-1 px-2 w-full">
+                                            <span>{{ $item->product->name }}</span>
 
                                         </td>
                                         <td class="p-2 text-center" width="100px">
@@ -391,7 +388,7 @@
                                         </td>
                                         <td class="p-2 text-right">
                                             <span
-                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
+                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="p-2 text-right" width="100px">
                                             <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
@@ -403,7 +400,7 @@
                                         </td>
                                         <td class="p-2 text-right">
                                             <span class="total-after-diskon text-gray-300">
-                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
+                                                {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="p-2 flex justify-center items-center">
                                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
@@ -442,8 +439,8 @@
                         id="sparepart-table">
                         <thead class="uppercase bg-gray-700 text-gray-400">
                             <tr>
-                                <th class="p-2">Produk</th>
-                                <th class="p-2">Kategori</th>
+                                <th class="p-2">Sparepart</th>
+                                <th class="p-2 text-center">Kategori</th>
                                 <th class="p-2">QTY</th>
                                 <th class="p-2 text-right">Harga Satuan</th>
                                 <th class="p-2 text-right">Subtotal</th>
@@ -453,9 +450,8 @@
                             </tr>
                         </thead>
                         <tbody id="sparepart-items-container">
-                            @php
-                                $itemIndex = 0;
-                            @endphp
+
+
                             @foreach ($jobOrder->orderItems as $key => $item)
                                 @if ($item->product->tipe != 'jasa')
                                     <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
@@ -464,14 +460,12 @@
                                                 value="{{ $item->id }}">
                                             <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
                                                 value="{{ $item->product_id }}">
-                                            <input type="text" name="items[{{ $itemIndex }}][name]" min="1"
-                                                value="{{ $item->product->name }}" disabled
-                                                data-json="{{ $item->product }}"
-                                                class="product-view bg-gray-700 border text-sm border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                            <span>{{ $item->product->name }}</span>
 
                                         </td>
-                                        <td class="p-2" width="100px">
-                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
+                                        <td class="p-2 text-center " width="100px">
+                                            <span
+                                                class="kategori text-center text-gray-300">{{ $item->product->tipe }}</span>
                                         </td>
                                         <td class="p-2" width="100px">
                                             <input type="number" name="items[{{ $itemIndex }}][quantity]"
@@ -480,12 +474,12 @@
                                         </td>
                                         <td class="p-2 text-right">
                                             <span
-                                                class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 2, ',', '.') }}
+                                                class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
                                             </span>
                                         </td>
                                         <td class="p-2 text-right">
                                             <span
-                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 2, ',', '.') }}</span>
+                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="p-2 text-right" width="100px">
                                             <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
@@ -497,7 +491,7 @@
                                         </td>
                                         <td class="p-2 text-right">
                                             <span class="total-after-diskon text-gray-300">
-                                                {{ 'Rp ' . number_format($item->price_after_diskon, 2, ',', '.') }}</span>
+                                                {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="p-2 flex justify-center items-center">
                                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
@@ -579,12 +573,55 @@
             </form>
         </div>
     </div>
+
+    <div id="product-selection-modal"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl h-full max-h-full flex flex-col">
+            <div class="p-4 border-b border-gray-700">
+                <h3 class="text-xl font-semibold text-white">Pilih Produk</h3>
+            </div>
+
+            <div class="relative overflow-x-auto flex-1 p-6">
+                <table class="w-full text-sm text-left text-gray-400" id="product-table-list" style="width: 100%;">
+                    <thead class="text-xs uppercase bg-gray-700 text-gray-400
+                    sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3" width="1%">
+                                <input type="checkbox" id="select-all"
+                                    class="h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            </th>
+                            <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="10%">Harga</th>
+                            <th class="px-4 py-3" width="10%">Stok/FRT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-list">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-700 flex justify-end">
+                <button type="button" id="cancel-selection"
+                    class="mr-2 px-4 py-2 bg-gray-600 text-white rounded-lg">Batal</button>
+                <button type="button" id="confirm-selection"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg">Tambahkan</button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const modalSelectProduct = document.getElementById('product-selection-modal');
+            modalSelectProduct.classList.add('hidden');
+
+            let selectedProducts = [];
+            let tipe = 'barang';
+
             // Inisialisasi counter untuk items dan breakdowns
             let itemCounter = 1;
             let breakdownCounter = 1;
@@ -595,14 +632,6 @@
 
             calculateTotal();
 
-            console.log('hallo', );
-
-            document.querySelectorAll('.item-row').forEach(row => {
-                // console.log(row);
-                const type = row.dataset.tipe;
-
-                initItemRowEvents(row, type);
-            });
 
 
             // Initialize TomSelect for customer vehicle
@@ -708,43 +737,53 @@
 
             // Add sparepart row
             document.getElementById('add-sparepart').addEventListener('click', function() {
-                addItemRow('barang', 'sparepart-items-container');
+                tipe = 'barang';
+                table.draw();
+                modalSelectProduct.classList.remove('hidden');
             });
 
             // Add service row
             document.getElementById('add-service').addEventListener('click', function() {
-                addItemRow('jasa', 'service-items-container');
+                tipe = 'jasa';
+                table.draw();
+                modalSelectProduct.classList.remove('hidden');
             });
 
-            // Function to add item row
-            function addItemRow(type, containerId) {
-                const tbody = document.getElementById(containerId);
+            function addItemRow(kategori, productName, productId, unit_price, quantity) {
+
+                let containerStr = '';
+                if (tipe == 'jasa') {
+                    containerStr = 'service-items-container';
+                } else {
+                    containerStr = 'sparepart-items-container';
+                }
+
+                const tbody = document.getElementById(containerStr);
                 const rowId = `item-row-${itemCounter}`;
 
                 const row = document.createElement('tr');
                 row.id = rowId;
                 row.classList.add('border-b', 'border-gray-600', 'item-row');
 
-                if (type === 'barang') {
+                if (tipe === 'barang') {
                     row.innerHTML = `
                         <td class="p-2" width="300px">
-                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
-                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
-                            </select>
                             <input type="hidden" name="items[${itemCounter}][type]" value="barang">
+                            <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
+                            <span>${productName}</span>
                         </td>
                         <td class="p-2 text-center">
-                            <span class="kategori text-gray-300">-</span>
+                            <span class="kategori text-gray-300">${kategori}</span>
                         </td>
                         <td class="p-2" width="100px">
                             <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
-                            <span class="unit-price text-gray-300">Rp 0</span>
+                            <span class="unit-price text-gray-300">Rp ${formatRupiah(unit_price)}</span>
                         </td>
                         <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp 0</span>
+                            <span class="subtotal text-gray-300">Rp ${formatRupiah(unit_price * quantity)}</span>
                         </td>
                         <td class="p-2 text-right">
                             <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
@@ -753,7 +792,7 @@
                                 placeholder="%">
                         </td>
                         <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp 0</span>
+                            <span class="total-after-diskon text-gray-300">Rp ${formatRupiah(unit_price * quantity)}</span>
                         </td>
                         <td class="p-2 text-center">
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
@@ -765,26 +804,25 @@
                         </td>
                     `;
                 } else {
+                    const base_price = 100000;
                     row.innerHTML = `
                         <td class="p-2" width="300px">
-                            <select name="items[${itemCounter}][product_id]" data-tipe="${type}" required
-                                class="product-select tom-autocomplete w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2">
-                            </select>
                             <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
+                            <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
+                            <span>${productName}</span>
                         </td>
                         <td class="p-2 text-center">
-                            <span class="kategori text-gray-300">-</span>
+                            <span class="kategori text-gray-300">jasa</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.01"
+                            <input type="number" name="items[${itemCounter}][quantity]" value="${quantity}" min="0.1" step="0.01"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
-                        
-                        <td class="p-2 text-right">
+                        <td class="p-2 text-center">
                             
                         </td>
                         <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp 0</span>
+                            <span class="subtotal text-gray-300">Rp ${formatRupiah(base_price * quantity)}</span>
                         </td>
                         <td class="p-2 text-right">
                             <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
@@ -793,7 +831,7 @@
                                 placeholder="%">
                         </td>
                         <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp 0</span>
+                            <span class="total-after-diskon text-gray-300">Rp ${formatRupiah(base_price * quantity)}</span>
                         </td>
                         <td class="p-2 text-center">
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
@@ -810,10 +848,10 @@
 
                 // Initialize TomSelect for the new row
                 const select = row.querySelector('.product-select');
-                initializeProductSelect(select, type);
+                // initializeProductSelect(select, tipe);
 
                 // Add event listeners for calculations
-                initItemRowEvents(row, type);
+                initItemRowEvents(row, tipe);
 
                 itemCounter++;
             }
@@ -855,31 +893,26 @@
                 });
             }
 
+            document.querySelectorAll('.item-row').forEach(row => {
+                const type = row.dataset.tipe;
+                // console.log(type);
+                initItemRowEvents(row, type);
+            })
+
             // Initialize item row events
             function initItemRowEvents(row, type) {
-                const select = row.querySelector('.product-select');
+
                 const qtyInput = row.querySelector('.quantity');
                 const diskonValue = row.querySelector('.diskon-value');
                 const kategori = row.querySelector('.kategori');
                 const priceText = row.querySelector('.unit-price');
+
                 const subtotalText = row.querySelector('.subtotal');
                 const totalAfterDiskonText = row.querySelector('.total-after-diskon');
 
                 const calculateItemTotal = () => {
-                    const data = select?.tomselect ? select.tomselect.items[0] : row.querySelector(
-                        '.product-view').dataset.json;
-                    if (!data) return;
-
-
-
-                    const jsonData = JSON.parse(data);
-
-                    if (type == 'jasa' & qtyInput.value == '') {
-                        qtyInput.value = jsonData.stok;
-                    }
-
-                    const price = parseFloat(jsonData.unit_price) || 0;
-                    const qty = parseFloat(qtyInput.value) || (type === 'jasa' ? jsonData.stok : 1);
+                    const price = originalNumber(priceText?.textContent ?? 0);
+                    const qty = parseFloat(qtyInput.value);
                     const diskon = parseFloat(diskonValue.value) || 0;
 
                     var subtotal = 0;
@@ -891,9 +924,10 @@
 
 
                     const totalAfterDiskon = subtotal * (1 - (diskon / 100));
+                    console.log(totalAfterDiskon);
 
-                    kategori.textContent = type === 'jasa' ? 'Jasa' : 'Sparepart';
-                    if (type != 'jasa') {
+                    if (type !== 'jasa') {
+
                         priceText.textContent = 'Rp ' + formatNumber(price);
                     }
                     subtotalText.textContent = 'Rp ' + formatNumber(subtotal);
@@ -902,9 +936,7 @@
                     calculateTotal();
                 };
 
-                if (select) {
-                    select.addEventListener('change', calculateItemTotal);
-                }
+
                 qtyInput.addEventListener('input', calculateItemTotal);
                 diskonValue.addEventListener('input', calculateItemTotal);
 
@@ -937,6 +969,8 @@
                         calculateTotal();
                     }
                 });
+
+                calculateTotal();
             }
 
             // Add breakdown row
@@ -972,23 +1006,26 @@
                 let subtotal = 0;
 
                 document.querySelectorAll('.item-row').forEach(row => {
-                    const itemType = row.querySelector('.kategori').textContent;
-                    const subtotalText = row.querySelector('.subtotal').textContent;
-                    const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
+                    if (row.style.display !== 'none') {
+                        const itemType = row.querySelector('.kategori').textContent;
+                        const subtotalText = row.querySelector('.subtotal').textContent;
+                        const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
 
-                    const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g, '')) ||
-                        0;
-                    const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
-                        /\./g, '')) || 0;
+                        const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g,
+                            '')) ||
+                            0;
+                        const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
+                            /\./g, '')) || 0;
 
-                    if (itemType !== 'jasa' && itemType !== 'Jasa') {
-                        totalSparepart += subtotalValue;
-                    } else {
-                        totalJasa += subtotalValue;
+                        if (itemType != 'jasa') {
+                            totalSparepart += subtotalValue;
+                        } else {
+                            totalJasa += subtotalValue;
+                        }
+
+                        totalDiskonItem += (subtotalValue - totalAfterDiskon);
+                        subtotal += totalAfterDiskon;
                     }
-
-                    totalDiskonItem += (subtotalValue - totalAfterDiskon);
-                    subtotal += totalAfterDiskon;
                 });
 
                 document.getElementById('total-sparepart').value = 'Rp ' + formatNumber(totalSparepart);
@@ -1055,6 +1092,139 @@
 
             // Set default date to today
             document.getElementById('service_at').value = new Date().toISOString().slice(0, 16);
+
+            var table = $('#product-table-list').DataTable({
+                processing: true,
+                serverSide: true,
+                columnDefs: [{
+                    width: '30px',
+                    targets: 1,
+                }],
+                ajax: {
+                    url: "{{ route('api.product.list') }}",
+                    data: function(d) {
+                        d.tipe = tipe;
+                    }
+                },
+                columns: [{
+                        data: 'checkbox',
+                        name: 'checkbox',
+                        orderable: false,
+                        searchable: false,
+                        className: 'px-4 py-3 ',
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'formatted_price',
+                        name: 'unit_price',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'stok',
+                        name: 'stok',
+                        className: 'px-4 py-3'
+                    },
+
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
+                },
+                dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"<"mb-2 md:mb-0"l><"flex items-center"f>>rt<"flex flex-col md:flex-row justify-between items-center mt-4"<"mb-2 md:mb-0"i><"pagination-container"p>>',
+                initComplete: function() {
+                    // Styling untuk search input
+                    $('.dataTables_length label').addClass(
+                        'text-gray-400'
+                    );
+                    $('.dataTables_filter label').addClass(
+                        'text-gray-400'
+                    );
+
+                    $('.dataTables_info').addClass(
+                        'text-gray-400'
+                    );
+
+
+                    $('.dataTables_filter input').addClass(
+                        'bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+
+                    // Styling untuk length menu
+                    $('.dataTables_length select').addClass(
+                        'bg-gray-700 border border-gray-600 text-green-600 rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_processing')
+                        .css({
+                            'background': 'transparent', // bg-gray-800/90
+                            'color': 'white',
+                        });
+                },
+                drawCallback: function() {
+                    // Styling data info
+                    $('.dataTables_info').addClass('text-gray-400');
+                    // Styling untuk pagination setelah draw
+                    $('.pagination-container .paginate_button').addClass(
+                        'px-3 py-1 mx-1 text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition duration-150'
+                    );
+                    $('.pagination-container .paginate_button.current').addClass(
+                        'bg-blue-600 text-white border-blue-600');
+
+                    $('.dataTables_paginate').addClass('flowbite-pagination');
+                    $('.paginate_button').each(function() {
+                        // Hapus class bawaan DataTables
+                        $(this).removeClass('paginate_button previous next first last');
+
+                        // Tambahkan class sesuai jenis tombol
+                        if ($(this).hasClass('current')) {
+                            $(this).addClass('active bg-blue-600 text-white');
+                        } else if ($(this).hasClass('disabled')) {
+                            $(this).addClass('opacity-50 cursor-not-allowed');
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('confirm-selection').addEventListener('click', function() {
+                const checkboxes = document.querySelectorAll(
+                    '#product-list input[type="checkbox"]:checked');
+                checkboxes.forEach(checkbox => {
+                    const productId = checkbox.value;
+                    const productRow = checkbox.closest('tr');
+                    const kategori = productRow.querySelector('.tipe').value;
+                    const quantity = productRow.querySelector('.qty').value;
+
+                    const productName = productRow.querySelector('td:nth-child(2)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    // console.log(originalNumber(productPrice));
+                    if (!selectedProducts.includes(productId)) {
+                        selectedProducts.push(productId);
+                        addItemRow(kategori, productName, productId, originalNumber(
+                            productPrice), quantity);
+                    }
+                });
+
+                document.getElementById('product-selection-modal').classList.add('hidden');
+                resetSelection();
+            });
+
+            // Close product selection modal
+            document.getElementById('cancel-selection').addEventListener('click', function() {
+                modalSelectProduct.classList.add('hidden');
+                resetSelection();
+            });
+
+            // Reset product selection
+            function resetSelection() {
+                document.getElementById('select-all').checked = false;
+
+                const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
         });
     </script>
 @endpush

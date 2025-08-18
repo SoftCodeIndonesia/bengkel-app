@@ -129,8 +129,15 @@ class SalesController extends Controller
         return view('sales.show', compact('sale'));
     }
 
+    public function print(string $id)
+    {
+        $sale = Sales::with('items', 'customer')->find($id);
+        return view('sales.print', compact('sale'));
+    }
+
     public function edit(Sales $sale)
     {
+
         $customers = Customer::all();
         $products = Product::where('tipe', '!=', 'jasa')->get();
 
@@ -140,7 +147,7 @@ class SalesController extends Controller
     public function update(Request $request, Sales $sale)
     {
 
-        // dd($request->all());
+
         DB::beginTransaction();
 
         try {
@@ -193,10 +200,7 @@ class SalesController extends Controller
                         $item->delete();
                     }
                     continue;
-                }
-
-                // Handle item yang sudah ada (update)
-                if (!empty($itemData['id'])) {
+                } else if (!empty($itemData['id'])) {
                     $item = SalesItem::where('id', $itemData['id'])
                         ->where('sales_id', $sale->id)
                         ->firstOrFail();
@@ -230,20 +234,21 @@ class SalesController extends Controller
                     }
 
                     $existingItemIds[] = $item->id;
-                }
-                // Handle item baru (create)
-                else {
+                } else {
                     $product = Product::find($itemData['product_id']);
                     $total = $product->unit_price * $item['quantity'];
-                    $item = $sale->items()->create([
+
+                    $toCreate = [
                         'product_id' => $product->id,
                         'quantity' => $itemData['quantity'],
                         'unit_price' => $product->unit_price,
                         'total_price' => $product->unit_price * $itemData['quantity'],
-                        'discount_percentage' => $item['dicount_percentage'],
-                        'discount_nominal' => $total * ($item['dicount_percentage'] / 100),
-                        'price_after_discount' => $total * (1 - ($item['dicount_percentage'] / 100)),
-                    ]);
+                        'discount_percentage' => $itemData['dicount_percentage'],
+                        'discount_nominal' => $total * ($itemData['dicount_percentage'] / 100),
+                        'price_after_discount' => $total * (1 - ($itemData['dicount_percentage'] / 100)),
+                    ];
+                    // dd($toCreate);
+                    $item = $sale->items()->create($toCreate);
 
                     // Kurangi stok jika produk barang
                     if ($product->tipe === 'barang') {
