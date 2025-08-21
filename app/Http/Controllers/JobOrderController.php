@@ -378,7 +378,13 @@ class JobOrderController extends Controller
                     OrderItem::find($id)->delete();
                 } elseif (empty($item['id'])) {
                     $data_item = json_decode($item['product_id']);
-                    $product = Product::find($data_item->id);
+                    $product = null;
+                    if (gettype($data_item) == 'object') {
+                        $product = Product::find($data_item->id);
+                    } else {
+                        $product = Product::find($data_item);
+                    }
+
 
                     $subtotal = $product->unit_price * $item['quantity'];
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;

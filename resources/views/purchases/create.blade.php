@@ -409,7 +409,12 @@
             var table = $('#product-table-list').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('api.product.list') }}",
+                ajax: {
+                    url: "{{ route('api.product.list') }}",
+                    data: function(d) {
+                        d.tipe = 'barang';
+                    }
+                },
                 columnDefs: [{
                     width: '30px',
                     targets: 1,

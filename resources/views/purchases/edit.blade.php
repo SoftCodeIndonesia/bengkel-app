@@ -361,7 +361,12 @@
                     width: '30px',
                     targets: 1,
                 }],
-                ajax: "{{ route('api.product.list') }}",
+                ajax: {
+                    url: "{{ route('api.product.list') }}",
+                    data: function(d) {
+                        d.tipe = 'barang';
+                    }
+                },
                 columns: [{
                         data: 'checkbox',
                         name: 'checkbox',
