@@ -113,7 +113,7 @@ Route::get('/customer', function (Request $request) {
     return response()->json($data);
 })->name('api.customer-vehicle.search');
 Route::get('/package/{id}', function (Request $request) {
-    $data = ServicePackage::with('items', 'items.product')->get()->first();
+    $data = ServicePackage::with('items', 'items.product')->where('service_package_id', $request->id)->get()->first();
 
     return response()->json($data);
 })->name('api.get_package');
