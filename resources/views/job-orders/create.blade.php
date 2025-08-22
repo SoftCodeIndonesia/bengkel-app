@@ -315,7 +315,7 @@
                             <div class="breakdown-row flex gap-4 mb-3">
                                 <div class="col-span-11 flex-1">
                                     <input type="text" name="breakdowns[0][name]" placeholder="Masukan Kerusakan"
-                                        class="w-full bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        class="w-full breakdown-kerusakan bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div class="col-span-1 flex items-center">
                                     <button type="button" class="remove-breakdown text-red-500 hover:text-red-400">
