@@ -1,7 +1,137 @@
-<x-app-layout>
+@extends('layouts.print')
+@section('content')
+    <div class="p-4 rounded-lg border-gray-600">
+        <div class="overflow-x-auto">
+            <p class="mb-1">Informasi Pelanggan</p>
+            <table style="width: 100%; table-layout: fixed;">
+                <thead>
+                    <tr>
+                        <th class="text-left px-2" width="100px">Nama</th>
+                        <td class="text-left px-2">{{ $invoice->customer->name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left px-2" width="100px">Email</th>
+                        <td class="text-left px-2">{{ $invoice->customer->email }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left px-2" width="100px">No.Telp</th>
+                        <td class="text-left px-2">{{ $invoice->customer->phone }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left px-2" width="100px">Alamat</th>
+                        <td class="text-left px-2">{{ $invoice->customer->address }}</td>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+    <div class="px-1">
 
 
-    <div class="max-w-4xl mx-auto" style="width: 100%">
+
+        <div class="px-4 rounded-lg border-gray-600 mt-2">
+            <div class="flex justify-between items-center">
+                <p class="mb-1">Sparepart / Jasa</p>
+
+            </div>
+            <div class="overflow-x-auto">
+                <table class="" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr class="bg-gray-100" style="background-color: #f3f4f6;">
+                            <th class="py-2 px-4 border border-gray-300 text-left"
+                                style="width: 200px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: left;">
+                                Deskripsi</th>
+                            <th class="py-2 px-4 border border-gray-300 text-right"
+                                style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Harga Satan
+                            </th>
+                            <th class="py-2 px-4 border border-gray-300 text-right"
+                                style="width: 100px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Qty
+                            </th>
+                            <th class="py-2 px-4 border border-gray-300 text-right"
+                                style="width: 150px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Total
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $reference = $invoice->reference()->get()->first();
+                        @endphp
+
+                        @if ($invoice->tipe === 'sales')
+                            @foreach ($reference->items ?? [] as $item)
+                                <tr>
+                                    <td class="py-2 px-4 border border-gray-300"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                    </td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                        {{ $item->quantity }}</td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            @foreach ($reference->items ?? [] as $item)
+                                <tr>
+                                    <td class="py-2 px-4 border border-gray-300"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                    </td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                        {{ $item->quantity }}</td>
+                                    <td class="py-2 px-4 border border-gray-300 text-right"
+                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="p-4 rounded-lg border-gray-600 mt-2">
+            <p class="mb-1">Rincian Biaya</p>
+
+            <div class="overflow-x-auto">
+                <table style="width: 100%; table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Subtotal</th>
+                            <td class="text-right font-bold px-2">Rp
+                                {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Diskon</th>
+                            <td class="text-right font-bold px-2">
+                                @if ($jobOrder->diskon_unit == 'percentage')
+                                    ({{ $jobOrder->diskon_value }}%)
+                                @else
+                                    Rp
+                                    {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Total</th>
+                            <td class="text-right font-bold px-2">Rp
+                                {{ number_format($jobOrder->total, 2, ',', '.') }}</td>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {{-- <div class="max-w-4xl mx-auto" style="width: 100%">
         <!-- Header Section -->
         <div class="flex items-center justify-between">
             <p class="text-2xl font-bold">Invoice<span class=""> #{{ $invoice->unique_id }}</span></p>
@@ -52,7 +182,7 @@
                 </thead>
                 <tbody>
                     @php
-                        $reference = $invoice->reference;
+                        $reference = $invoice->reference()->get()->first();
                     @endphp
 
                     @if ($invoice->tipe === 'sales')
@@ -115,22 +245,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Footer Section -->
-        <div class="mt-16 pt-8 border-t border-gray-300"
-            style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #d1d5db;">
-            <div class="text-center">
-                <p class="mb-4">Terima kasih atas kepercayaan Anda</p>
-                <div class="mt-12">
-                    <p class="font-medium">(__________________________)</p>
-                    <p class="text-gray-600">Hormat kami,</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    @push('scripts')
-        <script>
-            window.print();
-        </script>
-    @endpush
-</x-app-layout>
+        
+    </div> --}}
+@endsection

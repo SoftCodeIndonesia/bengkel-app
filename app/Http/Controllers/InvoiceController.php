@@ -194,6 +194,7 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'tipe' => 'required|in:sales,services',
             'reference_id' => 'required',
@@ -201,6 +202,7 @@ class InvoiceController extends Controller
             'due_date' => 'nullable|date',
             'diskon_value' => 'nullable|numeric|min:0'
         ]);
+
 
         if ($validated['tipe'] === 'sales') {
             $sale = Sales::findOrFail($validated['reference_id']);
@@ -285,12 +287,17 @@ class InvoiceController extends Controller
             ->with('success', 'Invoice berhasil diperbarui');
     }
 
-    public function print(Invoice $invoice)
+    public function print(string $id)
     {
-        $invoice->load(['reference']);
+
+        $invoice = Invoice::with('reference')->find($id);
+        $item = $invoice->reference()->with('items')->get()->first()->items;
+        $data['unique_id'] = $invoice->unique_id;
+        $data['tanggal'] = $invoice->created_at->format('d/m/Y');
+        $data['customer_name'] = $invoice->customer_name;
 
         // $pdf = Pdf::loadView('invoices.print', compact('invoice'));
         // return $pdf->stream('invoice-' . $invoice->unique_id . '.pdf');
-        return view('invoices.print', compact('invoice'));
+        return view('invoices.print', compact('invoice', 'item', 'data'));
     }
 }

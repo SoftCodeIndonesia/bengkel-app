@@ -131,6 +131,7 @@ Route::middleware('auth')->group(function () {
 
 
     // Invoices
+    Route::get('invoices/print/{id}', [InvoiceController::class, 'print'])->name('invoice-print');
     Route::resource('invoices', InvoiceController::class)->only([
         'index',
         'create',

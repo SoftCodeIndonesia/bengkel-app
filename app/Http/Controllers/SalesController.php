@@ -132,7 +132,10 @@ class SalesController extends Controller
     public function print(string $id)
     {
         $sale = Sales::with('items', 'customer')->find($id);
-        return view('sales.print', compact('sale'));
+        $data['unique_id'] = $sale->unique_id;
+        $data['tanggal'] = $sale->sales_date->format('d M Y H:i');
+        $data['customer_name'] = $sale->customer->name;
+        return view('sales.print', compact('sale', 'data'));
     }
 
     public function edit(Sales $sale)

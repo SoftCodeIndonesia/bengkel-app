@@ -101,6 +101,19 @@
             <form action="{{ route('job-orders.store') }}" method="POST" id="jobOrderForm">
                 @csrf
 
+                <div class="mb-6">
+                    <label for="package" class="block mb-2 text-sm font-medium text-white">Tipe</label>
+                    <select id="package" name="package"
+                        class=" border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <option value="custom" selected>Normal</option>
+                        @foreach ($packages as $package)
+                            <option value="{{ $package->id }}" {{ $package->id == old('package') ? 'selected' : '' }}>
+                                {{ $package->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Customer Section -->
                 <div class="w-full" id="field-customer_vehicle_id">
                     <label for="customer_vehicle_id" class="block text-sm font-medium text-gray-300 mb-2">
@@ -507,6 +520,65 @@
             let breakdownCounter = 1;
             let customer_form_active = false;
 
+            $('#package').change(function(e) {
+                e.preventDefault();
+
+                var id = $(this).val();
+
+                fetchPackage(id);
+
+            });
+
+            const fetchPackage = (id) => {
+                if (id === 'custom') {
+                    document.querySelectorAll('.item-row').forEach(row => {
+                        row.remove();
+                        calculateTotal();
+                    })
+                    return;
+                }
+
+                $.ajax({
+                    type: "get",
+                    url: base_url + "/api/package/" + id,
+                    dataType: "json",
+                    success: function(response) {
+                        initialPackage(response);
+                    }
+                });
+            }
+
+            const packageId = "{{ old('package') }}";
+
+            const initialPackage = (package) => {
+                $('.breakdown-kerusakan').val(package.name);
+                for (let index = 0; index < package.items.length; index++) {
+                    const element = package.items[index];
+                    if (element.product.tipe == 'jasa') {
+                        addItemRowPackage('jasa', 'service-items-container', {
+
+                            text: element.product.name,
+                            quantity: element.quantity,
+                            discount: element.discount,
+                            subtotal: element.subtotal,
+                            total: element.total,
+                            ...element.product,
+                        });
+                    } else {
+                        addItemRowPackage('barang', 'sparepart-items-container', {
+
+                            text: element.product.name,
+                            quantity: element.quantity,
+                            discount: element.discount,
+                            subtotal: element.subtotal,
+                            total: element.total,
+                            ...element.product,
+                        });
+                    }
+                    calculateTotal();
+                }
+            }
+
             // Initialize TomSelect for customer vehicle
             new TomSelect('#customer_vehicle_id', {
                 valueField: 'id',
@@ -719,6 +791,103 @@
 
                 // Add event listeners for calculations
                 initItemRowEvents(row, tipe);
+
+                itemCounter++;
+            }
+
+            function addItemRowPackage(type, containerId, data) {
+                console.log(data);
+                const tbody = document.getElementById(containerId);
+                const rowId = `item-row-${itemCounter}`;
+
+                const row = document.createElement('tr');
+                row.id = rowId;
+                row.classList.add('border-b', 'border-gray-600', 'item-row');
+
+                if (type === 'barang') {
+                    row.innerHTML = `
+                        <td class="p-2" width="300px">
+                            <input type="hidden" name="items[${itemCounter}][type]" value="barang">
+                            <input type="hidden" name="items[${itemCounter}][product_id]" value="${data.id}">
+                            <span>${data.name}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <span class="kategori text-gray-300">${data.tipe}</span>
+                        </td>
+                        <td class="p-2" width="100px">
+                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="${data.quantity}"
+                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="unit-price text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
+                                value="${data.discount}"
+                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                placeholder="%">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td class="p-2" width="300px">
+                            <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
+                            <input type="hidden" name="items[${itemCounter}][product_id]" value="${data.id}">
+                            <span>${data.name}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <span class="kategori text-gray-300">${data.tipe}</span>
+                        </td>
+                        <td class="p-2" width="100px">
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1" value="${data.quantity}"
+                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        </td>
+                        
+                        <td class="p-2 text-right">
+                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
+                                value="${data.discount}"
+                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                placeholder="%">
+                        </td>
+                        <td class="p-2 text-right">
+                            <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </td>
+                    `;
+                }
+
+                tbody.appendChild(row);
+
+                // Initialize TomSelect for the new row
+                const select = row.querySelector('.product-select');
+
+
+                // Add event listeners for calculations
+                initItemRowEvents(row, type);
 
                 itemCounter++;
             }

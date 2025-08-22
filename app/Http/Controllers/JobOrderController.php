@@ -153,7 +153,7 @@ class JobOrderController extends Controller
 
         $validated = $this->validateRequest($request);
 
-
+        // dd($request->all());
 
 
         DB::transaction(function () use ($request) {
@@ -296,7 +296,10 @@ class JobOrderController extends Controller
 
         $jobOrder = JobOrder::with('orderItems', 'orderItems.product', 'invoice', 'breakdowns', 'orderItems.product', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle')->find($id);
 
-        return view('job-orders.print', compact('jobOrder'));
+        $data['unique_id'] = $jobOrder->unique_id;
+        $data['tanggal'] = $jobOrder->service_at->format('d M Y H:i');
+        $data['customer_name'] = $jobOrder->customerVehicle->customer->name;
+        return view('job-orders.print', compact('jobOrder', 'data'));
     }
 
     public function edit(JobOrder $jobOrder)

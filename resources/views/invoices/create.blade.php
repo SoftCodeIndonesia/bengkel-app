@@ -91,7 +91,7 @@
                     @endforeach
                 </div>
             @endif
-            <form action="{{ route('invoices.store') }}" method="POST">
+            <form action="{{ route('invoices.store') }}" method="POST" id="form-create-invoice">
                 @csrf
 
                 <div class="space-y-4 mb-6">
@@ -490,6 +490,13 @@
             function formatNumber(num) {
                 return new Intl.NumberFormat('id-ID').format(num);
             }
+
+            $('#form-create-invoice').submit(function(e) {
+
+                $('input[name="subtotal"]').val(originalNumber($('input[name="subtotal"]').val()));
+                $('input[name="diskon_value"]').val(originalNumber($('input[name="diskon_value"]').val()));
+                $('input[name="total"]').val(originalNumber($('input[name="total"]').val()));
+            });
         });
     </script>
 @endpush
