@@ -151,9 +151,9 @@ class JobOrderController extends Controller
 
 
 
+        // dd($request->all());
         $validated = $this->validateRequest($request);
 
-        // dd($request->all());
 
 
         DB::transaction(function () use ($request) {
@@ -307,6 +307,8 @@ class JobOrderController extends Controller
         $jobOrder->load(['orderItems.product', 'breakdowns', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle']);
         $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
         $products = Product::all();
+
+        // dd($jobOrder);
 
         $total_sparepart = 0;
         $total_service = 0;

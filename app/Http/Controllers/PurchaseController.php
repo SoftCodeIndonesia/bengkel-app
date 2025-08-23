@@ -102,6 +102,7 @@ class PurchaseController extends Controller
 
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_name' => 'required',
             'purchase_date' => 'required|date',
             'notes' => 'nullable|string',
             'invoice_number' => 'nullable|string',

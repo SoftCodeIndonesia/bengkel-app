@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomerVehicle;
 use Illuminate\Http\Request;
+use App\Models\CustomerVehicle;
+use Yajra\DataTables\DataTables;
 
 class CustomerVehicleController extends Controller
 {
@@ -13,6 +14,46 @@ class CustomerVehicleController extends Controller
     public function index()
     {
         //
+    }
+
+    public function tableSearch(Request $request)
+    {
+        $data = CustomerVehicle::with('customer', 'vehicle');
+
+
+        if ($request->search['value']) {
+            $data = $data->whereHas('customer', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search['value'] . '%');
+            });
+        }
+
+        $data = $data->select('*');
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('customer_name', function ($row) {
+                return $row->customer->name;
+            })
+            ->addColumn('phone', function ($row) {
+                return $row->customer->phone;
+            })
+            ->addColumn('address', function ($row) {
+                return $row->customer->address;
+            })
+            ->addColumn('no_pol', function ($row) {
+                return $row->vehicle->no_pol;
+            })
+            ->addColumn('kendaraan', function ($row) {
+                return $row->vehicle->merk . ' ' . $row->vehicle->tipe;
+            })
+            ->addColumn('action', function ($row) {
+
+                $btn = '<button type="button" data-id="' . $row->id . '" data-name="' . $row->customer->name . '" class="select-customer text-blue-600">Pilih';
+                $btn .= '</button>';
+
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     /**

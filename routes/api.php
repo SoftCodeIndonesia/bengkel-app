@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SupplierController as ApiSupplierController;
 use App\Models\Sales;
 use App\Models\Product;
 use App\Models\Vehicle;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\CustomerVehicleController;
 use App\Http\Controllers\JobOrderController;
 use App\Models\ServicePackage;
@@ -30,6 +31,7 @@ use App\Models\ServicePackage;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/customer_vehicle_table/search', [CustomerVehicleController::class, 'tableSearch'])->name('customer-vehicle-search-table');
 Route::get('/customers_vehicle/search', function (Request $request) {
     $query = $request->input('q');
 
@@ -60,6 +62,8 @@ Route::get('/customers_vehicle/search', function (Request $request) {
 
     return response()->json($query);
 })->name('api.customers.search');
+
+Route::get('/supplier/search-table', [SupplierController::class, 'table'])->name('supplier-search-table');
 
 Route::get('/supplies/{supply}/items', function (App\Models\Supply $supply) {
     return $supply->items()->with(['product'])->get();
@@ -112,6 +116,8 @@ Route::get('/customer', function (Request $request) {
 
     return response()->json($data);
 })->name('api.customer-vehicle.search');
+
+
 Route::get('/package/{id}', function (Request $request) {
     $data = ServicePackage::with('items', 'items.product')->where('id', $request->id)->get()->first();
 
