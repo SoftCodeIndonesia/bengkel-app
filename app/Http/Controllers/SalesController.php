@@ -47,7 +47,7 @@ class SalesController extends Controller
     {
 
 
-        // dd($request->all());
+
 
         DB::beginTransaction();
 
@@ -63,6 +63,7 @@ class SalesController extends Controller
                 'items.*.dicount_percentage' => 'required|numeric|min:0.01',
                 'subtotal' => 'required|numeric',
                 'total' => 'required|numeric',
+                'notes' => 'string|nullable',
             ]);
 
 
@@ -70,7 +71,7 @@ class SalesController extends Controller
 
 
             // Jika ada customer baru
-            if ($request->filled('customer_name')) {
+            if (!$request->customer_id) {
                 $customer = Customer::create([
                     'name' => $request->customer_name,
                     'email' => $request->customer_email,
@@ -91,6 +92,7 @@ class SalesController extends Controller
                 'total' => $validated['total'],
                 'diskon_unit' => 'nominal',
                 'diskon_value' => $request->total_discount,
+                'notes' => $request->notes,
             ]);
 
             foreach ($validated['items'] as $item) {
@@ -165,6 +167,7 @@ class SalesController extends Controller
                 'items.*.dicount_percentage' => 'required',
                 'subtotal' => 'required|numeric',
                 'total' => 'required|numeric',
+                'notes' => 'string|nullable',
             ]);
 
             // Update informasi dasar penjualan
@@ -180,6 +183,7 @@ class SalesController extends Controller
                 'total' => $validated['total'],
                 'diskon_unit' => 'nominal',
                 'diskon_value' => $request->total_discount,
+                'notes' => $request->notes,
             ]);
 
             // Proses items

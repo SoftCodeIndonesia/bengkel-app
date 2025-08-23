@@ -5,7 +5,7 @@
     use App\Models\JobOrder;
 @endphp
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Detail Estimasi: {{ $jobOrder->unique_id }}</h2>
             <div class="flex space-x-2">

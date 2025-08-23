@@ -105,6 +105,11 @@
                 </div>
             </div>
 
+            <div class="mb-6">
+                <p class="text-white font-bold">Catatan : </p>
+                <span class="text-gray-400">{{ $sale->notes }}</span>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="md:col-span-2"></div>
                 <div class="bg-gray-700 p-4 rounded-lg">

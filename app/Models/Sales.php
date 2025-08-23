@@ -24,6 +24,7 @@ class Sales extends Model
         'diskon_unit',
         'diskon_value',
         'total',
+        'notes',
     ];
 
     protected $casts = [

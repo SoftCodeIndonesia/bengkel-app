@@ -1243,6 +1243,11 @@
                 tableCustomer.draw();
                 modalSelectCustomer.classList.remove('hidden');
             });
+            $('input[name="customer_vehicle_name"]').click(function(e) {
+                e.preventDefault();
+                tableCustomer.draw();
+                modalSelectCustomer.classList.remove('hidden');
+            });
             $('#cancel-customer-selection').click(function(e) {
                 e.preventDefault();
                 modalSelectCustomer.classList.add('hidden');

@@ -118,14 +118,16 @@
             </a>
         </div>
 
-        @if ($errors->any())
-            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                role="alert">
-                @foreach ($errors->all() as $error)
-                    <span class="font-medium">{{ $error }}</span>
-                @endforeach
-            </div>
-        @endif
+        <div class="p-4">
+            @if ($errors->any())
+                <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert">
+                    @foreach ($errors->all() as $error)
+                        <span class="font-medium">{{ $error }}</span>
+                    @endforeach
+                </div>
+            @endif
+        </div>
 
         <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data" class="p-4"
             id="form-purchase">
@@ -140,7 +142,7 @@
                     <div class="relative w-full">
                         <input type="text" id="supplier_name" value="{{ old('supplier_name') }}" name="supplier_name"
                             class="bg-gray-700 border border-gray-600 placeholder-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            placeholder="Cari Supplier....." readonly>
+                            placeholder="Cari Supplier....." required>
                         <button type="button" id="modal-select-supplier"
                             class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-gray-500 rounded-e-lg border border-gray-500 hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-blue-300 "><svg
                                 class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -398,59 +400,6 @@
 
 
 
-            // Initialize supplier select
-            const supplierSelect = new TomSelect('#supplier_id', {
-                valueField: 'id',
-                labelField: 'text',
-                searchField: ['text'],
-                create: false,
-                load: function(query, callback) {
-                    const url = '/api/suppliers/search?q=' + encodeURIComponent(query);
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(json => {
-                            callback(json.data);
-                        })
-                        .catch(() => {
-                            callback();
-                        });
-                },
-                create: function(input, callback) {
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('suppliers.quickCreate') }}",
-                        data: {
-                            name: input
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            const newSupplier = {
-                                id: response.data.id,
-                                text: response.data.name,
-                            };
-                            callback(newSupplier);
-                        }
-                    });
-                },
-                render: {
-                    option: function(item, escape) {
-                        return `<div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                    </div>
-                                </div>`;
-                    },
-                    item: function(item, escape) {
-                        return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                    },
-                    no_results: function(data, escape) {
-                        return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
-                    },
-                    option_create: function(data, escape) {
-                        return `<div class="create p-2 text-blue-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
-                    }
-                }
-            });
 
             var table = $('#product-table-list').DataTable({
                 processing: true,
@@ -561,22 +510,22 @@
                     {
                         data: 'name',
                         name: 'name',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'phone',
                         name: 'phone',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'address',
                         name: 'address',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'action',
                         name: 'action',
-                        className: 'px-4 py-3'
+                        className: 'px-4 py-1'
                     },
 
                 ],
@@ -646,6 +595,10 @@
                 tableSupplier.draw();
                 modalSupplier.classList.remove('hidden');
             });
+            $('input[name="supplier_name"]').click(function(e) {
+                tableSupplier.draw();
+                modalSupplier.classList.remove('hidden');
+            })
 
             $(document).on('click', '.select-supplier', function(e) {
                 e.preventDefault();

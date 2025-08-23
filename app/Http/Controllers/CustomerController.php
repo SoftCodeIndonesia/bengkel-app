@@ -49,6 +49,22 @@ class CustomerController extends Controller
 
         return view('customers.index');
     }
+    public function optionSelect(Request $request)
+    {
+
+        $data = Customer::select('*');
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+
+                $btn = '<button type="button" data-id="' . $row->id . '" data-name="' . $row->name . '" class="select-customer text-blue-600">Pilih';
+                $btn .= '</button>';
+
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -454,7 +454,9 @@ class EstimationController extends Controller
     public function print(string $id)
     {
         $jobOrder = JobOrder::with('orderItems', 'orderItems.product', 'invoice', 'breakdowns', 'orderItems.product', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle')->find($id);
-
-        return view('estimation.print', compact('jobOrder'));
+        $data['unique_id'] = $jobOrder->unique_id;
+        $data['tanggal'] = $jobOrder->service_at->format('d M Y H:i');
+        $data['customer_name'] = $jobOrder->customerVehicle->customer->name;
+        return view('estimation.print', compact('jobOrder', 'data'));
     }
 }

@@ -553,8 +553,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const modalSelectProduct = document.getElementById('product-selection-modal');
             const modalSelectCustomer = document.getElementById('select-customer');
-            modalSelectProduct.classList.add('hidden');
             modalSelectCustomer.classList.add('hidden');
+            modalSelectProduct.classList.add('hidden');
 
 
             let selectedProducts = [];
@@ -1250,6 +1250,11 @@
                 }
             });
             $('#modal-select-customer').click(function(e) {
+                e.preventDefault();
+                tableCustomer.draw();
+                modalSelectCustomer.classList.remove('hidden');
+            });
+            $('input[name="customer_vehicle_name"]').click(function(e) {
                 e.preventDefault();
                 tableCustomer.draw();
                 modalSelectCustomer.classList.remove('hidden');

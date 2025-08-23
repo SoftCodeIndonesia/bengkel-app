@@ -84,6 +84,7 @@ Route::get('/products/search', function (Request $request) {
         ->get()
         ->map(function ($product) {
             return [
+                'product_id' => $product->id,
                 'id' => json_encode($product),
                 'text' => $product->name,
                 'stok' => $product->stok,
@@ -100,22 +101,7 @@ Route::get('/products/list', [App\Http\Controllers\Api\ProductController::class,
 
 Route::post('/products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulk-delete');
 
-Route::get('/customer', function (Request $request) {
-
-    $query = $request->q;
-
-    $data = Customer::where('name', 'like', '%' . $query . '%')
-        ->limit(20)
-        ->get()
-        ->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'text' => "{$item->name} - {$item->phone}",
-            ];
-        });
-
-    return response()->json($data);
-})->name('api.customer-vehicle.search');
+Route::get('/customer', [CustomerController::class, 'optionSelect'])->name('api.customer.search');
 
 
 Route::get('/package/{id}', function (Request $request) {

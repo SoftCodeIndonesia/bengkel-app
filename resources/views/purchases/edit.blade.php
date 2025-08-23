@@ -97,13 +97,16 @@
             </a>
         </div>
 
-        @if ($errors->any())
-            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
-                @foreach ($errors->all() as $error)
-                    <span class="font-medium">{{ $error }}</span>
-                @endforeach
-            </div>
-        @endif
+        <div class="p-4">
+            @if ($errors->any())
+                <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert">
+                    @foreach ($errors->all() as $error)
+                        <span class="font-medium">{{ $error }}</span>
+                    @endforeach
+                </div>
+            @endif
+        </div>
 
         <form action="{{ route('purchases.update', $purchase->id) }}" method="POST" enctype="multipart/form-data"
             class="p-4" id="form-edit">
@@ -336,67 +339,6 @@
                     markupPersen);
             });
 
-            const supplierSelect = new TomSelect('#supplier_id', {
-                valueField: 'id',
-                labelField: 'text',
-                searchField: ['text'],
-                create: false,
-                items: [purchase.supplier.id ?? ''],
-                options: [{
-                    id: purchase.supplier.id,
-                    text: `${purchase.supplier.name}`
-                }],
-                load: function(query, callback) {
-                    const url = '/api/suppliers/search?q=' + encodeURIComponent(query);
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(json => {
-                            callback(json.data);
-                        })
-                        .catch(() => {
-                            callback();
-                        });
-                },
-                render: {
-                    option: function(item, escape) {
-
-                        return `
-                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                    </div>
-                                </div>`;
-                    },
-                    item: function(item, escape) {
-                        return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                    },
-                    no_results: function(data, escape) {
-
-                        return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
-                    },
-                    option_create: function(data, escape) {
-                        return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
-                    }
-                },
-                onInitialize: function() {
-                    // Set warna untuk dark mode
-                    if (this.input.classList.contains('border-red-500')) {
-                        this.wrapper.classList.add('error');
-                    }
-
-                    // Load data awal jika ada nilai old
-                    @if (old('supplier_id'))
-                        fetch('/api/suppliers/{{ old('supplier_id') }}')
-                            .then(response => response.json())
-                            .then(json => {
-                                if (json.data) {
-                                    this.addOption(json.data);
-                                    this.setValue(json.data.id);
-                                }
-                            });
-                    @endif
-                }
-            });
 
 
             var table = $('#product-table-list').DataTable({
@@ -436,9 +378,7 @@
                     },
 
                 ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
-                },
+
                 dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"<"mb-2 md:mb-0"l><"flex items-center"f>>rt<"flex flex-col md:flex-row justify-between items-center mt-4"<"mb-2 md:mb-0"i><"pagination-container"p>>',
                 initComplete: function() {
                     // Styling untuk search input
@@ -510,22 +450,22 @@
                     {
                         data: 'name',
                         name: 'name',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'phone',
                         name: 'phone',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'address',
                         name: 'address',
-                        className: 'px-4 py-3',
+                        className: 'px-4 py-1',
                     },
                     {
                         data: 'action',
                         name: 'action',
-                        className: 'px-4 py-3'
+                        className: 'px-4 py-1'
                     },
 
                 ],
@@ -596,6 +536,11 @@
                 tableSupplier.draw();
                 modalSupplier.classList.remove('hidden');
             });
+
+            $('input[name="supplier_name"]').click(function(e) {
+                tableSupplier.draw();
+                modalSupplier.classList.remove('hidden');
+            })
 
             $(document).on('click', '.select-supplier', function(e) {
                 e.preventDefault();

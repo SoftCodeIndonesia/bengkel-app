@@ -34,24 +34,30 @@ class DashboardController extends Controller
             ->sum('total');
 
         // Fast Moving Products (non-jasa)
+        // $fastMovingProducts = Product::where('tipe', '!=', 'jasa')
+        //     ->withCount(['orderItems as total_sold' => function ($query) {
+        //         $query->whereHas('jobOrder', function ($q) {
+        //             $q->where('status', 'completed')
+        //                 ->whereMonth('service_at', now()->month);
+        //         });
+        //     }])
+        //     ->withSum([
+        //         'orderItems as total_revenue' => function ($query) {
+        //             $query->whereHas('jobOrder', function ($q) {
+        //                 $q->where('status', 'completed')
+        //                     ->whereMonth('service_at', now()->month);
+        //             });
+        //         }
+        //     ], DB::raw('quantity * unit_price'))
+        //     ->orderByDesc('total_sold')
+        //     ->take(5)
+        //     ->get();
+
         $fastMovingProducts = Product::where('tipe', '!=', 'jasa')
-            ->withCount(['orderItems as total_sold' => function ($query) {
-                $query->whereHas('jobOrder', function ($q) {
-                    $q->where('status', 'completed')
-                        ->whereMonth('service_at', now()->month);
-                });
-            }])
-            ->withSum([
-                'orderItems as total_revenue' => function ($query) {
-                    $query->whereHas('jobOrder', function ($q) {
-                        $q->where('status', 'completed')
-                            ->whereMonth('service_at', now()->month);
-                    });
-                }
-            ], DB::raw('quantity * unit_price'))
-            ->orderByDesc('total_sold')
-            ->take(5)
-            ->get();
+            ->get()
+            ->sortByDesc('total_sold')
+            ->take(5);
+
 
         // Slow Moving Products (non-jasa)
         $slowMovingProducts = Product::where('tipe', '!=', 'jasa')

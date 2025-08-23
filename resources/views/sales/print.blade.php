@@ -21,10 +21,7 @@
                         <th class="text-left px-2" width="100px">Alamat</th>
                         <td class="text-left px-2">{{ $sale->customer->address }}</td>
                     </tr>
-                    <tr>
-                        <th class="text-left px-2" width="100px">Catatan</th>
-                        <td class="text-left px-2">{{ $sale->notes ?? 'Tidak Ada Catatan' }}</td>
-                    </tr>
+
                 </thead>
             </table>
         </div>
@@ -66,6 +63,16 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div class="px-4 rounded-lg border-gray-600 mt-4">
+            <div class="flex justify-between items-center">
+                <p class="mb-1">Catatan : </p>
+
+            </div>
+            <div class="overflow-x-auto">
+                <span>{{ $sale->notes ?? 'Tidak Ada Catatan' }}</span>
             </div>
         </div>
 
