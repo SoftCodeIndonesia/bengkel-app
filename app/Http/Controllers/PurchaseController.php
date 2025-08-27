@@ -214,6 +214,7 @@ class PurchaseController extends Controller
     {
         $purchase->load('items.product', 'supplier', 'items.movement_item');
 
+
         return view('purchases.edit', compact('purchase'));
     }
 

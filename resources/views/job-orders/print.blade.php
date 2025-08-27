@@ -62,8 +62,8 @@
             <table class="" style="width: 100%; table-layout: fixed;">
                 <thead class="">
                     <tr>
-                        <th class=" py-1 text-left" width="20px">No</th>
-                        <th class="px-4 py-1 text-left">Deskripsi</th>
+                        <th class="px-2 py-1 text-left" width="30px">No</th>
+                        <th class="px-2 py-1 text-left">Deskripsi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +72,7 @@
                     @endphp
                     @foreach ($jobOrder->breakdowns as $breakdown)
                         <tr>
-                            <td class=" py-1 text-left">{{ $no }}</td>
+                            <td class="px-2 py-1 text-left">{{ $no }}</td>
                             <td class="px-4 py-1 text-left">{{ $breakdown->name }}</td>
                         </tr>
                         @php
@@ -96,44 +96,52 @@
                     <thead class="">
                         <tr>
 
-                            <th class="py-3" width="20px">No</th>
-                            <th class="px-4 py-3 text-left" width="50%">Sparepart/Jasa</th>
-                            <th class="px-4 py-3 text-right">FRT/QTY</th>
-                            <th class="px-4 py-3 text-right">Harga</th>
-                            <th class="py-3 text-right">Subtotal</th>
+                            <th class="py-1 px-2" width="30px">No</th>
+                            <th class="px-4 py-1 text-left" width="50%">Sparepart/Jasa</th>
+                            <th class="px-4 py-1 text-right">FRT/QTY</th>
+                            <th class="px-4 py-1 text-right">Harga</th>
+                            <th class="py-1 text-right px-2">Subtotal</th>
                         </tr>
                     </thead>
+                    @php
+                        $index = 1;
+                    @endphp
                     <tbody>
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe != 'jasa')
                                 <tr class="border">
 
-                                    <td class="py-1 ">{{ $loop->iteration }}</td>
+                                    <td class="py-1 px-2">{{ $index }}</td>
                                     <td class="px-4 py-1 " width="40%">{{ $item->product->name }}</td>
                                     <td class="px-4 py-1 text-right">{{ $item->quantity }}
                                     </td>
                                     <td class="px-4 py-1 text-right">
                                         {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class=" py-1 text-right">
+                                    <td class="px-2 py-1 text-right">
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
 
                                 </tr>
+                                @php
+                                    $index++;
+                                @endphp
                             @endif
                         @endforeach
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe == 'jasa')
                                 <tr class="border">
 
-                                    <td class="py-1 ">{{ $loop->iteration }}</td>
+                                    <td class="py-1 px-2">{{ $index }}</td>
                                     <td class="px-4 py-1 " width="40%">{{ $item->product->name }}</td>
                                     <td class="px-4 py-1 text-right">{{ $item->quantity }}
                                     </td>
-                                    <td class="px-4 py-1 text-right">
-                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class=" py-1 text-right">
+                                    <td class="px-4 py-1 text-right"></td>
+                                    <td class="px-2 py-1 text-right">
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
 
                                 </tr>
+                                @php
+                                    $index++;
+                                @endphp
                             @endif
                         @endforeach
                     </tbody>

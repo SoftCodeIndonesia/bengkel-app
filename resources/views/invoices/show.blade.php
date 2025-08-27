@@ -3,7 +3,7 @@
 @section('title', 'Detail Invoice')
 @section('content')
 
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <div>
                 <h2 class="text-xl font-semibold text-white">Invoice #{{ $invoice->unique_id }}</h2>

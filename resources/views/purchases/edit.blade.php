@@ -336,7 +336,7 @@
                 const markupPersen = (marginNominal / element.movement_item.buying_price) * 100;
 
                 addItemRow(element.id, element.product_id, element.product.name, element.unit_price,
-                    markupPersen);
+                    markupPersen, element.quantity);
             });
 
 
@@ -565,7 +565,7 @@
             // Add item row
 
 
-            function addItemRow(item_id, productId, productName, unitPrice, margin) {
+            function addItemRow(item_id, productId, productName, unitPrice, margin, qty) {
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
                 const selling_price = unitPrice * (1 + (margin / 100));
@@ -579,7 +579,7 @@
                         <span>${productName}</span>
                     </td>
                     <td class="px-4 py-3">
-                        <input type="number" name="items[${itemCount}][quantity]" min="1" value="1" required class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="number" name="items[${itemCount}][quantity]" min="1" value="${qty ?? 1}" required class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
                         <input type="text" name="items[${itemCount}][unit_price]" value="${formatRupiah(unitPrice)}" required class="unit-price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">

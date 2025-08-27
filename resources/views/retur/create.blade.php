@@ -156,6 +156,9 @@
                     <input type="hidden" name="items[][product_id]"
                         class="product-id bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         required readonly>
+                    <input type="hidden" name="items[][order_item_id]"
+                        class="order_item_id bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        required readonly>
                     <input type="text" name="items[][product_name]"
                         class="product-view bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         required readonly>
@@ -260,6 +263,7 @@
 
             // Fungsi untuk membuat form item retur
             function createReturnItemForm(item, index) {
+                console.log(item);
                 const template = document.getElementById('itemTemplate');
                 const clone = template.content.cloneNode(true);
                 const itemCard = clone.querySelector('.item-card');
@@ -269,6 +273,8 @@
                 productId.value = item.product.name;
                 const productView = itemCard.querySelector('.product-id');
                 productView.value = item.product_id;
+                const orderitemId = itemCard.querySelector('.order_item_id');
+                orderitemId.value = item.item_id;
 
                 const quantityInput = itemCard.querySelector('.quantity-input');
                 quantityInput.value = item.quantity_fulfilled || item.quantity_requested;

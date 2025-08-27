@@ -38,18 +38,14 @@
             <div class="overflow-x-auto">
                 <table class="" style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr class="bg-gray-100" style="background-color: #f3f4f6;">
-                            <th class="py-2 px-4 border border-gray-300 text-left"
-                                style="width: 200px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: left;">
+                        <tr>
+                            <th class="py-1 px-2 text-left">
                                 Deskripsi</th>
-                            <th class="py-2 px-4 border border-gray-300 text-right"
-                                style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Harga Satan
+                            <th class="py-1 px-2 text-end">Harga Satan
                             </th>
-                            <th class="py-2 px-4 border border-gray-300 text-right"
-                                style="width: 100px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Qty
+                            <th class="py-1 px-2 text-end">Qty
                             </th>
-                            <th class="py-2 px-4 border border-gray-300 text-right"
-                                style="width: 150px;border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Total
+                            <th class="py-1 px-2 text-end">Total
                             </th>
                         </tr>
                     </thead>
@@ -61,34 +57,26 @@
                         @if ($invoice->tipe === 'sales')
                             @foreach ($reference->items ?? [] as $item)
                                 <tr>
-                                    <td class="py-2 px-4 border border-gray-300"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                    <td class="py-1 px-2 text-left">{{ $item->product->name }}
                                     </td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                    <td class="py-1 px-2 text-end">Rp
                                         {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                    <td class="py-1 px-2 text-end">
                                         {{ $item->quantity }}</td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                    <td class="py-1 px-2 text-end">Rp
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         @else
                             @foreach ($reference->items ?? [] as $item)
                                 <tr>
-                                    <td class="py-2 px-4 border border-gray-300"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px;">{{ $item->product->name }}
+                                    <td class="py-1 px-2 text-end">{{ $item->product->name }}
                                     </td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                    <td class="py-1 px-2 text-end">Rp
                                         {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">
+                                    <td class="py-1 px-2 text-end">
                                         {{ $item->quantity }}</td>
-                                    <td class="py-2 px-4 border border-gray-300 text-right"
-                                        style="border: 1px solid #d1d5db; padding: 8px 16px; text-align: right;">Rp
+                                    <td class="py-1 px-2 text-end">Rp
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
@@ -107,23 +95,23 @@
                         <tr>
                             <th class="text-left px-2" width="100px">Subtotal</th>
                             <td class="text-right font-bold px-2">Rp
-                                {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</td>
+                                {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <th class="text-left px-2" width="100px">Diskon</th>
                             <td class="text-right font-bold px-2">
-                                @if ($jobOrder->diskon_unit == 'percentage')
-                                    ({{ $jobOrder->diskon_value }}%)
+                                @if ($invoice->diskon_unit == 'percentage')
+                                    ({{ $invoice->diskon_value }}%)
                                 @else
                                     Rp
-                                    {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}
+                                    {{ number_format($invoice->diskon_value, 2, ',', '.') }}
                                 @endif
                             </td>
                         </tr>
                         <tr>
                             <th class="text-left px-2" width="100px">Total</th>
                             <td class="text-right font-bold px-2">Rp
-                                {{ number_format($jobOrder->total, 2, ',', '.') }}</td>
+                                {{ number_format($invoice->total, 2, ',', '.') }}</td>
                         </tr>
                     </thead>
                 </table>

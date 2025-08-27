@@ -135,6 +135,7 @@ class SalesController extends Controller
     {
         $sale = Sales::with('items', 'customer')->find($id);
         $data['unique_id'] = $sale->unique_id;
+        $data['type'] = 'SALES ORDER';
         $data['tanggal'] = $sale->sales_date->format('d M Y H:i');
         $data['customer_name'] = $sale->customer->name;
         return view('sales.print', compact('sale', 'data'));

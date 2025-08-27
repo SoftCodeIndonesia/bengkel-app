@@ -42,7 +42,7 @@
                             <th class="px-4 py-1 text-left" width="50%">Sparepart/Jasa</th>
                             <th class="px-4 py-1 text-right">QTY</th>
                             <th class="px-4 py-1 text-right">Harga</th>
-                            <th class="py-1 text-right">Subtotal</th>
+                            <th class="px-2 py-1 text-right">Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,7 +56,7 @@
                                 </td>
                                 <td class="px-4 py-1 text-right">
                                     {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                <td class=" py-1 text-right">
+                                <td class="px-2 py-1 text-right">
                                     {{ number_format($item->total_price, 0, ',', '.') }}</td>
 
                             </tr>

@@ -57,9 +57,8 @@
 
         <div class="p-4">
             <div class="relative overflow-x-auto">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                    id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-400" id="datatables-index">
+                    <thead class="uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
                             <th class="p-3 text-sm font-semibold">Job Order</th>

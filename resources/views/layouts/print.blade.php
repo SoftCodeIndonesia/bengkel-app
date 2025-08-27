@@ -31,6 +31,7 @@
             display: flex;
             font-size: 10px !important;
             font-style: normal !important;
+            font-family: 'Times New Roman' !important;
         }
 
         table,
@@ -58,21 +59,47 @@
         <!-- Page Content -->
         <main>
             <div class="bg-white shadow overflow-hidden ">
-                <div class="p-4 flex justify-between items-center border-b border-gray-600">
-                    <p class="text-black">{{ $data['unique_id'] }}</p>
-                    <p>{{ $data['tanggal'] }}</p>
+                <div class="p-7 text-center border-b border-gray-600">
+                    {{-- <p class="text-black">{{ $data['unique_id'] }}</p>
+                    <p>{{ $data['tanggal'] }}</p> --}}
+                    <div style="font-size: 30px; line-height: 40px" class="font-bold">{{ $data['type'] ?? 'INVOICE' }}
+                    </div>
+                    <div style="font-size: 20px; line-height: 30px" class="mt-2">Bengkel 88Autocare</div>
+                    <div style="font-size: 10px">Jl. K.H.M. Usman RT. 01 RW. 04, Kukusan, Kecamatan Beji, Kota Depok,
+                        Jawa Barat 16425
+                    </div>
+                    <div style="font-size: 10px">
+                        Telepon 087821878358/089661739000
+                    </div>
+                    <div style="font-size: 10px">
+                        Email autocare88.workshop@gmail.com
+                    </div>
                 </div>
-                <div class="px-4 mt-5">
-                    <h3 class="font-bold" style="font-size: 15px">Bengkel 88Autocare</h3>
-                    <p>Jl. Kh Hasyim No 19, Jakarta Barat</p>
+
+                <div class="p-4 mt-3">
+                    <table class="" style="width: auto; table-layout: fixed;">
+
+                        <tbody>
+                            <tr>
+                                <th class="px-2 py-1 text-left" width="100px">No</th>
+                                <td class="px-2 py-1 text-end">{{ $data['unique_id'] }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-2 py-1 text-left">Tanggal</th>
+                                <td class="px-2 py-1 text-end">{{ $data['tanggal'] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 @yield('content')
-                <div class="mt-16 pt-8" style="margin-top: 64px; padding-top: 32px;">
-                    <div class="text-center">
-                        <p class="mb-4">Pemilik</p>
-                        <div class="mt-12">
-                            <p class="font-medium">(__________________________)</p>
-                            <p class="text-black">{{ $data['customer_name'] }}</p>
+                <div class="mt-16 pt-8 flex justify-end" style="margin-top: 64px; padding-top: 32px;">
+                    <div class="w-1/3">
+                        <div class="text-center">
+                            <p class="mb-4">Pemilik</p>
+                            <div class="mt-12">
+
+                                <p class="text-black">{{ $data['customer_name'] }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

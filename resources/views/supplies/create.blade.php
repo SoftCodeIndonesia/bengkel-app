@@ -16,7 +16,7 @@
             </div>
         @endif
 
-        <form action="{{ route('supplies.store') }}" method="POST">
+        <form action="{{ route('supplies.store') }}" method="POST" id="form-supply">
             @csrf
             <input type="hidden" name="job_order_id" value="{{ $jobOrder->id }}">
 
@@ -126,7 +126,7 @@
                     <button type="submit"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
 
-                        Simpan Permintaan Supply
+                        Ajukan Permintaan Supply
                     </button>
                 </div>
             </div>
@@ -148,17 +148,15 @@
             });
 
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('form-supply');
             form.addEventListener('submit', function(e) {
-                // e.preventDefault();
+
                 document.querySelectorAll('.unit_price').forEach(row => {
-                    // const priceInput = row.querySelector('.unit-price');
-                    // console.log(priceInput);
-                    // priceInput.value = originalNumber(priceInput.value);
+
                     row.value = originalNumber(row.value);
                 });
 
-
+                // e.preventDefault();
             });
         });
     </script>

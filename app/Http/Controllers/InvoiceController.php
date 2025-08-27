@@ -296,6 +296,7 @@ class InvoiceController extends Controller
         $data['tanggal'] = $invoice->created_at->format('d/m/Y');
         $data['customer_name'] = $invoice->customer_name;
 
+
         // $pdf = Pdf::loadView('invoices.print', compact('invoice'));
         // return $pdf->stream('invoice-' . $invoice->unique_id . '.pdf');
         return view('invoices.print', compact('invoice', 'item', 'data'));

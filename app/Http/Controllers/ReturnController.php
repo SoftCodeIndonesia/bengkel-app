@@ -87,6 +87,8 @@ class ReturnController extends Controller
             'items.*.reason' => 'required|string|max:255'
         ]);
 
+        // dd($request->all());
+
         DB::transaction(function () use ($validated) {
             foreach ($validated['items'] as $item) {
                 ReturnItem::create([
@@ -96,7 +98,7 @@ class ReturnController extends Controller
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'reason' => $item['reason'],
-                    'status' => 'pending'
+                    'status' => 'approved'
                 ]);
 
                 // Update stok produk
