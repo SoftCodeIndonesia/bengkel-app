@@ -62,9 +62,9 @@
                 <div class="p-7 text-center border-b border-gray-600">
                     {{-- <p class="text-black">{{ $data['unique_id'] }}</p>
                     <p>{{ $data['tanggal'] }}</p> --}}
-                    <div style="font-size: 30px; line-height: 40px" class="font-bold">{{ $data['type'] ?? 'INVOICE' }}
-                    </div>
-                    <div style="font-size: 20px; line-height: 30px" class="mt-2">Bengkel 88Autocare</div>
+
+                    <div style="font-size: 30px; line-height: 30px" class="mt-2 font-bold">BENGKEL 88AUTOCARE</div>
+                    <div style="font-size: 20px">Specialist Nissan - Datsun & Umum</div>
                     <div style="font-size: 10px">Jl. K.H.M. Usman RT. 01 RW. 04, Kukusan, Kecamatan Beji, Kota Depok,
                         Jawa Barat 16425
                     </div>
@@ -74,6 +74,10 @@
                     <div style="font-size: 10px">
                         Email autocare88.workshop@gmail.com
                     </div>
+                </div>
+
+                <div style="font-size: 30px; line-height: 40px" class="font-bold text-center my-6">
+                    {{ $data['type'] ?? 'INVOICE' }}
                 </div>
 
                 <div class="p-4 mt-3">

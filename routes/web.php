@@ -57,6 +57,20 @@ Route::middleware('auth')->group(function () {
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::prefix('test')->group(function () {
+        Route::get('/login', function () {
+            return view('test/login');
+        });
+        Route::get('/activation', function () {
+            return view('test/activation');
+        });
+        Route::get('/activation_home', function () {
+            return view('test/index');
+        });
+    });
+
+
+
     Route::resource('movements', MovementController::class)->only(['index']);
     Route::get('movements/report', [MovementController::class, 'report'])->name('movements.report');
 
