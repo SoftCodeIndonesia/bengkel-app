@@ -291,7 +291,12 @@ class InvoiceController extends Controller
     {
 
         $invoice = Invoice::with('reference')->find($id);
-        $item = $invoice->reference()->with('items')->get()->first()->items;
+        if ($invoice->tipe == 'services') {
+            $item = $invoice->reference()->with('orderItems')->get()->first()->orderItems;
+            // dd($item);
+        } else {
+            $item = $invoice->reference()->with('items')->get()->first()->items;
+        }
         $data['unique_id'] = $invoice->unique_id;
         $data['tanggal'] = $invoice->created_at->format('d/m/Y');
         $data['customer_name'] = $invoice->customer_name;

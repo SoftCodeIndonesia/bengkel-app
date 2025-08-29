@@ -68,12 +68,13 @@
                                 </tr>
                             @endforeach
                         @else
-                            @foreach ($reference->items ?? [] as $item)
+                            @foreach ($reference->orderItems ?? [] as $item)
                                 <tr>
-                                    <td class="py-1 px-2 text-end">{{ $item->product->name }}
+                                    <td class="py-1 px-2 text-left">{{ $item->product->name }}
                                     </td>
-                                    <td class="py-1 px-2 text-end">Rp
-                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                    <td class="py-1 px-2 text-end">
+                                        {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
+                                    </td>
                                     <td class="py-1 px-2 text-end">
                                         {{ $item->quantity }}</td>
                                     <td class="py-1 px-2 text-end">Rp
