@@ -363,76 +363,82 @@
                         </button>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="uppercase bg-gray-700 text-gray-400">
-                            <tr>
-                                <th class="p-2">Jasa</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2 text-right w-44"></th>
-                                <th class="p-2 text-right">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2 text-right">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="service-items-container">
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
+                            id="service-table">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
+                                <tr>
+                                    <th class="p-2">Jasa</th>
+                                    <th class="p-2">Kategori</th>
+                                    <th class="p-2">FRT (Jam)</th>
+                                    <th class="p-2 text-right w-44"></th>
+                                    <th class="p-2 text-right">Subtotal</th>
+                                    <th class="p-2">Diskon (%)</th>
+                                    <th class="p-2 text-right">Total</th>
+                                    <th class="p-2">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="service-items-container">
 
-                            @foreach ($jobOrder->orderItems as $key => $item)
-                                @if ($item->product->tipe == 'jasa')
-                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
-                                        <td class="p-2" width="200px">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
-                                                value="{{ $item->id }}">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
-                                                value="{{ $item->product_id }}">
-                                            <span>{{ $item->product->name }}</span>
+                                @foreach ($jobOrder->orderItems as $key => $item)
+                                    @if ($item->product->tipe == 'jasa')
+                                        <tr class="border-b border-gray-600 item-row"
+                                            data-tipe="{{ $item->product->tipe }}">
+                                            <td class="p-2" width="200px">
+                                                <input type="hidden" name="items[{{ $itemIndex }}][id]"
+                                                    value="{{ $item->id }}">
+                                                <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
+                                                    value="{{ $item->product_id }}">
+                                                <span>{{ $item->product->name }}</span>
 
-                                        </td>
-                                        <td class="p-2 text-center" width="100px">
-                                            <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
-                                        </td>
-                                        <td class="p-2" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
-                                                value="{{ $item->quantity }}" step="0.1"
-                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                                        </td>
-                                        <td class="p-2 text-right">
+                                            </td>
+                                            <td class="p-2 text-center" width="100px">
+                                                <span class="kategori text-gray-300">{{ $item->product->tipe }}</span>
+                                            </td>
+                                            <td class="p-2" width="100px">
+                                                <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                    value="{{ $item->quantity }}" step="0.1"
+                                                    class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                            </td>
+                                            <td class="p-2 text-right">
 
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span
-                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 text-right" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
-                                                min="0"
-                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
-                                                value="{{ (int) $item->diskon_value }}"
-                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                                placeholder="%">
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span class="total-after-diskon text-gray-300">
-                                                {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 flex justify-center items-center">
-                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @php
-                                        $itemIndex++;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                                            </td>
+                                            <td class="p-2 text-right">
+                                                <span
+                                                    class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="p-2 text-right" width="100px">
+                                                <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
+                                                    min="0"
+                                                    {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
+                                                    value="{{ (int) $item->diskon_value }}"
+                                                    class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                                    placeholder="%">
+                                            </td>
+                                            <td class="p-2 text-right">
+                                                <span class="total-after-diskon text-gray-300">
+                                                    {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="p-2 flex justify-center items-center">
+                                                <button type="button"
+                                                    class="remove-item text-red-500 hover:text-red-400">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $itemIndex++;
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Spareparts Section -->
@@ -449,81 +455,86 @@
                         </button>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
-                        id="sparepart-table">
-                        <thead class="uppercase bg-gray-700 text-gray-400">
-                            <tr>
-                                <th class="p-2">Sparepart</th>
-                                <th class="p-2 text-center">Kategori</th>
-                                <th class="p-2">QTY</th>
-                                <th class="p-2 text-right">Harga Satuan</th>
-                                <th class="p-2 text-right">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2 text-right">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sparepart-items-container">
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
+                            id="sparepart-table">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
+                                <tr>
+                                    <th class="p-2">Sparepart</th>
+                                    <th class="p-2 text-center">Kategori</th>
+                                    <th class="p-2">QTY</th>
+                                    <th class="p-2 text-right">Harga Satuan</th>
+                                    <th class="p-2 text-right">Subtotal</th>
+                                    <th class="p-2">Diskon (%)</th>
+                                    <th class="p-2 text-right">Total</th>
+                                    <th class="p-2">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sparepart-items-container">
 
 
-                            @foreach ($jobOrder->orderItems as $key => $item)
-                                @if ($item->product->tipe != 'jasa')
-                                    <tr class="border-b border-gray-600 item-row" data-tipe="{{ $item->product->tipe }}">
-                                        <td class="p-2" width="200px">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][id]"
-                                                value="{{ $item->id }}">
-                                            <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
-                                                value="{{ $item->product_id }}">
-                                            <span>{{ $item->product->name }}</span>
+                                @foreach ($jobOrder->orderItems as $key => $item)
+                                    @if ($item->product->tipe != 'jasa')
+                                        <tr class="border-b border-gray-600 item-row"
+                                            data-tipe="{{ $item->product->tipe }}">
+                                            <td class="p-2" width="200px">
+                                                <input type="hidden" name="items[{{ $itemIndex }}][id]"
+                                                    value="{{ $item->id }}">
+                                                <input type="hidden" name="items[{{ $itemIndex }}][product_id]"
+                                                    value="{{ $item->product_id }}">
+                                                <span>{{ $item->product->name }}</span>
 
-                                        </td>
-                                        <td class="p-2 text-center " width="100px">
-                                            <span
-                                                class="kategori text-center text-gray-300">{{ $item->product->tipe }}</span>
-                                        </td>
-                                        <td class="p-2" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][quantity]"
-                                                value="{{ $item->quantity }}"
-                                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span
-                                                class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
-                                            </span>
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span
-                                                class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 text-right" width="100px">
-                                            <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
-                                                min="0"
-                                                {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
-                                                value="{{ (int) $item->diskon_value }}"
-                                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                                placeholder="%">
-                                        </td>
-                                        <td class="p-2 text-right">
-                                            <span class="total-after-diskon text-gray-300">
-                                                {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
-                                        </td>
-                                        <td class="p-2 flex justify-center items-center">
-                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @php
-                                        $itemIndex++;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                                            </td>
+                                            <td class="p-2 text-center " width="100px">
+                                                <span
+                                                    class="kategori text-center text-gray-300">{{ $item->product->tipe }}</span>
+                                            </td>
+                                            <td class="p-2" width="100px">
+                                                <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                    value="{{ $item->quantity }}"
+                                                    class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                            </td>
+                                            <td class="p-2 text-right">
+                                                <span
+                                                    class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
+                                                </span>
+                                            </td>
+                                            <td class="p-2 text-right">
+                                                <span
+                                                    class="subtotal text-gray-300">{{ 'Rp ' . number_format($item->total_price, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="p-2 text-right" width="100px">
+                                                <input type="number" name="items[{{ $itemIndex }}][diskon_value]"
+                                                    min="0"
+                                                    {{ $item->product->tipe == 'jasa' ? 'max="100" step="0.01"' : '' }}
+                                                    value="{{ (int) $item->diskon_value }}"
+                                                    class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
+                                                    placeholder="%">
+                                            </td>
+                                            <td class="p-2 text-right">
+                                                <span class="total-after-diskon text-gray-300">
+                                                    {{ 'Rp ' . number_format($item->price_after_diskon, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="p-2 flex justify-center items-center">
+                                                <button type="button"
+                                                    class="remove-item text-red-500 hover:text-red-400">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $itemIndex++;
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
 

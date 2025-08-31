@@ -3,10 +3,10 @@
 @section('title', 'Detail Pelanggan')
 
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <!-- Header Section -->
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Detail Pelanggan</h2>
+            <h2 class="md:text-xl sm:text-sm font-semibold text-white">Detail Pelanggan</h2>
             <div class="flex gap-2">
                 <a href="{{ route('customers.edit', $customer->id) }}"
                     class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center border border-gray-600">

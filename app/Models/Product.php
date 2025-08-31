@@ -27,6 +27,7 @@ class Product extends Model
         'part_number',
         'barcode',
         'slug',
+        'grade',
     ];
 
     public function orderItems()

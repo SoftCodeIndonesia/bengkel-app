@@ -26,9 +26,9 @@
 @endpush
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Sparepart</h2>
-            <div class="flex gap-3">
+        <div class="p-4 flex-col sm:flex-row flex justify-between items-center border-b border-gray-600">
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Data Sparepart</h2>
+            <div class="flex  gap-3">
                 <button id="delete-selected" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg hidden">
                     Hapus Terpilih
                 </button>

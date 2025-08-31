@@ -79,7 +79,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Buat Work Order Baru</h2>
+            <h2 class="text-sm sm:text-xl font-semibold text-white">Buat Work Order Baru</h2>
             <a href="{{ route('job-orders.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -364,22 +364,25 @@
                         </button>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="service-table">
-                        <thead class="uppercase bg-gray-700 text-gray-400">
-                            <tr>
-                                <th class="p-2">Jasa</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">FRT (Jam)</th>
-                                <th class="p-2">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="service-items-container">
-                            <!-- Service rows will be added here -->
-                        </tbody>
-                    </table>
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
+                            id="service-table">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
+                                <tr>
+                                    <th class="p-2">Jasa</th>
+                                    <th class="p-2">Kategori</th>
+                                    <th class="p-2">FRT (Jam)</th>
+                                    <th class="p-2">Subtotal</th>
+                                    <th class="p-2">Diskon (%)</th>
+                                    <th class="p-2">Total</th>
+                                    <th class="p-2">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="service-items-container">
+                                <!-- Service rows will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Spareparts Section -->
@@ -396,24 +399,26 @@
                         </button>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
-                        id="sparepart-table">
-                        <thead class="uppercase bg-gray-700 text-gray-400">
-                            <tr>
-                                <th class="p-2">Sparepart</th>
-                                <th class="p-2">Kategori</th>
-                                <th class="p-2">QTY</th>
-                                <th class="p-2">Harga Satuan</th>
-                                <th class="p-2">Subtotal</th>
-                                <th class="p-2">Diskon (%)</th>
-                                <th class="p-2">Total</th>
-                                <th class="p-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sparepart-items-container">
-                            <!-- Sparepart rows will be added here -->
-                        </tbody>
-                    </table>
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
+                            id="sparepart-table">
+                            <thead class="uppercase bg-gray-700 text-gray-400">
+                                <tr>
+                                    <th class="p-2">Sparepart</th>
+                                    <th class="p-2">Kategori</th>
+                                    <th class="p-2">QTY</th>
+                                    <th class="p-2">Harga Satuan</th>
+                                    <th class="p-2">Subtotal</th>
+                                    <th class="p-2">Diskon (%)</th>
+                                    <th class="p-2">Total</th>
+                                    <th class="p-2">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sparepart-items-container">
+                                <!-- Sparepart rows will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
 

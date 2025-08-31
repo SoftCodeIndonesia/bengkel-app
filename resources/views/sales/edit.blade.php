@@ -184,66 +184,69 @@
                             Tambah Barang
                         </button>
                     </div>
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="items-table">
-                        <thead class="bg-gray-600">
-                            <tr>
-                                <th class="p-3 text-left">Produk</th>
-                                <th class="p-3 text-right">Kategori</th>
-                                <th class="p-3 text-right">Qty</th>
-                                <th class="p-3 text-right">Harga Satuan</th>
-                                <th class="p-3 text-right">Discount (%)</th>
-                                <th class="p-3 text-right">Total</th>
-                                <th class="p-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="items-container">
-                            @foreach ($sale->items as $index => $item)
-                                <tr class="border-b border-gray-600 item-row">
-                                    <td class="p-3">
-                                        <input type="hidden" name="items[{{ $index }}][product_id]"
-                                            value="{{ $item->product_id }}">
-                                        <input type="hidden" name="items[{{ $index }}][id]"
-                                            value="{{ $item->id }}">
-                                        <span>{{ $item->product->name }}</span>
-                                    </td>
-                                    <td class="p-3 text-end">
-                                        {{ $item->product->tipe }}
-                                    </td>
-                                    <td class="p-3 text-end">
-                                        <input type="number" name="items[{{ $index }}][quantity]" required
-                                            min="1"
-                                            value="{{ old('items.' . $index . '.quantity', $item->quantity) }}"
-                                            step="1"
-                                            class="quantity w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    </td>
-                                    <td class="p-3 text-right unit-price">
-                                        <input type="hidden" name="items[{{ $index }}][unit_price]"
-                                            value="{{ $item->unit_price }}" required
-                                            class="unit_price_input w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                        Rp {{ number_format($item->unit_price, 0, ',', '.') }}
-                                    </td>
-                                    <td class="p-3 text-end">
-                                        <input type="text" name="items[{{ $index }}][dicount_percentage]"
-                                            required
-                                            value="{{ old('items.' . $index . '.dicount_percentage', $item->discount_percentage) }}"
-                                            class="dicount_percentage w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    </td>
-                                    <td class="p-3 text-right total-price">
-                                        Rp {{ number_format($item->total_price, 0, ',', '.') }}
-                                    </td>
-                                    <td class="p-3 text-center">
-                                        <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </td>
+
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="items-table">
+                            <thead class="bg-gray-600">
+                                <tr>
+                                    <th class="p-3 text-left">Produk</th>
+                                    <th class="p-3 text-right">Kategori</th>
+                                    <th class="p-3 text-right">Qty</th>
+                                    <th class="p-3 text-right">Harga Satuan</th>
+                                    <th class="p-3 text-right">Discount (%)</th>
+                                    <th class="p-3 text-right">Total</th>
+                                    <th class="p-3 text-center">Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="items-container">
+                                @foreach ($sale->items as $index => $item)
+                                    <tr class="border-b border-gray-600 item-row">
+                                        <td class="p-3">
+                                            <input type="hidden" name="items[{{ $index }}][product_id]"
+                                                value="{{ $item->product_id }}">
+                                            <input type="hidden" name="items[{{ $index }}][id]"
+                                                value="{{ $item->id }}">
+                                            <span>{{ $item->product->name }}</span>
+                                        </td>
+                                        <td class="p-3 text-end">
+                                            {{ $item->product->tipe }}
+                                        </td>
+                                        <td class="p-3 text-end">
+                                            <input type="number" name="items[{{ $index }}][quantity]" required
+                                                min="1"
+                                                value="{{ old('items.' . $index . '.quantity', $item->quantity) }}"
+                                                step="1"
+                                                class="quantity w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </td>
+                                        <td class="p-3 text-right unit-price">
+                                            <input type="hidden" name="items[{{ $index }}][unit_price]"
+                                                value="{{ $item->unit_price }}" required
+                                                class="unit_price_input w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                            Rp {{ number_format($item->unit_price, 0, ',', '.') }}
+                                        </td>
+                                        <td class="p-3 text-end">
+                                            <input type="text" name="items[{{ $index }}][dicount_percentage]"
+                                                required
+                                                value="{{ old('items.' . $index . '.dicount_percentage', $item->discount_percentage) }}"
+                                                class="dicount_percentage w-20 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        </td>
+                                        <td class="p-3 text-right total-price">
+                                            Rp {{ number_format($item->total_price, 0, ',', '.') }}
+                                        </td>
+                                        <td class="p-3 text-center">
+                                            <button type="button" class="remove-item text-red-500 hover:text-red-400">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
 

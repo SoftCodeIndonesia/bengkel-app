@@ -88,8 +88,8 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-white">Buat Retur Sparepart</h2>
-            <a href="{{ route('job-orders.index') }}"
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Buat Retur Sparepart</h2>
+            <a href="{{ route('returns.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

@@ -144,6 +144,21 @@ Route::get('/customers/search', function (Request $request) {
 
     return response()->json($customers);
 })->name('customers.search');
+
+// routes/web.php
+Route::get('/invoice-references/{tipe}/{id}', function (Request $request) {
+
+    $tipe = $request->tipe;
+    $id = $request->id;
+    if ($tipe === 'sales') {
+        $reference = Sales::with('items.product', 'customer')->findOrFail($id);
+    } else {
+        $reference = JobOrder::with('orderItems.product', 'customerVehicle.customer', 'customerVehicle.vehicle')->findOrFail($id);
+    }
+
+    return response()->json($reference);
+});
+
 Route::get('/invoice-reference/search', function (Request $request) {
     $search = $request->get('q');
     $tipe = $request->get('tipe');
@@ -179,6 +194,7 @@ Route::get('/invoice-reference/search', function (Request $request) {
         return response()->json($jobOrders);
     }
 })->name('invoice-reference.search');
+
 Route::get('/suppliers/search', [SupplierController::class, 'search']);
 Route::get('/suppliers/{supplier}', [SupplierController::class, 'getSupplier']);
 Route::post('/suppliers/quick-create', [SupplierController::class, 'quickCreate'])->name('suppliers.quickCreate');

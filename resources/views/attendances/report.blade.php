@@ -3,8 +3,9 @@
 @section('title', 'Laporan Absensi Karyawan')
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Laporan Absensi Karyawan</h2>
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
+            <h2 class="sm:text-xl mb-2 sm:mb-0 text-sm font-semibold text-white">Laporan Absensi Karyawan</h2>
             <div class="flex space-x-2">
                 <form method="GET" action="{{ route('attendances.report') }}" class="flex items-center">
                     <select name="month" id="month" onchange="this.form.submit()"

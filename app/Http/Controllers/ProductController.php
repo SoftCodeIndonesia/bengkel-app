@@ -120,6 +120,8 @@ class ProductController extends Controller
             'buying_price' => 'nullable|numeric|min:0',
             'tipe' => 'required|in:part,oli,material',
             'unit_price' => 'required|numeric|min:0',
+            'unit_price' => 'required|numeric|min:0',
+            'grade' => 'nullable',
         ], [
             'name.required' => 'Nama sparepart wajib diisi',
             'unit_price.required' => 'Harga satuan wajib diisi',
@@ -138,6 +140,7 @@ class ProductController extends Controller
             'margin' => $request->margin,
             'unit_price' => $request->unit_price,
             'stok' => 0,
+            'grade' => $request->grade,
         ]);
 
         return redirect()->route('products.index')->with('success', 'Sparepart berhasil ditambahkan');
@@ -161,6 +164,7 @@ class ProductController extends Controller
             'unit_price' => 'required|numeric|min:0',
             'buying_price' => 'required|numeric|min:0',
             'margin' => 'required|numeric|min:0',
+            'grade' => 'nullable',
         ]);
 
         $productData = [
@@ -171,6 +175,7 @@ class ProductController extends Controller
             'description' => $request->description ?? '-',
             'margin' => $request->margin,
             'unit_price' => $request->unit_price,
+            'grade' => $request->grade,
         ];
 
 

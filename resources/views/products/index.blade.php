@@ -31,14 +31,16 @@
 @endpush
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Sparepart</h2>
-            <div class="flex gap-3">
-                <button id="delete-selected" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg hidden">
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
+            <h2 class="sm:text-xl sm:mb-0 mb-2 text-sm font-semibold text-white">Data Sparepart</h2>
+            <div class="flex flex-col sm:w-fit w-full sm:flex-row gap-3">
+                <button id="delete-selected"
+                    class="bg-red-600 text-start sm:w-fit w-full hover:bg-red-700 text-white px-4 py-2 rounded-lg hidden">
                     Hapus Terpilih
                 </button>
                 <a href="{{ route('products.create') }}"
-                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
+                    class="text-white bg-blue-600  hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6">
@@ -70,6 +72,7 @@
                             <th class="p-3 text-sm font-semibold">No</th>
                             <th class="p-3 text-sm font-semibold">Nama</th>
                             <th class="p-3 text-sm font-semibold">PN</th>
+                            <th class="p-3 text-sm font-semibold">Grade</th>
                             <th class="p-3 text-sm font-semibold">Stok</th>
                             <th class="p-3 text-sm font-semibold">Harga Beli</th>
                             <th class="p-3 text-sm font-semibold">Harga Jual</th>
@@ -136,6 +139,11 @@
                     {
                         data: 'part_number',
                         name: 'part_number',
+                        orderable: false
+                    },
+                    {
+                        data: 'grade',
+                        name: 'grade',
                         orderable: false
                     },
                     {

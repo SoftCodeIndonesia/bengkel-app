@@ -4,21 +4,24 @@
 
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Laporan Laba Rugi</h2>
-            <div class="flex items-center space-x-4">
-                <form method="GET" class="flex items-center space-x-2">
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Laporan Laba Rugi</h2>
+            <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-x-0 w-full sm:w-fit">
+                <form method="GET"
+                    class="flex flex-col sm:flex-row items-center sm:space-x-2 space-x-0 sm:space-y-0 space-y-2 py-2 sm:py-0 w-full sm:w-fit">
                     <input type="date" name="start_date" value="{{ $startDate }}"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 w-full sm:w-fit">
                     <span class="text-gray-400">s/d</span>
                     <input type="date" name="end_date" value="{{ $endDate }}"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 w-full sm:w-fit">
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 w-full sm:w-fit rounded-md">
                         Filter
                     </button>
                 </form>
                 <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center">
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center w-full sm:w-fit justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />

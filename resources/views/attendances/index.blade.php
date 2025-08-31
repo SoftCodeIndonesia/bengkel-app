@@ -31,11 +31,12 @@
 @endpush
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Absensi Karyawan</h2>
-            <div class="flex space-x-2">
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
+            <h2 class="sm:text-xl sm:mb-0 mb-2 text-sm font-semibold text-white">Data Absensi Karyawan</h2>
+            <div class="flex flex-col sm:w-fit w-full sm:flex-row sm:space-x-2 space-x-0">
                 <a href="{{ route('attendances.report') }}"
-                    class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center">
+                    class="text-white sm:mb-0 mb-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
@@ -56,9 +57,8 @@
 
         <div class="p-4">
             <div class="relative overflow-x-auto">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                    id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-400" id="datatables-index">
+                    <thead class=" uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
                             <th class="p-3 text-sm font-semibold">Tanggal</th>

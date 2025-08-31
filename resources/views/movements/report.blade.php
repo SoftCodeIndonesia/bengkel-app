@@ -5,7 +5,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Laporan Barang Keluar</h2>
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Laporan Barang Keluar</h2>
 
             <a href="{{ route('movements.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">

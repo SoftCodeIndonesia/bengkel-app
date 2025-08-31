@@ -32,7 +32,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Stok Opname</h2>
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Stok Opname</h2>
             <a href="{{ route('stock-opname.create') }}"
                 class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,9 +45,8 @@
 
         <div class="p-4">
             <div class="relative overflow-x-auto">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                    id="datatables-index">
-                    <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-400" id="datatables-index">
+                    <thead class=" uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
                             <th class="p-3 text-sm font-semibold">Nomor Opname</th>

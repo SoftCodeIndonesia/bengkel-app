@@ -43,7 +43,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Permintaan Supply</h2>
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Permintaan Supply</h2>
             <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" type="button"
                 class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,11 +81,11 @@
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-4xl max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <div class="relative rounded-lg shadow-sm bg-gray-700">
                 <!-- Modal header -->
                 <div
                     class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h3 class="sm:text-xl text-sm font-semibold text-white">
                         Pilih Work Order Terlebih Dahulu!
                     </h3>
                     <button type="button"

@@ -31,15 +31,16 @@
 @endpush
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Job Orders</h2>
-            <div class="flex items-center space-x-4">
-                <form method="GET" class="flex items-center space-x-2" id="form-filter">
+        <div class="p-4 flex flex-col sm:flex-row justify-between items-center border-b border-gray-600">
+            <h2 class="text-xl text-start font-semibold text-white">Job Orders</h2>
+            <div class="flex flex-col sm:flex-row w-full sm:w-fit items-center sm:space-x-4 space-x-0">
+                <form method="GET" class="flex flex-col sm:flex-row items-center w-full mb-3 sm:mb-0 sm:w-fit space-x-2"
+                    id="form-filter">
                     <input type="date" name="start_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 w-full sm:w-fit ">
                     <span class="text-gray-400">s/d</span>
                     <input type="date" name="end_date"
-                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
+                        class="bg-gray-700 border border-gray-600 text-white rounded-md px-3 mb-3 sm:mb-0 py-2 w-full sm:w-fit">
                     @php
                         $statusText = [
                             'draft' => 'Draft',
@@ -49,22 +50,22 @@
                         ];
                     @endphp
                     <select name="status" id="status"
-                        class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        class="w-full sm:w-fit bg-gray-800 border border-gray-600 rounded-md text-white mb-3 sm:mb-0 px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Semua Status</option>
                         @foreach ($statusText as $key => $item)
                             <option value="{{ $key }}">{{ $item }}</option>
                         @endforeach
                     </select>
                     <button type="button" id="reset-filter"
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 mb-3 sm:mb-0 py-2 w-full rounded-md">
                         Reset
                     </button>
-                    <button type="submit" class="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                    <button type="submit" class="bg-green-600 hover:bg-blue-700 w-full text-white px-4 py-2 rounded-md">
                         Filter
                     </button>
                 </form>
                 <a href="{{ route('job-orders.create') }}"
-                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
+                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg w-full flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6">

@@ -226,22 +226,26 @@
                             Tambah Barang
                         </button>
                     </div>
-                    <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm" id="items-table">
-                        <thead class="bg-gray-600">
-                            <tr>
-                                <th class="p-3 text-left">Produk</th>
-                                <th class="p-3 text-right">Kategori</th>
-                                <th class="p-3 text-right">Qty</th>
-                                <th class="p-3 text-right">Harga Satuan</th>
-                                <th class="p-3 text-right">Discount (%)</th>
-                                <th class="p-3 text-right">Total</th>
-                                <th class="p-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="items-container">
-                            <!-- Baris item akan ditambahkan di sini -->
-                        </tbody>
-                    </table>
+
+                    <div class="relative overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
+                            id="items-table">
+                            <thead class="bg-gray-600">
+                                <tr>
+                                    <th class="p-3 text-left">Produk</th>
+                                    <th class="p-3 text-right">Kategori</th>
+                                    <th class="p-3 text-right">Qty</th>
+                                    <th class="p-3 text-right">Harga Satuan</th>
+                                    <th class="p-3 text-right">Discount (%)</th>
+                                    <th class="p-3 text-right">Total</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-container">
+                                <!-- Baris item akan ditambahkan di sini -->
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
 

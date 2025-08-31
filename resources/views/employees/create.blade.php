@@ -16,26 +16,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Kolom Kiri -->
                     <div class="space-y-4">
-                        <!-- Foto -->
-                        <div>
-                            <label for="photo" class="block text-sm font-medium text-gray-300 mb-1">Foto</label>
-                            <div class="flex items-center space-x-4">
-                                <div
-                                    class="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
-                                    <img id="photo-preview" class="w-full h-full object-cover hidden" src="#"
-                                        alt="Preview">
-                                    <span id="photo-placeholder" class="text-gray-400 text-xl">?</span>
-                                </div>
-                                <div class="flex-1">
-                                    <input type="file" name="photo" id="photo" class="hidden" accept="image/*">
-                                    <label for="photo"
-                                        class="cursor-pointer bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md inline-block">
-                                        Pilih Foto
-                                    </label>
-                                    <p class="mt-1 text-xs text-gray-400">Format: JPEG, PNG (Maks. 2MB)</p>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Nama -->
                         <div>

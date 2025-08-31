@@ -33,7 +33,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Data Karyawan</h2>
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Data Karyawan</h2>
             <a href="{{ route('employees.create') }}"
                 class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

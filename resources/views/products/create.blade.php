@@ -2,9 +2,9 @@
 @section('title', 'Tambah Sparepart')
 
 @section('content')
-    <div class="bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-600">
+    <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Tambah Sparepart Baru</h2>
+            <h2 class="sm:text-xl text-sm font-semibold text-white">Tambah Sparepart Baru</h2>
             <a href="{{ route('products.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,15 +91,30 @@
                     </div>
 
                     {{-- Deskripsi --}}
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="description" class="block text-sm font-medium text-gray-300 mb-2">Deskripsi</label>
-                        <textarea name="description" id="description" rows="3"
+                        <textarea name="description" id="description" rows="1"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('description') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">{{ old('description') }}</textarea>
                         @error('description')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label for="grade" class="block text-sm font-medium text-gray-300 mb-2">Grade</label>
+                        <select name="grade" id="grade"
+                            class="mt-1 block w-full bg-gray-700 border {{ $errors->has('grade') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">
+                            <option value="Genuine" {{ old('grade') == 'Genuine' ? 'selected' : '' }}>Genuine</option>
+                            <option value="OEM 1" {{ old('grade') == 'OEM 1' ? 'selected' : '' }}>OEM 1</option>
+                            <option value="OEM 2" {{ old('grade') == 'OEM 1' ? 'selected' : '' }}>OEM 2</option>
+                        </select>
+                        @error('grade')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
+
+
 
                 <div class="mt-8 flex justify-end space-x-4">
                     <a href="{{ route('products.index') }}"
@@ -132,7 +147,7 @@
             });
 
             // Format ke angka saat submit
-            const form = document.querySelector('form-create');
+            const form = document.getElementById('form-create');
             form.addEventListener('submit', function(e) {
                 priceInput.value = priceInput.value.replace(/\D/g, '');
                 buyingInput.value = buyingInput.value.replace(/\D/g, '');

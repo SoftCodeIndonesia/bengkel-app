@@ -31,9 +31,10 @@
 @endpush
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Daftar Jasa</h2>
-            <div class="flex justify-between gap-3">
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
+            <h2 class="sm:text-xl sm:mb-0 mb-2 text-sm font-semibold text-white">Daftar Jasa</h2>
+            <div class="flex sm:w-fit w-full flex-col sm:flex-row justify-between gap-3">
                 <a href="{{ route('services.create') }}"
                     class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

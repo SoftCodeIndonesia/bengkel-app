@@ -6,9 +6,11 @@
 @endphp
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
-        <div class="p-4 flex justify-between items-center border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Detail Job Order: {{ $jobOrder->unique_id }}</h2>
-            <div class="flex space-x-2">
+        <div
+            class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start items-start sm:items-center border-b border-gray-600">
+            <h2 class="sm:text-xl text-sm font-semibold mb-2 sm:mb-0 text-white">Detail Job Order: {{ $jobOrder->unique_id }}
+            </h2>
+            <div class="flex flex-col w-full sm:w-fit sm:flex-row space-x-0 sm:space-x-2">
                 @php
                     $statusClasses = [
                         'draft' => 'bg-gray-500',
@@ -21,7 +23,7 @@
                 @endphp
 
                 <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                    class="text-white {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
+                    class="text-white mb-2 sm:mb-0 {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
                     type="button">{{ $jobOrder->getDisplayStatus() }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -44,7 +46,7 @@
 
                 @if ($jobOrder->status != 'estimation' && $jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
                     <a href="{{ route('job-orders.edit', $jobOrder->id) }}"
-                        class="text-white bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
+                        class="text-white mb-2 sm:mb-0 bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -52,7 +54,7 @@
                         Edit
                     </a>
                     <a href="{{ route('supplies.create-from-job', $jobOrder->id) }}"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
+                        class="bg-purple-600 mb-2 sm:mb-0 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
@@ -61,7 +63,7 @@
                 @endif
                 @if ($jobOrder->status == 'completed')
                     <a href="{{ route('invoices.create-from-service', $jobOrder) }}"
-                        class="text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center ">
+                        class="text-white bg-green-600 mb-2 sm:mb-0 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center ">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
@@ -70,7 +72,7 @@
                     </a>
                 @endif
                 <a href="{{ route('job-orders.print', $jobOrder->id) }}"
-                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
+                    class="text-gray-300 mb-2 sm:mb-0 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -78,7 +80,7 @@
                     Cetak
                 </a>
                 <a href="{{ route('job-orders.index') }}"
-                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
+                    class="text-gray-300 mb-2 sm:mb-0 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 19l-7-7m0 0l7-7m-7 7h18" />

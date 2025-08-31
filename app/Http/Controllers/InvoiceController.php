@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\JobOrder;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -165,12 +166,28 @@ class InvoiceController extends Controller
             }
         }
 
+        $sales = Sales::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'sales.id')
+                ->where('invoices.tipe', 'sales');
+        })->get();
+
+        $workOrders = JobOrder::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'job_orders.id')
+                ->where('invoices.tipe', 'services');
+        })->where('status', 'completed')->get();
+
+
+
         return view('invoices.create', [
             'type' => $type,
             'reference' => $reference,
             'customer' => $customer,
-            'salesList' => Sales::with('customer')->get(),
-            'jobOrders' => JobOrder::with('customerVehicle.customer')->get()
+            'sales' => $sales,
+            'jobOrders' => $workOrders,
         ]);
     }
 
