@@ -79,7 +79,7 @@
 @section('content')
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600">
-            <h2 class="text-xl font-semibold text-white">Buat Invoice Baru</h2>
+            <h2 class="text-xl font-semibold text-white">Buat Invoice Barus</h2>
         </div>
 
         <div class="p-4">
@@ -95,28 +95,33 @@
                 @csrf
 
                 <div class="space-y-4 mb-6">
-                    <input type="hidden" name="tipe">
+                    <div>
+                        <label class="block text-gray-300 mb-2">Tipe Invoice</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="tipe" value="sales"
+                                    {{ old('tipe', $type) === 'sales' ? 'checked' : '' }}
+                                    class="form-radio text-blue-500 bg-gray-700 border-gray-600">
+                                <span class="ml-2 text-gray-300">Penjualan</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="tipe" value="services"
+                                    {{ old('tipe', $type) === 'services' ? 'checked' : '' }}
+                                    class="form-radio text-blue-500 bg-gray-700 border-gray-600">
+                                <span class="ml-2 text-gray-300">Service</span>
+                            </label>
+                        </div>
+                    </div>
 
                     <div class="flex gap-3">
                         <div class="flex-1">
                             <input type="hidden" name="reference_id">
-                            <label for="referensi" class="block text-gray-300 mb-2">Cari Referensi</label>
+                            <label for="referensi" class="block text-gray-300 mb-2">Pilih Referensi</label>
                             <input type="hidden" name="customer_id" value="{{ $customer->id ?? '' }}">
-                            <div class="relative w-1/2">
-                                <input type="text" name="referensi" id="search-dropdown"
-                                    class="block p-2.5 w-full z-20 text-sm  rounded-lg rounded-s-gray-100 rounded-s-2 border  focus:ring-blue-500  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:border-blue-500"
-                                    placeholder="Pilih WO/SO" readonly />
-                                <button type="button" id="button-select-reference" data-modal-target="modal-reference"
-                                    data-modal-toggle="modal-reference"
-                                    class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
-                                        class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                    </svg></button>
-                            </div>
+                            <select name="referensi" id="referensi" aria-placeholder="Pilih Referensi JO/SO"
+                                class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
 
-
+                            </select>
                         </div>
 
                     </div>
@@ -168,221 +173,15 @@
             </form>
         </div>
     </div>
-
-    <div id="modal-reference" tabindex="-1"
-        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-7xl max-h-full">
-            <!-- Modal content -->
-            <div class="relative rounded-lg shadow-sm bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600 ">
-                    <h3 class="text-xl font-medium  text-white">
-                        Pilih WO/SO
-                    </h3>
-                    <button type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-hide="modal-reference">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-4">
-
-
-                    <div class="mb-4 border-b border-gray-600">
-                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
-                            data-tabs-toggle="#default-tab-content" role="tablist">
-                            <li class="me-2" role="presentation">
-                                <button class="inline-block p-4 border-b-1 rounded-t-lg hover:text-gray-100"
-                                    id="sales-order-tab" data-tabs-target="#sales-order" type="button" role="tab"
-                                    aria-controls="sales-order" aria-selected="false">Sales Order (SO)</button>
-                            </li>
-                            <li class="me-2" role="presentation">
-                                <button
-                                    class="inline-block p-4 border-b-1 rounded-t-lg  hover:border-gray-300 hover:text-gray-100"
-                                    id="work-order-tab" data-tabs-target="#work-order" type="button" role="tab"
-                                    aria-controls="work-order" aria-selected="false">Work Order (WO)</button>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <div id="default-tab-content">
-                        <div class="hidden p-4 rounded-lg bg-gray-800 dark:bg-gray-800" id="sales-order" role="tabpanel"
-                            aria-labelledby="sales-order-tab">
-                            <div class="relative overflow-x-auto">
-                                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                                    id="datatables-index">
-                                    <thead class="uppercase bg-gray-700 text-gray-400">
-                                        <tr>
-                                            <th class="p-3 text-sm font-semibold">No</th>
-                                            <th class="py-3 text-sm font-semibold">Kode</th>
-                                            <th class="py-3 text-sm font-semibold">Tanggal</th>
-                                            <th class="py-3 text-sm font-semibold">Pelanggan</th>
-                                            <th class="py-3 text-sm font-semibold text-right">Subtotal</th>
-                                            <th class="py-3 text-sm font-semibold text-right">Diskon</th>
-                                            <th class="py-3 text-sm font-semibold text-right">Total</th>
-                                            <th class="p-3 text-sm font-semibold text-right">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-700">
-                                        @foreach ($sales as $key => $sale)
-                                            <tr>
-                                                <td class="py-3 px-3">{{ $key + 1 }}</td>
-                                                <td class="py-3 ">{{ $sale->unique_id }}</td>
-                                                <td class="py-3 ">{{ $sale->sales_date->format('d M Y') }}</td>
-                                                <td class="py-3 ">{{ $sale->customer->name }}</td>
-                                                <td class="py-3 text-right">Rp
-                                                    {{ number_format($sale->subtotal, 0, ',', '.') }}</td>
-                                                <td class="py-3 text-right">Rp
-                                                    {{ number_format($sale->diskon_value, 0, ',', '.') }}</td>
-                                                <td class="py-3 text-right">Rp
-                                                    {{ number_format($sale->total, 0, ',', '.') }}
-                                                </td>
-                                                <td class="text-right">
-                                                    <button type="button" data-tipe="sales"
-                                                        data-id="{{ $sale->id }}"
-                                                        class="btn-select-referensi focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1 me-2  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Pilih</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="hidden p-4 rounded-lg bg-gray-800 dark:bg-gray-800" id="work-order" role="tabpanel"
-                            aria-labelledby="work-order-tab">
-                            <div class="relative overflow-x-auto">
-                                <table class="w-full text-sm text-left rtl:text-right  text-gray-400"
-                                    id="datatables-index">
-                                    <thead class="uppercase bg-gray-700 text-gray-400">
-                                        <tr>
-                                            <th class="p-3">No</th>
-                                            <th class="py-3">Nomor JO</th>
-                                            <th class="py-3">Pelanggan</th>
-                                            <th class="py-3">Kendaraan</th>
-                                            <th class="py-3">Tanggal</th>
-                                            <th class="py-3 text-right">Subtotal</th>
-                                            <th class="py-3 text-right">Diskon</th>
-                                            <th class="py-3 text-right">Total</th>
-                                            <th class="p-3 text-right">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-700">
-                                        @foreach ($jobOrders as $key => $jo)
-                                            <tr>
-                                                <th class="p-3">{{ $key + 1 }}</th>
-                                                <th class="py-3">{{ $jo->unique_id }}</th>
-                                                <th class="py-3">{{ $jo->customerVehicle->customer->name }}</th>
-                                                <th class="py-3">
-                                                    {{ $jo->customerVehicle->vehicle->merk . ' ' . $jo->customerVehicle->vehicle->tipe . ' (' . $jo->customerVehicle->vehicle->no_pol . ')' }}
-                                                </th>
-                                                <th class="py-3">{{ $jo->service_at->format('d M Y') }}</th>
-                                                <th class="py-3 text-right">Rp
-                                                    {{ number_format($jo->subtotal, 0, ',', '.') }}</th>
-                                                <th class="py-3 text-right">Rp
-                                                    {{ number_format($jo->diskon_value, 0, ',', '.') }}</th>
-                                                <th class="py-3 text-right">Rp
-                                                    {{ number_format($jo->total, 0, ',', '.') }}</th>
-                                                <td class="text-right"><button type="button" data-tipe="service"
-                                                        data-id="{{ $jo->id }}"
-                                                        class="btn-select-referensi focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1 me-2  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Pilih</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-                <!-- Modal footer -->
-                <div class="flex items-center p-4 md:p-5 space-x-3 rtl:space-x-reverse border-t rounded-b border-gray-600">
-
-                    <button data-modal-hide="modal-reference" type="button"
-                        class="py-2.5 px-5 ms-3 text-sm font-medium focus:outline-none  rounded-lg border  focus:z-10 focus:ring-4  focus:ring-gray-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Batal</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const modalReference = document.getElementById('modal-reference');
-            const btnOpenReference = document.getElementById('button-select-reference');
-
-            const options = {};
-            const modalReferenceEl = new Modal(modalReference, options);
-
-            btnOpenReference.addEventListener('click', function() {
-                modalReferenceEl.toggle();
-            })
-
-            const btnSelectReference = document.querySelectorAll('.btn-select-referensi');
-
-            const referenceInput = document.querySelector('input[name="referensi"]');
-            const invoiceTipeField = document.querySelector('input[name="tipe"]');
             const diskonUnit = document.getElementById('diskon_unit');
             const diskonValue = document.getElementById('diskon_value');
             const subtotal = document.getElementById('subtotal');
             const total = document.getElementById('total');
-
-            btnSelectReference.forEach((btn) => {
-                btn.addEventListener('click', function() {
-                    const tipe = this.dataset.tipe;
-                    const referenceId = this.getAttribute('data-id');
-
-                    // Simpan tipe
-                    invoiceTipeField.value = tipe;
-                    $('input[name="reference_id"]').val(referenceId);
-
-                    // Ambil data detail referensi via AJAX
-                    fetch(`/api/invoice-references/${tipe}/${referenceId}`)
-                        .then(response => response.json())
-                        .then(reference => {
-                            // isi field summary
-                            subtotal.value = formatNumber(reference.subtotal);
-                            total.value = formatNumber(reference.total);
-                            diskonValue.value = formatNumber(reference.diskon_value);
-                            diskonUnit.value = reference.diskon_unit;
-
-                            // isi customer
-                            $('input[name="customer_id"]').val(reference.customer_id);
-
-                            // render detail
-                            $('.reference-detail').html('');
-                            if (tipe === 'sales') {
-                                $('.reference-detail').append(layoutSales(reference));
-                            } else {
-                                $('.reference-detail').append(layoutJO(reference));
-                            }
-
-                            // // tutup modal
-                            // const modal = document.querySelector('#modal-reference');
-                            // modalReference.classList.add('hidden');
-                            // modalReference.hide();
-
-
-
-
-
-
-                            modalReferenceEl.toggle();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert('Gagal mengambil data referensi');
-                        });
-                });
-            });
 
             function calculateTotal() {
 
@@ -401,6 +200,56 @@
 
             diskonUnit.addEventListener('change', calculateTotal);
             diskonValue.addEventListener('input', calculateTotal);
+
+            new TomSelect('#referensi', {
+                valueField: 'value',
+                labelField: 'text',
+                searchField: 'text',
+                create: false,
+                load: function(query, callback) {
+                    var url = base_url + '/api/invoice-reference/search' + '?q=' +
+                        encodeURIComponent(
+                            query) + '&tipe=' + encodeURIComponent($('input[name="tipe"]:checked')
+                            .val());
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(json => {
+                            callback(json);
+                        }).catch(() => {
+                            console.log('error');
+                            callback();
+                        });
+                },
+                render: {
+                    option: function(item, escape) {
+                        console.log(item);
+                        return `
+                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
+                                    <div class="ml-2">
+                                        <div class="text-gray-300">${escape(item.text)}</div>
+                                    </div>
+                                </div>`;
+                    },
+                    item: function(item, escape) {
+
+                        return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
+                    },
+                    no_results: function(data, escape) {
+
+                        return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
+                    },
+                    option_create: function(data, escape) {
+                        return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                    }
+                },
+                onInitialize: function() {
+                    // Tambahkan class error jika ada validasi error
+                    if (this.input.classList.contains('border-red-500')) {
+                        this.wrapper.classList.add('error');
+                    }
+                },
+
+            });
 
             $('#referensi').change(function(e) {
                 e.preventDefault();
@@ -560,7 +409,7 @@
                             <table class="w-full text-sm text-left text-gray-400">
                                 <thead class="text-xs uppercase bg-gray-600 text-gray-300">
                                     <tr>
-                                        <th class="px-4 py-3">No</th>
+                                        
                                         <th class="px-4 py-3">Item</th>
                                         <th class="px-4 py-3 text-right">Qty</th>
                                         <th class="px-4 py-3 text-right">Harga Satuan</th>
@@ -581,7 +430,7 @@
                             <table class="w-full text-sm text-left text-gray-400">
                                 <thead class="text-xs uppercase bg-gray-600 text-gray-300">
                                     <tr>
-                                        <th class="px-4 py-3">No</th>
+                                        
                                         <th class="px-4 py-3">Jasa</th>
                                         <th class="px-4 py-3 text-right">FRT</th>
                                         <th class="px-4 py-3 text-right">Harga Satuan</th>
@@ -619,9 +468,21 @@
             function layoutItemJO(items, tipe) {
                 var html = '';
                 items.forEach((element, index) => {
-                    if (element.product.tipe == tipe) {
+                    if (tipe == 'jasa' && element.product.tipe == tipe) {
                         html += ` <tr class="border-b border-gray-600">
-                                    <td class="px-4 py-3">${index}</td>
+                                    
+                                    <td class="px-4 py-3">${element.product.name}</td>
+                                    <td class="px-4 py-3 text-right">${element.quantity}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.unit_price)}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.total_price)}</td>
+                                </tr>`;
+                    } else if (tipe != 'jasa' && element.product.tipe != 'jasa') {
+                        html += ` <tr class="border-b border-gray-600">
+                                    
                                     <td class="px-4 py-3">${element.product.name}</td>
                                     <td class="px-4 py-3 text-right">${element.quantity}
                                     </td>

@@ -47,26 +47,28 @@ class InvoiceController extends Controller
                     return $invoice->date->format('d-M-Y');
                 })
                 ->addColumn('action', function ($invoice) {
-                    return '
-                <div class="flex justify-end space-x-2">
-                    <a href="' . route('invoices.show', $invoice->id) . '" class="text-blue-500 hover:text-blue-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                        </svg>
-                    </a>
-                    <a href="' . route('invoices.edit', $invoice->id) . '" class="text-yellow-500 hover:text-yellow-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                    </a>
-                    <a href="' . route('invoices.print', $invoice->id) . '" target="_blank" class="text-red-500 hover:text-red-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                        </svg>
-                    </a>
-                </div>
-            ';
+                    $action = '';
+                    $action .= '<div class="flex justify-end space-x-2">';
+                    $action .= '<a href="' . route('invoices.show', $invoice->id) . '" class="text-blue-500 hover:text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </a>';
+                    if ($invoice->status == 'unpaid') {
+                        $action .= '<a href="' . route('invoices.edit', $invoice->id) . '" class="text-yellow-500 hover:text-yellow-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </a>';
+                    }
+                    $action .=  '<a href="' . route('invoices.print', $invoice->id) . '" target="_blank" class="text-red-500 hover:text-red-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                        </a>';
+                    '</div>';
+                    return $action;
                 })
                 ->rawColumns(['action'])
                 ->toJson();
@@ -217,7 +219,8 @@ class InvoiceController extends Controller
             'reference_id' => 'required',
             'customer_id' => 'required|exists:customers,id',
             'due_date' => 'nullable|date',
-            'diskon_value' => 'nullable|numeric|min:0'
+            'diskon_value' => 'nullable|numeric|min:0',
+            'status' => 'required',
         ]);
 
 
@@ -236,6 +239,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::create([
             'tipe' => $validated['tipe'],
             'reference_id' => $validated['reference_id'],
+            'status' => $validated['status'],
             'customer_id' => $customer->id,
             'customer_name' => $customer->name,
             'customer_address' => $customer->address,
@@ -261,15 +265,28 @@ class InvoiceController extends Controller
         $reference = $invoice->reference;
         $customer = $invoice->customer;
 
-        // dd($reference->orderItems);
+        $sales = Sales::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'sales.id')
+                ->where('invoices.tipe', 'sales');
+        })->get();
+
+        $workOrders = JobOrder::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'job_orders.id')
+                ->where('invoices.tipe', 'services');
+        })->where('status', 'completed')->get();
+
 
         return view('invoices.edit', [
             'invoice' => $invoice,
             'reference' => $reference,
             'customer' => $customer,
             'type' => $invoice->tipe,
-            'salesList' => $invoice->tipe === 'sales' ? Sales::with('customer')->get() : [],
-            'jobOrders' => $invoice->tipe === 'services' ? JobOrder::with('customerVehicle.customer')->get() : []
+            'sales' => $sales,
+            'jobOrders' => $workOrders,
         ]);
     }
 

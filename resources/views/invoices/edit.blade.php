@@ -20,88 +20,50 @@
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-gray-300 mb-2">Tipe Invoice</label>
-                            <div class="flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="tipe" value="sales"
-                                        {{ $invoice->tipe === 'sales' ? 'checked' : '' }}
-                                        class="form-radio text-blue-500 bg-gray-700 border-gray-600" disabled>
-                                    <span class="ml-2 text-gray-300">Penjualan</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="tipe" value="services"
-                                        {{ $invoice->tipe === 'services' ? 'checked' : '' }}
-                                        class="form-radio text-blue-500 bg-gray-700 border-gray-600" disabled>
-                                    <span class="ml-2 text-gray-300">Service</span>
-                                </label>
+                <div class="space-y-4 mb-6">
+                    <input type="hidden" name="tipe">
+
+                    <div class="flex gap-3">
+                        <div class="flex-1">
+                            <input type="hidden" name="reference_id" value="{{ $invoice->reference_id }}">
+                            <label for="referensi" class="block text-gray-300 mb-2">Cari Referensi</label>
+                            <input type="hidden" name="customer_id" value="{{ $customer->id ?? '' }}">
+                            <div class="relative w-full">
+                                <input type="text" name="referensi" value="{{ $invoice->reference->unique_id }}"
+                                    id="search-dropdown"
+                                    class="block p-2.5 w-full z-20 text-sm  rounded-lg rounded-s-gray-100 rounded-s-2 border  focus:ring-blue-500  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:border-blue-500"
+                                    placeholder="Pilih WO/SO" readonly />
+                                <button type="button" id="button-select-reference" data-modal-target="modal-reference"
+                                    data-modal-toggle="modal-reference"
+                                    class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"><svg
+                                        class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg></button>
                             </div>
+
+
                         </div>
-
-
-                    </div>
-
-
-                </div>
-
-                <div class="flex gap-3 mb-6">
-                    <div class="flex-1">
-                        <label for="reference_id" class="block text-gray-300 mb-2">Referensi</label>
-                        <input type="hidden" name="reference_id" value="{{ $reference->id }}">
-                        <input type="text" value="{{ $reference->unique_id }}"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            readonly>
-                    </div>
-                    <div class="flex-1">
-                        <label for="customer_id" class="block text-gray-300 mb-2">Pelanggan</label>
-                        <input type="hidden" name="customer_id" value="{{ $customer->id }}">
-                        <input type="text" value="{{ $customer->name }}"
-                            class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            readonly>
+                        <div class="flex-1">
+                            <label class="block text-gray-300 mb-2">Status Invoice</label>
+                            <select name="status"
+                                class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="paid" {{ $invoice->status === 'paid' ? 'selected' : '' }}>Paid</option>
+                                <option value="unpaid" {{ $invoice->status === 'unpaid' ? 'selected' : '' }}>Unpaid
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <div class="mb-6">
                     <h3 class="text-lg font-medium text-white mb-4">Detail Transaksi</h3>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-400">
-                            <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                                <tr>
-                                    <th class="px-4 py-3">Item</th>
-                                    <th class="px-4 py-3 text-right">Harga</th>
-                                    <th class="px-4 py-3 text-right">Qty</th>
-                                    <th class="px-4 py-3 text-right">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if ($invoice->tipe === 'sales')
-                                    @foreach ($reference->items as $item)
-                                        <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-700">
-                                            <td class="px-4 py-3">{{ $item->product->name }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">{{ $item->quantity }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    @foreach ($reference->orderItems as $item)
-                                        <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-700">
-                                            <td class="px-4 py-3">{{ $item->product->name }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">{{ $item->quantity }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
+                    <div class="reference-detail">
+                        <div class="bg-gray-700 rounded-md p-4 text-gray-300">
+                            Pilih referensi untuk melihat detail transaksi
+                        </div>
                     </div>
                 </div>
 
@@ -115,18 +77,12 @@
                     </div>
 
                     <div class="bg-gray-700 p-4 rounded-md">
-                        <label class="block text-gray-300 mb-2">Diskon</label>
-                        <div class="flex space-x-2 mb-2">
-                            <select name="diskon_unit" id="diskon_unit"
-                                class="flex-1 bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                <option value="percentage" {{ $invoice->diskon_unit === 'percentage' ? 'selected' : '' }}>
-                                    Persentase (%)</option>
-                                <option value="nominal" {{ $invoice->diskon_unit === 'nominal' ? 'selected' : '' }}>Nominal
-                                    (Rp)</option>
-                            </select>
-                        </div>
-                        <input type="number" name="diskon_value" id="diskon_value" value="{{ $invoice->diskon_value }}"
-                            min="0"
+                        <label class="block text-gray-300 mb-2">Diskon (Rp)</label>
+
+                        <input type="text" name="diskon_value" id="diskon_value" value="{{ $invoice->diskon_value }}"
+                            min="0" readonly
+                            class="numeric-input w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <input type="hidden" name="diskon_unit" id="diskon_unit" value="nominal"
                             class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
@@ -136,17 +92,6 @@
                             value="{{ number_format($invoice->total, 0, ',', '.') }}"
                             class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             readonly>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-gray-700 p-4 rounded-md">
-                        <label class="block text-gray-300 mb-2">Status Invoice</label>
-                        <select name="status"
-                            class="w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="paid" {{ $invoice->status === 'paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="unpaid" {{ $invoice->status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                        </select>
                     </div>
                 </div>
 
@@ -162,15 +107,453 @@
             </form>
         </div>
     </div>
+    <div id="modal-reference" tabindex="-1"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-7xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative rounded-lg shadow-sm bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600 ">
+                    <h3 class="text-xl font-medium  text-white">
+                        Pilih WO/SO
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="modal-reference">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5 space-y-4">
+
+
+                    <div class="mb-4 border-b border-gray-600">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
+                            data-tabs-toggle="#default-tab-content" role="tablist">
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-1 rounded-t-lg hover:text-gray-100"
+                                    id="sales-order-tab" data-tabs-target="#sales-order" type="button" role="tab"
+                                    aria-controls="sales-order" aria-selected="false">Sales Order (SO)</button>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-1 rounded-t-lg  hover:border-gray-300 hover:text-gray-100"
+                                    id="work-order-tab" data-tabs-target="#work-order" type="button" role="tab"
+                                    aria-controls="work-order" aria-selected="false">Work Order (WO)</button>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div id="default-tab-content">
+                        <div class="hidden p-4 rounded-lg bg-gray-800 dark:bg-gray-800" id="sales-order" role="tabpanel"
+                            aria-labelledby="sales-order-tab">
+                            <div class="relative overflow-x-auto">
+                                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                                    id="datatables-index">
+                                    <thead class="uppercase bg-gray-700 text-gray-400">
+                                        <tr>
+                                            <th class="p-3 text-sm font-semibold">No</th>
+                                            <th class="py-3 text-sm font-semibold">Kode</th>
+                                            <th class="py-3 text-sm font-semibold">Tanggal</th>
+                                            <th class="py-3 text-sm font-semibold">Pelanggan</th>
+                                            <th class="py-3 text-sm font-semibold text-right">Subtotal</th>
+                                            <th class="py-3 text-sm font-semibold text-right">Diskon</th>
+                                            <th class="py-3 text-sm font-semibold text-right">Total</th>
+                                            <th class="p-3 text-sm font-semibold text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-700">
+                                        @foreach ($sales as $key => $sale)
+                                            <tr>
+                                                <td class="py-3 px-3">{{ $key + 1 }}</td>
+                                                <td class="py-3 ">{{ $sale->unique_id }}</td>
+                                                <td class="py-3 ">{{ $sale->sales_date->format('d M Y') }}</td>
+                                                <td class="py-3 ">{{ $sale->customer->name }}</td>
+                                                <td class="py-3 text-right">Rp
+                                                    {{ number_format($sale->subtotal, 0, ',', '.') }}</td>
+                                                <td class="py-3 text-right">Rp
+                                                    {{ number_format($sale->diskon_value, 0, ',', '.') }}</td>
+                                                <td class="py-3 text-right">Rp
+                                                    {{ number_format($sale->total, 0, ',', '.') }}
+                                                </td>
+                                                <td class="p-3 text-right">
+                                                    <input checked id="select-reference-2" type="radio"
+                                                        value="{{ json_encode(['value' => $sale->id, 'tipe' => 'sales']) }}"
+                                                        name="select-reference"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="hidden p-4 rounded-lg bg-gray-800 dark:bg-gray-800" id="work-order" role="tabpanel"
+                            aria-labelledby="work-order-tab">
+                            <div class="relative overflow-x-auto">
+                                <table class="w-full text-sm text-left rtl:text-right  text-gray-400"
+                                    id="datatables-index">
+                                    <thead class="uppercase bg-gray-700 text-gray-400">
+                                        <tr>
+                                            <th class="p-3">No</th>
+                                            <th class="py-3">Nomor JO</th>
+                                            <th class="py-3">Pelanggan</th>
+                                            <th class="py-3">Kendaraan</th>
+                                            <th class="py-3">Tanggal</th>
+                                            <th class="py-3 text-right">Subtotal</th>
+                                            <th class="py-3 text-right">Diskon</th>
+                                            <th class="py-3 text-right">Total</th>
+                                            <th class="p-3 text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-700">
+                                        @foreach ($jobOrders as $key => $jo)
+                                            <tr>
+                                                <th class="p-3">{{ $key + 1 }}</th>
+                                                <th class="py-3">{{ $jo->unique_id }}</th>
+                                                <th class="py-3">{{ $jo->customerVehicle->customer->name }}</th>
+                                                <th class="py-3">
+                                                    {{ $jo->customerVehicle->vehicle->merk . ' ' . $jo->customerVehicle->vehicle->tipe . ' (' . $jo->customerVehicle->vehicle->no_pol . ')' }}
+                                                </th>
+                                                <th class="py-3">{{ $jo->service_at->format('d M Y') }}</th>
+                                                <th class="py-3 text-right">Rp
+                                                    {{ number_format($jo->subtotal, 0, ',', '.') }}</th>
+                                                <th class="py-3 text-right">Rp
+                                                    {{ number_format($jo->diskon_value, 0, ',', '.') }}</th>
+                                                <th class="py-3 text-right">Rp
+                                                    {{ number_format($jo->total, 0, ',', '.') }}</th>
+                                                <td class="p-3 text-right">
+                                                    <input checked id="select-reference-2" type="radio"
+                                                        value="{{ json_encode(['value' => $jo->id, 'tipe' => 'services']) }}"
+                                                        name="select-reference"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Modal footer -->
+                <div class="flex items-center p-4 md:p-5 space-x-3 rtl:space-x-reverse border-t rounded-b border-gray-600">
+
+                    <button data-modal-hide="modal-reference" type="button"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium focus:outline-none  rounded-lg border  focus:z-10 focus:ring-4  focus:ring-gray-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Batal</button>
+                    <button data-modal-hide="modal-reference" type="button" id="confirm-reference"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const modalReference = document.getElementById('modal-reference');
+            const confirmReference = document.getElementById('confirm-reference');
+            const btnOpenReference = document.getElementById('button-select-reference');
+
+
+
+            const referenceIdInput = document.querySelector('input[name="reference_id"]');
+            const referenceInput = document.querySelector('input[name="referensi"]');
+            const invoiceTipeField = document.querySelector('input[name="tipe"]');
+
             const diskonUnit = document.getElementById('diskon_unit');
             const diskonValue = document.getElementById('diskon_value');
             const subtotal = document.getElementById('subtotal');
             const total = document.getElementById('total');
+
+            var invoice = @json($invoice);
+
+            renderData(invoice.tipe, invoice.reference_id)
+
+            confirmReference.addEventListener('click', function() {
+                const value = JSON.parse($('input[name="select-reference"]:checked').val());
+                console.log(value);
+
+                const tipe = value.tipe;
+                const id = value.value;
+
+                referenceIdInput.value = id;
+                invoiceTipeField.value = tipe;
+
+                renderData(tipe, id);
+
+            });
+
+            function renderData(tipe, id) {
+                // Ambil data detail referensi via AJAX
+                fetch(`/api/invoice-references/${tipe}/${id}`)
+                    .then(response => response.json())
+                    .then(reference => {
+
+                        referenceIdInput.value = reference.id;
+                        referenceInput.value = reference.unique_id;
+
+                        // isi field summary
+                        subtotal.value = formatNumber(reference.subtotal);
+                        total.value = formatNumber(reference.total);
+                        diskonValue.value = formatNumber(reference.diskon_value);
+                        diskonUnit.value = reference.diskon_unit;
+
+                        if (tipe == 'sales') {
+                            // isi customer
+                            $('input[name="customer_id"]').val(reference.customer_id);
+                        } else {
+                            // isi customer
+                            $('input[name="customer_id"]').val(reference.customer_vehicle.customer_id);
+                        }
+
+                        // render detail
+                        $('.reference-detail').html('');
+                        if (tipe === 'sales') {
+                            $('.reference-detail').append(layoutSales(reference));
+                        } else {
+                            $('.reference-detail').append(layoutJO(reference));
+                        }
+
+                        // // tutup modal
+                        // const modal = document.querySelector('#modal-reference');
+                        // modalReference.classList.add('hidden');
+                        // modalReference.hide();
+
+
+
+
+
+
+                        // modalReferenceEl.toggle();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Gagal mengambil data referensi');
+                    });
+            }
+
+            function layoutSales(sales) {
+                return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-300 mb-3">Informasi Pelanggan</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <span class="text-gray-400">Nama:</span>
+                                <span class="text-white ml-2">${sales.customer_name}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Alamat:</span>
+                                <span class="text-white ml-2">${sales.customer_address}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-300 mb-3">Informasi Transaksi</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <span class="text-gray-400">Tanggal:</span>
+                                <span class="text-white ml-2">${sales.sales_date}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Status:</span>
+                                <span class="text-white ml-2">
+                                    <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs">Selesai</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-300 mb-3">Item Penjualan</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-gray-700 rounded-lg overflow-hidden">
+                            <thead class="bg-gray-600 text-gray-300">
+                                <tr>
+                                    <th class="py-3 px-4 text-left">Produk/Jasa</th>
+                                    <th class="py-3 px-4 text-right">Harga Satuan</th>
+                                    <th class="py-3 px-4 text-right">Jumlah</th>
+                                    <th class="py-3 px-4 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-600">
+                            ${layoutItemSales(sales.items)}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `
+            }
+
+            function layoutJO(jobOrder) {
+                var statusClasses = {
+                    'draft': 'bg-gray-500',
+                    'estimation': 'bg-yellow-500',
+                    'progress': 'bg-blue-100 text-blue-800',
+                    'completed': 'bg-green-500',
+                    'cancelled': 'bg-red-500',
+                };
+                var statusText = {
+                    'draft': 'Draft',
+                    'estimation': 'Estimasi',
+                    'progress': 'Progress',
+                    'completed': 'Selesai',
+                    'cancelled': 'Batal',
+                };
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-700 p-4 rounded-lg border border-gray-600">
+                            <h3 class="text-lg font-medium text-white mb-4">Informasi Job Order</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-sm text-gray-400">ID Job Order</p>
+                                    <p class="text-white">${jobOrder.unique_id}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Tanggal Service</p>
+                                    <p class="text-white">${jobOrder.service_at}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Kilometer</p>
+                                    <p class="text-white">${jobOrder.km} km</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Status</p>
+                                    <span class="px-2 py-1 text-xs rounded-full ${statusClasses[jobOrder.status]}">
+                                    ${statusText[jobOrder.status]}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg border border-gray-600">
+                            <h3 class="text-lg font-medium text-white mb-4">Informasi Pelanggan & Kendaraan</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-sm text-gray-400">Nama Pelanggan</p>
+                                    <p class="text-white">${ jobOrder.customer_vehicle.customer.name }</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Telepon</p>
+                                    <p class="text-white">${ jobOrder.customer_vehicle.customer.phone }</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Kendaraan</p>
+                                    <p class="text-white">
+                                        ${ jobOrder.customer_vehicle.vehicle.merk }
+                                        ${ jobOrder.customer_vehicle.vehicle.tipe }
+                                        (${ jobOrder.customer_vehicle.vehicle.no_pol })
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
+                        <h3 class="text-lg font-medium text-white mb-4">Items (Sparepart)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-400">
+                                <thead class="text-xs uppercase bg-gray-600 text-gray-300">
+                                    <tr>
+                                        
+                                        <th class="px-4 py-3">Item</th>
+                                        <th class="px-4 py-3 text-right">Qty</th>
+                                        <th class="px-4 py-3 text-right">Harga Satuan</th>
+                                        <th class="px-4 py-3 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                ${layoutItemJO(jobOrder.order_items, 'barang')}
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
+                        <h3 class="text-lg font-medium text-white mb-4">Jasa</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-400">
+                                <thead class="text-xs uppercase bg-gray-600 text-gray-300">
+                                    <tr>
+                                        
+                                        <th class="px-4 py-3">Jasa</th>
+                                        <th class="px-4 py-3 text-right">FRT</th>
+                                        <th class="px-4 py-3 text-right">Harga Satuan</th>
+                                        <th class="px-4 py-3 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   ${layoutItemJO(jobOrder.order_items, 'jasa')}
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+            `
+            }
+
+            function layoutItemSales(items) {
+                var itemHtml = '';
+                items.forEach(element => {
+                    itemHtml += `<tr>
+                                <td class="py-3 px-4 text-white">${element.product.name}
+                                </td>
+                                <td class="py-3 px-4 text-right text-white">Rp
+                                ${formatNumber(element.unit_price)}</td>
+                                <td class="py-3 px-4 text-right text-white">${ element.quantity }</td>
+                                <td class="py-3 px-4 text-right text-white">Rp
+                                ${element.total_price}</td>
+                            </tr>`
+                });
+
+                return itemHtml;
+            }
+
+            function layoutItemJO(items, tipe) {
+                var html = '';
+                items.forEach((element, index) => {
+                    if (tipe == 'jasa' && element.product.tipe == tipe) {
+                        html += ` <tr class="border-b border-gray-600">
+                                    
+                                    <td class="px-4 py-3">${element.product.name}</td>
+                                    <td class="px-4 py-3 text-right">${element.quantity}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.unit_price)}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.total_price)}</td>
+                                </tr>`;
+                    } else if (tipe != 'jasa' && element.product.tipe != 'jasa') {
+                        html += ` <tr class="border-b border-gray-600">
+                                    
+                                    <td class="px-4 py-3">${element.product.name}</td>
+                                    <td class="px-4 py-3 text-right">${element.quantity}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.unit_price)}
+                                    </td>
+                                    <td class="px-4 py-3 text-right">Rp
+                                    ${formatNumber(element.total_price)}</td>
+                                </tr>`;
+                    }
+                });
+
+                return html;
+            }
 
             function calculateTotal() {
                 console.log(subtotal.value);

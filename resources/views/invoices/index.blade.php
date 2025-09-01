@@ -36,21 +36,13 @@
             class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start border-b border-gray-600">
             <h2 class="sm:text-xl text-sm sm:mb-0 mb-2 font-semibold text-white">Data Invoice</h2>
             <div class="flex sm:w-fit w-full flex-col sm:flex-row sm:space-x-2 space-x-0">
-                <a href="{{ route('invoices.create', ['type' => 'sales']) }}"
+                <a href="{{ route('invoices.create') }}"
                     class="text-white sm:mb-0 mb-2 sm:w-fit w-full sm:text-sm text-sm bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    Invoice Penjualan
-                </a>
-                <a href="{{ route('invoices.create', ['type' => 'services']) }}"
-                    class="text-white sm:w-fit w-full sm:text-sm text-sm bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Invoice Service
+                    Buat Invoice
                 </a>
             </div>
         </div>
