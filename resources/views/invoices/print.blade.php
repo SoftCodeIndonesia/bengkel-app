@@ -1,29 +1,56 @@
 @extends('layouts.print')
 @section('content')
     <div class="p-4 rounded-lg border-gray-600">
-        <div class="overflow-x-auto">
-            <p class="mb-1">Informasi Pelanggan</p>
-            <table style="width: 100%; table-layout: fixed;">
-                <thead>
-                    <tr>
-                        <th class="text-left px-2" width="100px">Nama</th>
-                        <td class="text-left px-2">{{ $invoice->customer->name }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-left px-2" width="100px">Email</th>
-                        <td class="text-left px-2">{{ $invoice->customer->email }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-left px-2" width="100px">No.Telp</th>
-                        <td class="text-left px-2">{{ $invoice->customer->phone }}</td>
-                    </tr>
-                    <tr>
-                        <th class="text-left px-2" width="100px">Alamat</th>
-                        <td class="text-left px-2">{{ $invoice->customer->address }}</td>
-                    </tr>
-                </thead>
-            </table>
+        <div class="flex gap-2">
+            <div class="overflow-x-auto">
+                <p class="mb-1">Informasi Pelanggan</p>
+                <table style="width: 100%; table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Nama</th>
+                            <td class="text-left px-2">{{ $invoice->customer->name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Email</th>
+                            <td class="text-left px-2">{{ $invoice->customer->email }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left px-2" width="100px">No.Telp</th>
+                            <td class="text-left px-2">{{ $invoice->customer->phone }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left px-2" width="100px">Alamat</th>
+                            <td class="text-left px-2">{{ $invoice->customer->address }}</td>
+                        </tr>
+                    </thead>
+                </table>
 
+            </div>
+            @if ($invoice->tipe !== 'sales')
+                @php
+                    $reference = $invoice->reference()->get()->first();
+                @endphp
+                <div class="overflow-x-auto">
+                    <p class="mb-1">Informasi Kendaraan</p>
+                    <table style="width: 100%; table-layout: fixed;">
+                        <thead>
+                            <tr>
+                                <th class="text-left px-2" width="100px">Merk</th>
+                                <td class="text-left px-2">{{ $reference->customerVehicle->vehicle->merk }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left px-2" width="100px">Tipe</th>
+                                <td class="text-left px-2">{{ $reference->customerVehicle->vehicle->tipe }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left px-2" width="100px">No Polisi</th>
+                                <td class="text-left px-2">{{ $reference->customerVehicle->vehicle->no_pol }}</td>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            @endif
         </div>
     </div>
     <div class="px-1">
@@ -40,7 +67,9 @@
                     <thead>
                         <tr>
                             <th class="py-1 px-2 text-left">
-                                Deskripsi</th>
+                                Part/Jasa</th>
+                            <th class="py-1 px-2 text-left">
+                                Grade</th>
                             <th class="py-1 px-2 text-end">Harga Satan
                             </th>
                             <th class="py-1 px-2 text-end">Qty
@@ -59,6 +88,8 @@
                                 <tr>
                                     <td class="py-1 px-2 text-left">{{ $item->product->name }}
                                     </td>
+                                    <td class="py-1 px-2 text-left">{{ $item->product->grade }}
+                                    </td>
                                     <td class="py-1 px-2 text-end">Rp
                                         {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                                     <td class="py-1 px-2 text-end">
@@ -71,6 +102,9 @@
                             @foreach ($reference->orderItems ?? [] as $item)
                                 <tr>
                                     <td class="py-1 px-2 text-left">{{ $item->product->name }}
+                                    </td>
+                                    <td class="py-1 px-2 text-left">
+                                        {{ $item->product->tipe == 'jasa' ? '-' : $item->product->grade }}
                                     </td>
                                     <td class="py-1 px-2 text-end">
                                         {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}

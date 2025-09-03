@@ -100,6 +100,7 @@
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="px-4 py-3">Produk</th>
+                                <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3 text-right">Harga Satuan</th>
                                 <th class="px-4 py-3 text-right">Jumlah</th>
                                 <th class="px-4 py-3 text-right">Total</th>
@@ -109,6 +110,7 @@
                             @foreach ($purchase->items as $item)
                                 <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-700">
                                     <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                    <td class="px-4 py-3">{{ $item->product->grade ?? '-' }}</td>
                                     <td class="px-4 py-3 text-right">Rp {{ number_format($item->unit_price, 0, ',', '.') }}
                                     </td>
                                     <td class="px-4 py-3 text-right">{{ $item->quantity }}</td>

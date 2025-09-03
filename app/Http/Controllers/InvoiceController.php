@@ -195,19 +195,49 @@ class InvoiceController extends Controller
 
     public function createFromSale(Sales $sale)
     {
+        $sales = Sales::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'sales.id')
+                ->where('invoices.tipe', 'sales');
+        })->get();
+
+        $workOrders = JobOrder::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'job_orders.id')
+                ->where('invoices.tipe', 'services');
+        })->where('status', 'completed')->get();
         return view('invoices.createFrom', [
             'type' => 'sales',
             'reference' => $sale,
-            'customers' => Customer::all()
+            'customers' => Customer::all(),
+            'sales' => $sales,
+            'jobOrders' => $workOrders,
         ]);
     }
 
     public function createFromService(JobOrder $jobOrder)
     {
+        $sales = Sales::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'sales.id')
+                ->where('invoices.tipe', 'sales');
+        })->get();
+
+        $workOrders = JobOrder::whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('invoices')
+                ->whereColumn('invoices.reference_id', 'job_orders.id')
+                ->where('invoices.tipe', 'services');
+        })->where('status', 'completed')->get();
         return view('invoices.createFrom', [
             'type' => 'services',
             'reference' => $jobOrder,
-            'customers' => Customer::all()
+            'customers' => Customer::all(),
+            'sales' => $sales,
+            'jobOrders' => $workOrders,
         ]);
     }
 

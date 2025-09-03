@@ -99,10 +99,10 @@
                 <div class="mt-16 pt-8 flex justify-end" style="margin-top: 64px; padding-top: 32px;">
                     <div class="w-1/3">
                         <div class="text-center">
-                            <p class="mb-4">Pemilik</p>
+                            <p class="mb-4">Hormat Kami,</p>
                             <div class="mt-12">
 
-                                <p class="text-black">{{ $data['customer_name'] }}</p>
+                                <p class="text-black">88AutoCare</p>
                             </div>
                         </div>
                     </div>

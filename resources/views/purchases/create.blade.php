@@ -200,7 +200,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
-                            Tambah Barang
+                            Pilih Barang
+                        </button>
+                        <button type="button" id="add-item"
+                            class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Tambah Baru
                         </button>
                     </div>
                 </div>
@@ -210,6 +218,7 @@
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="px-4 py-3" width="20%">Nama Barang</th>
+                                <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
@@ -225,6 +234,7 @@
                             <tr>
                                 <td colspan="3" class="px-4 py-3 text-right font-semibold">Total Pembelian</td>
                                 <td id="grand-total" class="px-4 py-3 font-semibold">Rp 0</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -271,6 +281,7 @@
                                     class="h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
                             </th>
                             <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="80%">Grade</th>
                             <th class="px-4 py-3" width="10%">Harga</th>
                             <th class="px-4 py-3" width="10%">Stok</th>
                         </tr>
@@ -424,6 +435,11 @@
                     {
                         data: 'name',
                         name: 'name',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'grade',
+                        name: 'grade',
                         className: 'px-4 py-3',
                     },
                     {
@@ -645,11 +661,13 @@
                     const productId = checkbox.value;
                     const productRow = checkbox.closest('tr');
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
-                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    const productGrade = productRow.querySelector('td:nth-child(3)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
-                        addItemRow(productId, productName, originalNumber(productPrice));
+                        addItemRow(productId, productName, originalNumber(productPrice),
+                            productGrade);
                     }
                 });
 
@@ -672,7 +690,7 @@
             }
 
             // Add item row to purchase table
-            function addItemRow(productId, productName, unitPrice) {
+            function addItemRow(productId, productName, unitPrice, grade) {
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
 
@@ -686,6 +704,9 @@
                     </td>
                     <td class="px-4 py-3">
                         <input type="number" name="items[${itemCount}][quantity]" min="1" value="1" required class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </td>
+                    <td class="px-4 py-3">
+                        <span>${grade}</span>
                     </td>
                     <td class="px-4 py-3">
                         <input type="text" name="items[${itemCount}][unit_price]" value="${formatRupiah(unitPrice)}" required class="unit-price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">

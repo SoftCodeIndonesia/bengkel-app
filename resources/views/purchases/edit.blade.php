@@ -201,6 +201,7 @@
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="px-4 py-3">Nama Barang</th>
+                                <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
@@ -266,6 +267,7 @@
                                     class=" h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
                             </th>
                             <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3">Grade</th>
                             <th class="px-4 py-3" width="10%">Harga</th>
                             <th class="px-4 py-3" width="10%">Stok</th>
                         </tr>
@@ -335,7 +337,9 @@
                     .buying_price;
                 const markupPersen = (marginNominal / element.movement_item.buying_price) * 100;
 
-                addItemRow(element.id, element.product_id, element.product.name, element.unit_price,
+                addItemRow(element.id, element.product_id, element.product.name, element.product.grade ??
+                    '-',
+                    element.unit_price,
                     markupPersen, element.quantity);
             });
 
@@ -364,6 +368,11 @@
                     {
                         data: 'name',
                         name: 'name',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'grade',
+                        name: 'grade',
                         className: 'px-4 py-3',
                     },
                     {
@@ -565,7 +574,7 @@
             // Add item row
 
 
-            function addItemRow(item_id, productId, productName, unitPrice, margin, qty) {
+            function addItemRow(item_id, productId, productName, grade, unitPrice, margin, qty) {
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
                 const selling_price = unitPrice * (1 + (margin / 100));
@@ -577,6 +586,9 @@
                         <input type="hidden" name="items[${itemCount}][id]" value="${item_id ?? null}">
                         <input type="hidden" name="items[${itemCount}][product_id]" value="${productId}">
                         <span>${productName}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span>${grade}</span>
                     </td>
                     <td class="px-4 py-3">
                         <input type="number" name="items[${itemCount}][quantity]" min="1" value="${qty ?? 1}" required class="quantity bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -732,11 +744,13 @@
                     const productId = checkbox.value;
                     const productRow = checkbox.closest('tr');
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
-                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    const grade = productRow.querySelector('td:nth-child(3)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
-                        addItemRow(null, productId, productName, originalNumber(productPrice), 0,
+                        addItemRow(null, productId, productName, grade, originalNumber(
+                                productPrice), 0,
                             originalNumber(productPrice));
                     }
                 });
