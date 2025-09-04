@@ -208,7 +208,8 @@ class ProductController extends Controller
             'unit_price' => 'required|numeric|min:0',
             'margin' => 'required|numeric|min:0',
             'code' => 'nullable',
-            'tipe' => 'required'
+            'tipe' => 'required',
+            'grade' => 'required'
         ]);
 
         $product = Product::create([
@@ -217,6 +218,7 @@ class ProductController extends Controller
             'unit_price' => $validated['unit_price'],
             'margin' => $validated['margin'],
             'tipe' => $validated['tipe'],
+            'grade' => $validated['grade'],
             'stok' => 0,
             'min_stock' => 1,
             'part_number' => $validated['code'],

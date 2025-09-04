@@ -202,7 +202,8 @@
                             </svg>
                             Pilih Barang
                         </button>
-                        <button type="button" id="add-item"
+                        <button type="button" data-modal-target="quick-product-modal"
+                            data-modal-toggle="quick-product-modal"
                             class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg text-sm flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -218,8 +219,8 @@
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th class="px-4 py-3" width="20%">Nama Barang</th>
-                                <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3">Qty</th>
+                                <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
                                 <th class="px-4 py-3">Margin (%)</th>
@@ -357,6 +358,17 @@
                         <option value="material">Material</option>
                     </select>
                 </div>
+                <div>
+                    <label for="grade" class="block text-sm font-medium text-gray-300 mb-2">Grade <span
+                            class="text-red-500">*</span></label>
+                    <select name="grade" id="grade"
+                        class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
+                        required>
+                        <option value="Genuine">Genuine</option>
+                        <option value="OEM 1">OEM 1</option>
+                        <option value="OEM 2">OEM 2</option>
+                    </select>
+                </div>
                 <div class="mb-4">
                     <label class="block text-gray-300 mb-2">Harga Beli <span class="text-red-500">*</span></label>
                     <input type="number" name="buying_price" id="buying_price" required
@@ -365,12 +377,12 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-gray-300 mb-2">Margin (%) <span class="text-red-500">*</span></label>
-                        <input type="number" name="margin" id="margin" value="20" required
+                        <input type="number" name="margin" id="margin" value="20" step="0.01" required
                             class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-2">Harga Jual</label>
-                        <input type="number" name="selling_price" id="selling_price" readonly
+                        <input type="number" name="unit_price" id="unit_price" readonly
                             class="w-full border border-gray-600 rounded p-2 text-white bg-gray-600">
                     </div>
                 </div>
@@ -389,6 +401,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize variables
+            const buyingInput = document.getElementById('buying_price');
+            const marginInput = document.getElementById('margin');
+            const priceInput = document.getElementById('unit_price');
+
+
+
             let selectedProducts = [];
             let itemCount = 0;
             const base_url = "{{ url('/') }}";
@@ -396,7 +414,16 @@
             var modalSupplier = document.getElementById('select-supplier');
             modalSupplier.classList.add('hidden')
 
+            buyingInput.addEventListener('input', hitungHargaJual);
+            marginInput.addEventListener('input', hitungHargaJual);
 
+            function hitungHargaJual() {
+                const beli = parseFloat(buyingInput.value.replace(/\D/g, '')) || 0;
+                const margin = parseFloat(marginInput.value) || 0;
+                const jual = beli + (beli * (margin / 100));
+                // console.log(Math.round(jual))
+                priceInput.value = jual // atau jual.toFixed(0) jika ingin string
+            }
             // $('#select-supplier').addClass('hidden');
 
 
@@ -443,8 +470,8 @@
                         className: 'px-4 py-3',
                     },
                     {
-                        data: 'formatted_price',
-                        name: 'unit_price',
+                        data: 'formatted_price_buying',
+                        name: 'formatted_price_buying',
                         className: 'px-4 py-3',
                     },
                     {
@@ -605,6 +632,8 @@
                 table.draw();
                 document.getElementById('product-selection-modal').classList.remove('hidden');
             });
+
+
 
             // Show product selection modal
             document.getElementById('modal-select-supplier').addEventListener('click', function() {
@@ -824,8 +853,12 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            addItemRow(data.product.id, data.product.name, data.product.buying_price);
-                            document.getElementById('quick-product-modal').classList.add('hidden');
+                            addItemRow(data.product.id, data.product.name, data.product.buying_price,
+                                data.product.grade);
+                            // document.getElementById('quick-product-modal').classList.add('hidden');
+                            const quickProductModal = document.getElementById('quick-product-modal');
+                            const modal = new Modal(quickProductModal);
+                            updateGrandTotal();
                             this.reset();
                         }
                     });

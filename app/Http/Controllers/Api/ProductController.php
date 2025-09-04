@@ -61,6 +61,10 @@ class ProductController extends Controller
                     $price = ceil(100000 * $row->stok);
                     return $row->tipe == 'jasa' ? 'Rp ' . number_format($price, 0, ',', '.') : 'Rp ' . number_format($row->unit_price, 0, ',', '.');
                 })
+                ->addColumn('formatted_price_buying', function ($row) {
+                    $price = ceil(100000 * $row->stok);
+                    return $row->tipe == 'jasa' ? 'Rp ' . number_format($price, 0, ',', '.') : 'Rp ' . number_format($row->buying_price, 0, ',', '.');
+                })
                 ->addColumn('margin', function ($row) {
                     return $row->margin . '%';
                 })

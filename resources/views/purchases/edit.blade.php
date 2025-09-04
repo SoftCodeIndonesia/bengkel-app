@@ -376,8 +376,8 @@
                         className: 'px-4 py-3',
                     },
                     {
-                        data: 'formatted_price',
-                        name: 'unit_price',
+                        data: 'formatted_price_buying',
+                        name: 'formatted_price_buying',
                         className: 'px-4 py-3',
                     },
                     {
