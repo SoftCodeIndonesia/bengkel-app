@@ -60,7 +60,7 @@ class SalesController extends Controller
                 'items' => 'required|array|min:1',
                 'items.*.product_id' => 'required|exists:products,id',
                 'items.*.quantity' => 'required|numeric|min:0.01',
-                'items.*.dicount_percentage' => 'required|numeric|min:0.01',
+                'items.*.dicount_percentage' => 'required|numeric',
                 'subtotal' => 'required|numeric',
                 'total' => 'required|numeric',
                 'notes' => 'string|nullable',
@@ -165,7 +165,7 @@ class SalesController extends Controller
                 'items.*.id' => 'nullable', // Bisa null untuk item baru atau 'delete_xxx' untuk yang akan dihapus
                 'items.*.product_id' => 'required|exists:products,id',
                 'items.*.quantity' => 'required|numeric|min:0.01',
-                'items.*.dicount_percentage' => 'required',
+                'items.*.dicount_percentage' => 'required|numeric',
                 'subtotal' => 'required|numeric',
                 'total' => 'required|numeric',
                 'notes' => 'string|nullable',

@@ -404,7 +404,8 @@
                             id="sparepart-table">
                             <thead class="uppercase bg-gray-700 text-gray-400">
                                 <tr>
-                                    <th class="p-2">Sparepart</th>
+                                    <th class="p-2 text-left">Sparepart</th>
+                                    <th class="p-2">Grade</th>
                                     <th class="p-2">Kategori</th>
                                     <th class="p-2">QTY</th>
                                     <th class="p-2">Harga Satuan</th>
@@ -500,6 +501,7 @@
                                     class="h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
                             </th>
                             <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="80%">Grade</th>
                             <th class="px-4 py-3" width="10%">Harga</th>
                             <th class="px-4 py-3" width="10%">Stok/FRT</th>
                         </tr>
@@ -656,7 +658,7 @@
             });
 
             // Function to add item row
-            function addItemRow(kategori, productName, productId, unit_price, quantity) {
+            function addItemRow(kategori, productName, grade, productId, unit_price, quantity) {
 
                 let containerStr = '';
                 if (tipe == 'jasa') {
@@ -674,10 +676,13 @@
 
                 if (tipe === 'barang') {
                     row.innerHTML = `
-                        <td class="p-2" width="300px">
+                        <td class="p-2 text-left" width="300px">
                             <input type="hidden" name="items[${itemCounter}][type]" value="barang">
                             <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
                             <span>${productName}</span>
+                        </td>
+                        <td class="p-2 text-center">
+                            <span class="grade text-gray-300">${grade}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${kategori}</span>
@@ -778,8 +783,12 @@
                             <span>${data.name}</span>
                         </td>
                         <td class="p-2 text-center">
+                            <span class="grade text-gray-300">${data.grade}</span>
+                        </td>
+                        <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${data.tipe}</span>
                         </td>
+                        
                         <td class="p-2" width="100px">
                             <input type="number" name="items[${itemCounter}][quantity]" min="1" value="${data.quantity}"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
@@ -1088,6 +1097,11 @@
                         className: 'px-4 py-3',
                     },
                     {
+                        data: 'grade',
+                        name: 'grade',
+                        className: 'px-4 py-3',
+                    },
+                    {
                         data: 'formatted_price',
                         name: 'unit_price',
                         className: 'px-4 py-3',
@@ -1341,11 +1355,12 @@
                     const quantity = productRow.querySelector('.qty').value;
 
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
-                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    const grade = productRow.querySelector('td:nth-child(3)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
-                        addItemRow(kategori, productName, productId, originalNumber(
+                        addItemRow(kategori, productName, grade, productId, originalNumber(
                             productPrice), quantity);
                     }
                 });

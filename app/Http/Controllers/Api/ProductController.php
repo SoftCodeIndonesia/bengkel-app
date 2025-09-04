@@ -43,6 +43,20 @@ class ProductController extends Controller
                 ->addColumn('buying_price', function ($row) {
                     return 'Rp ' . number_format($row->buying_price, 0, ',', '.');
                 })
+                ->addColumn('grade', function ($row) {
+                    $oem2 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-red-900 text-red-300">' . $row->grade . '</span>';
+                    $genuine = '<span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">' . $row->grade . '</span>';
+                    $oem1 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-yellow-900 text-yellow-300">' . $row->grade . '</span>';
+                    if ($row->grade == 'Genuine') {
+                        return $genuine;
+                    } else if ($row->grade == 'OEM 1') {
+                        return $oem1;
+                    } else if ($row->grade == 'OEM 2') {
+                        return $oem2;
+                    } else {
+                        return '<p>-</p>';
+                    }
+                })
                 ->addColumn('formatted_price', function ($row) {
                     $price = ceil(100000 * $row->stok);
                     return $row->tipe == 'jasa' ? 'Rp ' . number_format($price, 0, ',', '.') : 'Rp ' . number_format($row->unit_price, 0, ',', '.');
@@ -51,7 +65,7 @@ class ProductController extends Controller
                     return $row->margin . '%';
                 })
 
-                ->rawColumns(['checkbox'])
+                ->rawColumns(['checkbox', 'grade'])
                 ->make(true);
         }
     }

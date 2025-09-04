@@ -233,6 +233,7 @@
                             <thead class="bg-gray-600">
                                 <tr>
                                     <th class="p-3 text-left">Produk</th>
+                                    <th class="p-3 text-left">Grade</th>
                                     <th class="p-3 text-right">Kategori</th>
                                     <th class="p-3 text-right">Qty</th>
                                     <th class="p-3 text-right">Harga Satuan</th>
@@ -312,6 +313,7 @@
                                     class="h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
                             </th>
                             <th class="px-4 py-3" width="80%">Part</th>
+                            <th class="px-4 py-3" width="80%">Grade</th>
                             <th class="px-4 py-3" width="10%">Harga</th>
                             <th class="px-4 py-3" width="10%">Stok</th>
                         </tr>
@@ -396,7 +398,7 @@
                 document.getElementById('product-selection-modal').classList.remove('hidden');
             });
 
-            function addItemRow(productId, productName, kategori, unit_price, dicount_percentage) {
+            function addItemRow(productId, productName, grade, kategori, unit_price, dicount_percentage) {
                 const tbody = document.getElementById('items-container');
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-600 item-row';
@@ -404,6 +406,9 @@
                     <td class="p-3">
                         <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
                         <span>${productName}</span>
+                    </td>
+                    <td class="p-3">
+                        ${grade}
                     </td>
                     <td class="p-3 text-center Kategori">
                         ${kategori}
@@ -611,6 +616,11 @@
                         className: 'px-4 py-3',
                     },
                     {
+                        data: 'grade',
+                        name: 'grade',
+                        className: 'px-4 py-3',
+                    },
+                    {
                         data: 'formatted_price',
                         name: 'unit_price',
                         className: 'px-4 py-3',
@@ -686,11 +696,12 @@
                     const kategori = productRow.querySelector('.tipe').value;
 
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
-                    const productPrice = productRow.querySelector('td:nth-child(3)').textContent;
+                    const grade = productRow.querySelector('td:nth-child(3)').textContent;
+                    const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
-                        addItemRow(productId, productName, kategori, originalNumber(
+                        addItemRow(productId, productName, grade, kategori, originalNumber(
                             productPrice), 0);
                     }
                 });

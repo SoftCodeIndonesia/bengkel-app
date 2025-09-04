@@ -382,6 +382,7 @@
                             <thead class="bg-gray-600 text-gray-300">
                                 <tr>
                                     <th class="py-3 px-4 text-left">Produk/Jasa</th>
+                                    <th class="py-3 px-4 text-right">Grade</th>
                                     <th class="py-3 px-4 text-right">Harga Satuan</th>
                                     <th class="py-3 px-4 text-right">Jumlah</th>
                                     <th class="py-3 px-4 text-right">Total</th>
@@ -468,6 +469,7 @@
                                     <tr>
                                         
                                         <th class="px-4 py-3">Item</th>
+                                        <th class="px-4 py-3 text-right">Grade</th>
                                         <th class="px-4 py-3 text-right">Qty</th>
                                         <th class="px-4 py-3 text-right">Harga Satuan</th>
                                         <th class="px-4 py-3 text-right">Total</th>
@@ -489,6 +491,7 @@
                                     <tr>
                                         
                                         <th class="px-4 py-3">Jasa</th>
+                                        <th class="px-4 py-3">Grade</th>
                                         <th class="px-4 py-3 text-right">FRT</th>
                                         <th class="px-4 py-3 text-right">Harga Satuan</th>
                                         <th class="px-4 py-3 text-right">Total</th>
@@ -511,6 +514,8 @@
                     itemHtml += `<tr>
                                 <td class="py-3 px-4 text-white">${element.product.name}
                                 </td>
+                                <td class="py-3 px-4 text-right text-white">
+                                ${element.product.grade ?? '-'}</td>
                                 <td class="py-3 px-4 text-right text-white">Rp
                                 ${formatNumber(element.unit_price)}</td>
                                 <td class="py-3 px-4 text-right text-white">${ element.quantity }</td>
@@ -529,6 +534,7 @@
                         html += ` <tr class="border-b border-gray-600">
                                     
                                     <td class="px-4 py-3">${element.product.name}</td>
+                                    <td class="px-4 py-3 text-right"></td>
                                     <td class="px-4 py-3 text-right">${element.quantity}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp
@@ -541,6 +547,7 @@
                         html += ` <tr class="border-b border-gray-600">
                                     
                                     <td class="px-4 py-3">${element.product.name}</td>
+                                    <td class="px-4 py-3 text-right">${element.product.grade}</td>
                                     <td class="px-4 py-3 text-right">${element.quantity}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp

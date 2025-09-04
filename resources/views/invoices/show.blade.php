@@ -91,6 +91,7 @@
                         <thead class="bg-gray-600 text-gray-300">
                             <tr>
                                 <th class="py-3 px-4 text-left">Produk/Jasa</th>
+                                <th class="py-3 px-4 text-right">Grade</th>
                                 <th class="py-3 px-4 text-right">Harga Satuan</th>
                                 <th class="py-3 px-4 text-right">Jumlah</th>
                                 <th class="py-3 px-4 text-right">Total</th>
@@ -113,6 +114,18 @@
                                     <tr>
                                         <td class="py-3 px-4 text-white">{{ $item->product->name }}
                                             ({{ $item->product->tipe === 'barang' ? 'Sparepart' : 'Jasa' }})
+                                        </td>
+                                        <td class="py-3 px-4 text-right text-white">
+                                            @php
+                                                $clases = [
+                                                    'Genuine' => 'bg-green-500 text-white',
+                                                    'OEM 1' => 'bg-yellow-500 text-white',
+                                                    'OEM 2' => 'bg-red-500 text-white',
+                                                    '-' => 'bg-blue-500 text-white',
+                                                ];
+                                            @endphp
+                                            <span
+                                                class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
                                         </td>
                                         <td class="py-3 px-4 text-right text-white">Rp
                                             {{ number_format($item->unit_price, 0, ',', '.') }}</td>

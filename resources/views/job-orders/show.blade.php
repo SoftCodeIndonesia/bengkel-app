@@ -219,6 +219,7 @@
                                     </th>
                                     <th class="px-4 py-3">No</th>
                                     <th class="px-4 py-3">Sparepart/Jasa</th>
+                                    <th class="px-4 py-3 text-right">Grade</th>
                                     <th class="px-4 py-3 text-right">FRT/QTY</th>
                                     <th class="px-4 py-3 text-right">Harga Satuan</th>
                                     <th class="px-4 py-3 text-right">Subtotal</th>
@@ -236,6 +237,18 @@
                                             </td>
                                             <td class="px-4 py-3">{{ $loop->iteration }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                            <td class="py-3 px-4 text-end text-white">
+                                                @php
+                                                    $clases = [
+                                                        'Genuine' => 'bg-green-500 text-white',
+                                                        'OEM 1' => 'bg-yellow-500 text-white',
+                                                        'OEM 2' => 'bg-red-500 text-white',
+                                                        '-' => 'bg-blue-500 text-white',
+                                                    ];
+                                                @endphp
+                                                <span
+                                                    class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
+                                            </td>
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
                                             <td class="px-4 py-3 text-right">Rp
@@ -259,6 +272,7 @@
                                             </td>
                                             <td class="px-4 py-3">{{ $loop->iteration }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                            <td class="px-4 py-3">-</td>
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
                                             <td class="px-4 py-3 text-right">Rp
