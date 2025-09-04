@@ -140,7 +140,7 @@
                     },
                     {
                         data: 'job_order',
-                        name: 'jobOrder.unique_id'
+                        name: 'job_order'
                     },
                     {
                         data: 'count_part',
