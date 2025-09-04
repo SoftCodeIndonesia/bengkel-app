@@ -29,11 +29,11 @@ class ReportController extends Controller
         $totalIncome = $jobOrderIncome + $salesIncome;
 
         // Hitung pengeluaran
-        $purchaseExpenses = Purchase::where('status', 'paid')->whereBetween('purchase_date', [$startDate, $endDate])
+        $purchaseExpenses = Purchase::where('status', 'paid')->whereBetween('purchase_date', [$startDate, $endDate])->whereNull('deleted_at')
             ->sum('total');
 
-        $operationalExpenses = Expense::whereBetween('date', [$startDate, $endDate])
-            ->sum('amount')->whereNull('deleted_at');;
+        $operationalExpenses = Expense::whereBetween('date', [$startDate, $endDate])->whereNull('deleted_at')
+            ->sum('amount');
 
         $totalExpenses = $purchaseExpenses + $operationalExpenses;
 
