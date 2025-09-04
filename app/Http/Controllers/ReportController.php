@@ -33,7 +33,7 @@ class ReportController extends Controller
             ->sum('total');
 
         $operationalExpenses = Expense::whereBetween('date', [$startDate, $endDate])
-            ->sum('amount');
+            ->sum('amount')->whereNull('deleted_at');;
 
         $totalExpenses = $purchaseExpenses + $operationalExpenses;
 
