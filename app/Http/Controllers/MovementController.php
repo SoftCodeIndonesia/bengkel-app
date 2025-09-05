@@ -36,6 +36,7 @@ class MovementController extends Controller
         // Query untuk order_items (services)
         $orderItemsQuery = OrderItem::with(['product'])
             ->join('job_orders', 'order_items.order_id', '=', 'job_orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
             ->join('customer_vehicle', 'job_orders.customer_vehicle_id', '=', 'customer_vehicle.id')
             ->join('customers', 'customer_vehicle.customer_id', '=', 'customers.id')
             ->join('vehicles', 'customer_vehicle.vehicle_id', '=', 'vehicles.id')
@@ -50,8 +51,10 @@ class MovementController extends Controller
                 DB::raw("'Job Order' as reference_type"),
                 'job_orders.service_at as movement_date',
                 'job_orders.unique_id as reference_number',
+                'job_orders.id as reference_id',
                 DB::raw("CONCAT(customers.name) as customer_info")
             )
+            ->where('products.tipe', '!=', 'jasa')
             ->where('job_orders.status', 'completed')
             ->whereNull('job_orders.deleted_at');
 
@@ -70,6 +73,7 @@ class MovementController extends Controller
                 DB::raw("'Penjualan' as reference_type"),
                 'sales.sales_date as movement_date',
                 'sales.unique_id as reference_number',
+                'sales.id as reference_id',
                 DB::raw("CONCAT(customers.name) as customer_info")
             )
             ->whereNull('sales.deleted_at');
@@ -144,8 +148,8 @@ class MovementController extends Controller
             })
             ->editColumn('reference_number', function ($movement) {
                 // Ganti dengan route yang sesuai
-                $route = $movement->type == 'services' ? '#' : '#';
-                return '<a href="' . $route . '" class="text-blue-400 hover:text-blue-300 underline">' . $movement->reference_number . '</a>';
+                $route = $movement->type == 'services' ? '/job-orders' . '/' . $movement->reference_id : '/sales' . '/' . $movement->reference_id;
+                return '<a href="' . $route . '" class="text-blue-400 hover:text-blue-300 underline" target="__blank">' . $movement->reference_number . '</a>';
             })
             ->rawColumns(['type', 'reference_number'])
             ->make(true);

@@ -532,7 +532,7 @@
                     sticky top-0">
                         <tr>
                             <th class="px-4 py-3" width="5%">No</th>
-                            <th class="px-4 py-3" width="30%">Nama</th>
+                            <th class="px-4 py-3" width="40%">Nama</th>
                             <th class="px-4 py-3">No.Telp</th>
                             <th class="px-4 py-3">Alamat</th>
                             <th class="px-4 py-3">Kendaraan</th>
@@ -783,7 +783,7 @@
                             <span>${data.name}</span>
                         </td>
                         <td class="p-2 text-center">
-                            <span class="grade text-gray-300">${data.grade}</span>
+                            <span class="grade text-gray-300">${data.grade ?? '-'}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${data.tipe}</span>
@@ -1074,9 +1074,19 @@
             var table = $('#product-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 columnDefs: [{
-                    width: '30px',
+                    width: '5%',
+                    targets: 0,
+                }, {
+                    width: '30%',
                     targets: 1,
+                }, {
+                    width: '10%',
+                    targets: [3, 2],
+                }, {
+                    width: '5%',
+                    targets: 4,
                 }],
                 ajax: {
                     url: "{{ route('api.product.list') }}",
@@ -1171,6 +1181,17 @@
             var tableCustomer = $('#customer-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
+                columnDefs: [{
+                    width: '20%',
+                    targets: 1,
+                }, {
+                    width: '5%',
+                    targets: 6,
+                }, {
+                    width: '10%',
+                    targets: 3,
+                }],
                 ajax: {
                     url: "{{ route('customer-vehicle-search-table') }}",
 
@@ -1180,7 +1201,8 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center',
                     },
                     {
                         data: 'customer_name',

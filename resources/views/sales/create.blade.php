@@ -232,9 +232,9 @@
                             id="items-table">
                             <thead class="bg-gray-600">
                                 <tr>
-                                    <th class="p-3 text-left">Produk</th>
-                                    <th class="p-3 text-left">Grade</th>
-                                    <th class="p-3 text-right">Kategori</th>
+                                    <th class="p-3 text-left" width="30%">Produk</th>
+                                    <th class="p-3 text-left" width="7%">Grade</th>
+                                    <th class="p-3 text-right" width="7%">Kategori</th>
                                     <th class="p-3 text-right">Qty</th>
                                     <th class="p-3 text-right">Harga Satuan</th>
                                     <th class="p-3 text-right">Discount (%)</th>
@@ -593,10 +593,18 @@
             var table = $('#product-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 columnDefs: [{
-                    width: '30px',
+                    width: '5%',
+                    targets: 0,
+                }, {
+                    width: '30%',
                     targets: 1,
+                }, {
+                    width: '10%',
+                    targets: [2, 3],
                 }],
+
                 ajax: {
                     url: "{{ route('api.product.list') }}",
                     data: function(d) {

@@ -228,6 +228,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $index = 1;
+                                @endphp
                                 @foreach ($jobOrder->orderItems as $item)
                                     @if ($item->product->tipe != 'jasa')
                                         <tr class="border-b border-gray-600">
@@ -235,7 +238,7 @@
                                                 <input type="checkbox" name="items[]" value="{{ $item->id }}"
                                                     class="item-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                             </td>
-                                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                                            <td class="px-4 py-3">{{ $index }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
                                             <td class="py-3 px-4 text-end text-white">
                                                 @php
@@ -247,7 +250,7 @@
                                                     ];
                                                 @endphp
                                                 <span
-                                                    class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
+                                                    class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-md {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
                                             </td>
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
@@ -261,6 +264,9 @@
                                             <td class="px-4 py-3 text-right">Rp
                                                 {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
                                         </tr>
+                                        @php
+                                            $index++;
+                                        @endphp
                                     @endif
                                 @endforeach
                                 @foreach ($jobOrder->orderItems as $item)
@@ -270,7 +276,7 @@
                                                 <input type="checkbox" name="items[]" value="{{ $item->id }}"
                                                     class="item-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                             </td>
-                                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                                            <td class="px-4 py-3">{{ $index }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
                                             <td class="px-4 py-3">-</td>
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
@@ -291,6 +297,9 @@
                                             <td class="px-4 py-3 text-right">Rp
                                                 {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
                                         </tr>
+                                        @php
+                                            $index++;
+                                        @endphp
                                     @endif
                                 @endforeach
                             </tbody>

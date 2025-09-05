@@ -574,6 +574,20 @@
             var tableSupplier = $('#supplier-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
+                columnDefs: [{
+                        width: '20%',
+                        targets: 1,
+                    },
+                    {
+                        width: '20%',
+                        targets: 2,
+                    },
+                    {
+                        width: '5%',
+                        targets: 4,
+                    },
+                ],
                 ajax: {
                     url: "{{ route('supplier-search-table') }}",
 
@@ -583,7 +597,8 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center',
                     },
                     {
                         data: 'name',

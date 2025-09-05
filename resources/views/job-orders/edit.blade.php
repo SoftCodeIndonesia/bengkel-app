@@ -1068,9 +1068,19 @@
             var table = $('#product-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 columnDefs: [{
-                    width: '30px',
+                    width: '5%',
+                    targets: 0,
+                }, {
+                    width: '30%',
                     targets: 1,
+                }, {
+                    width: '10%',
+                    targets: [3, 2],
+                }, {
+                    width: '5%',
+                    targets: 4,
                 }],
                 ajax: {
                     url: "{{ route('api.product.list') }}",
@@ -1165,6 +1175,17 @@
             var tableCustomer = $('#customer-table-list').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
+                columnDefs: [{
+                    width: '20%',
+                    targets: 1,
+                }, {
+                    width: '5%',
+                    targets: 6,
+                }, {
+                    width: '10%',
+                    targets: 3,
+                }],
                 ajax: {
                     url: "{{ route('customer-vehicle-search-table') }}",
 

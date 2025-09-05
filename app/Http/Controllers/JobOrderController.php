@@ -105,11 +105,10 @@ class JobOrderController extends Controller
 
     public function create()
     {
-        $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
-        $products = Product::all();
+
         $packages = ServicePackage::all();
 
-        return view('job-orders.create', compact('customerVehicles', 'products', 'packages'));
+        return view('job-orders.create', compact('packages'));
     }
 
     protected function validateRequest(Request $request)

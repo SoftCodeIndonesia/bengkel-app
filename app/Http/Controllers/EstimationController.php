@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\Estimation;
 use App\Models\MovementItem;
 use Illuminate\Http\Request;
+use App\Models\ServicePackage;
 use App\Models\CustomerVehicle;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
@@ -84,7 +85,8 @@ class EstimationController extends Controller
      */
     public function create()
     {
-        return view('estimation.create');
+        $packages = ServicePackage::all();
+        return view('estimation.create', compact('packages'));
     }
 
     public function toJobOrder(string $id)
