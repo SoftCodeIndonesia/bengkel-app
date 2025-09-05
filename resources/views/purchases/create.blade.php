@@ -202,8 +202,7 @@
                             </svg>
                             Pilih Barang
                         </button>
-                        <button type="button" data-modal-target="quick-product-modal"
-                            data-modal-toggle="quick-product-modal"
+                        <button type="button" id="button-add-new-product"
                             class="text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg text-sm flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -218,12 +217,12 @@
                     <table class="w-full text-sm text-left text-gray-400">
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
-                                <th class="px-4 py-3" width="20%">Nama Barang</th>
-                                <th class="px-4 py-3">Qty</th>
+                                <th class="px-4 py-3" width="30%">Nama Barang</th>
+                                <th class="px-4 py-3" width="10%">Qty</th>
                                 <th class="px-4 py-3">Grade</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
-                                <th class="px-4 py-3">Margin (%)</th>
+                                <th class="px-4 py-3"width="10%">Margin (%)</th>
                                 <th class="px-4 py-3">Harga Jual</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
@@ -333,59 +332,60 @@
 
     <!-- Quick Product Modal -->
     <div id="quick-product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50">
-        <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md mx-auto mt-20">
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md max-h-full mt-20">
             <h3 class="text-xl font-semibold text-white mb-4">Tambah Produk Baru</h3>
             <form id="quick-product-form">
                 @csrf
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Nama Produk <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" required
-                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Part Number (Opsional)</label>
-                    <input type="text" name="code"
-                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
-                </div>
-                <div>
-                    <label for="tipe" class="block text-sm font-medium text-gray-300 mb-2">Tipe Produk <span
-                            class="text-red-500">*</span></label>
-                    <select name="tipe" id="tipe"
-                        class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
-                        required>
-                        <option value="part">Part</option>
-                        <option value="oli">Oli</option>
-                        <option value="material">Material</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="grade" class="block text-sm font-medium text-gray-300 mb-2">Grade <span
-                            class="text-red-500">*</span></label>
-                    <select name="grade" id="grade"
-                        class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
-                        required>
-                        <option value="Genuine">Genuine</option>
-                        <option value="OEM 1">OEM 1</option>
-                        <option value="OEM 2">OEM 2</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-300 mb-2">Harga Beli <span class="text-red-500">*</span></label>
-                    <input type="number" name="buying_price" id="buying_price" required
-                        class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div class="col-span-2">
+                        <label class="block text-gray-300 mb-2">Nama Produk <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" required
+                            class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-gray-300 mb-2">Part Number (Opsional)</label>
+                        <input type="text" name="code"
+                            class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                    </div>
+                    <div class="col-span-1">
+                        <label for="tipe" class="block text-sm font-medium text-gray-300 mb-2">Tipe Produk <span
+                                class="text-red-500">*</span></label>
+                        <select name="tipe" id="tipe"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
+                            required>
+                            <option value="part">Part</option>
+                            <option value="oli">Oli</option>
+                            <option value="material">Material</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label for="grade" class="block text-sm font-medium text-gray-300 mb-2">Grade <span
+                                class="text-red-500">*</span></label>
+                        <select name="grade" id="grade"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3"
+                            required>
+                            <option value="Genuine">Genuine</option>
+                            <option value="OEM 1">OEM 1</option>
+                            <option value="OEM 2">OEM 2</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-gray-300 mb-2">Harga Beli <span class="text-red-500">*</span></label>
+                        <input type="number" name="buying_price" id="buying_price" required
+                            class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
+                    </div>
+                    <div class="col-span-1">
                         <label class="block text-gray-300 mb-2">Margin (%) <span class="text-red-500">*</span></label>
                         <input type="number" name="margin" id="margin" value="20" step="0.01" required
                             class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white">
                     </div>
-                    <div>
+                    <div class="col-span-2">
                         <label class="block text-gray-300 mb-2">Harga Jual</label>
-                        <input type="number" name="unit_price" id="unit_price" readonly
+                        <input type="number" name="unit_price" id="unit_price"
                             class="w-full border border-gray-600 rounded p-2 text-white bg-gray-600">
                     </div>
                 </div>
+
                 <div class="flex justify-end">
                     <button type="button" id="cancel-product" class="mr-2 px-4 py-2 bg-gray-600 rounded">Batal</button>
                     <button type="submit" class="px-4 py-2 bg-green-600 rounded">Simpan</button>
@@ -401,10 +401,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize variables
-            const buyingInput = document.getElementById('buying_price');
-            const marginInput = document.getElementById('margin');
-            const priceInput = document.getElementById('unit_price');
+            const buyingPriceInput = document.getElementById("buying_price");
+            const marginInput = document.getElementById("margin");
+            const unitPriceInput = document.getElementById("unit_price");
+            const addNewProduk = document.getElementById("button-add-new-product");
+            const cancelAddProduk = document.getElementById("cancel-product");
 
+
+            const quickProductModal = document.getElementById('quick-product-modal');
+            const modal = new Modal(quickProductModal, {
+                backdrop: 'dynamic', // biar backdrop ikut dihandle
+                closable: true
+            });
 
 
             let selectedProducts = [];
@@ -414,16 +422,43 @@
             var modalSupplier = document.getElementById('select-supplier');
             modalSupplier.classList.add('hidden')
 
-            buyingInput.addEventListener('input', hitungHargaJual);
-            marginInput.addEventListener('input', hitungHargaJual);
 
-            function hitungHargaJual() {
-                const beli = parseFloat(buyingInput.value.replace(/\D/g, '')) || 0;
+            function updateUnitPrice() {
+                const buyingPrice = parseFloat(buyingPriceInput.value) || 0;
                 const margin = parseFloat(marginInput.value) || 0;
-                const jual = beli + (beli * (margin / 100));
-                // console.log(Math.round(jual))
-                priceInput.value = jual // atau jual.toFixed(0) jika ingin string
+
+                if (buyingPrice > 0) {
+                    const unitPrice = buyingPrice + (buyingPrice * margin / 100);
+                    unitPriceInput.value = unitPrice.toFixed(0); // bisa diubah ke toFixed(2) kalau butuh desimal
+                } else {
+                    unitPriceInput.value = "";
+                }
             }
+
+            function updateMargin() {
+                const buyingPrice = parseFloat(buyingPriceInput.value) || 0;
+                const unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+                if (buyingPrice > 0 && unitPrice > 0) {
+                    const margin = ((unitPrice - buyingPrice) / buyingPrice) * 100;
+                    marginInput.value = margin.toFixed(2);
+                }
+            }
+
+            // Event ketika harga beli atau margin berubah → update harga jual
+            buyingPriceInput.addEventListener("input", updateUnitPrice);
+            marginInput.addEventListener("input", updateUnitPrice);
+
+            // Event ketika harga jual diketik manual → update margin
+            unitPriceInput.addEventListener("input", updateMargin);
+
+            addNewProduk.addEventListener('click', function() {
+                modal.show();
+            })
+            cancelAddProduk.addEventListener('click', function() {
+                modal.hide();
+            })
+
             // $('#select-supplier').addClass('hidden');
 
 
@@ -842,6 +877,8 @@
                 e.preventDefault();
                 const formData = new FormData(this);
 
+
+
                 fetch("{{ route('products.quick-create') }}", {
                         method: 'POST',
                         body: formData,
@@ -856,8 +893,9 @@
                             addItemRow(data.product.id, data.product.name, data.product.buying_price,
                                 data.product.grade);
                             // document.getElementById('quick-product-modal').classList.add('hidden');
-                            const quickProductModal = document.getElementById('quick-product-modal');
-                            const modal = new Modal(quickProductModal);
+
+
+                            modal.hide();
                             updateGrandTotal();
                             this.reset();
                         }

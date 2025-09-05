@@ -344,11 +344,11 @@
                     sticky top-0">
                         <tr>
                             <th class="px-4 py-3" width="5%">No</th>
-                            <th class="px-4 py-3">Nama</th>
+                            <th class="px-4 py-3" width="30%">Nama</th>
                             <th class="px-4 py-3">Email</th>
                             <th class="px-4 py-3">No.Telp</th>
                             <th class="px-4 py-3">Alamat</th>
-                            <th class="px-4 py-3">Aksi</th>
+                            <th class="px-4 py-3" width="5%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="customer-list">
@@ -739,7 +739,8 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'name',

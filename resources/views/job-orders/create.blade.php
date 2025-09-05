@@ -532,12 +532,12 @@
                     sticky top-0">
                         <tr>
                             <th class="px-4 py-3" width="5%">No</th>
-                            <th class="px-4 py-3">Nama</th>
+                            <th class="px-4 py-3" width="30%">Nama</th>
                             <th class="px-4 py-3">No.Telp</th>
                             <th class="px-4 py-3">Alamat</th>
                             <th class="px-4 py-3">Kendaraan</th>
                             <th class="px-4 py-3">No Polisi</th>
-                            <th class="px-4 py-3">Aksi</th>
+                            <th class="px-4 py-3" width="3%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="customer-list">

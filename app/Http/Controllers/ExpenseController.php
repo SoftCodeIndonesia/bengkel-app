@@ -21,7 +21,8 @@ class ExpenseController extends Controller
     public function getExpenses(Request $request)
     {
         $expenses = Expense::with(['category', 'recorder'])
-            ->select(['id', 'date', 'expense_category_id', 'description', 'amount', 'payment_method', 'recorded_by'])
+            ->select(['id', 'date', 'expense_category_id', 'description', 'amount', 'payment_method', 'recorded_by', 'deleted_at'])
+            ->whereNull('deleted_at')
             ->orderBy('date', 'desc');
 
         return DataTables::of($expenses)

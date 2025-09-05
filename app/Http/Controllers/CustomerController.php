@@ -57,7 +57,7 @@ class CustomerController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
 
-                $btn = '<button type="button" data-id="' . $row->id . '" data-name="' . $row->name . '" class="select-customer text-blue-600">Pilih';
+                $btn = '<button type="button" data-id="' . $row->id . '" data-name="' . $row->name . '" class="select-customer text-white bg-green-800 px-5 py-1 rounded-lg">Pilih';
                 $btn .= '</button>';
 
                 return $btn;

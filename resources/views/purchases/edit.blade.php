@@ -200,12 +200,12 @@
                     <table class="w-full text-sm text-left text-gray-400">
                         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">Nama Barang</th>
+                                <th class="px-4 py-3" width="30%">Nama Barang</th>
                                 <th class="px-4 py-3">Grade</th>
-                                <th class="px-4 py-3">Qty</th>
+                                <th class="px-4 py-3" width="10%">Qty</th>
                                 <th class="px-4 py-3">Harga Beli</th>
                                 <th class="px-4 py-3">Total</th>
-                                <th class="px-4 py-3">Margin (%)</th>
+                                <th class="px-4 py-3" width="10%">Margin (%)</th>
                                 <th class="px-4 py-3">Harga Jual</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
@@ -220,6 +220,7 @@
                                 <td colspan="3" class="px-4 py-3 text-right font-semibold">Total Pembelian</td>
                                 <td id="grand-total" class="px-4 py-3 font-semibold">
                                     {{ number_format($purchase->total, 0, ',', '.') }}</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -751,19 +752,20 @@
                         selectedProducts.push(productId);
                         addItemRow(null, productId, productName, grade, originalNumber(
                                 productPrice), 0,
-                            originalNumber(productPrice));
+                            1);
                     }
                 });
 
                 document.getElementById('product-selection-modal').classList.add('hidden');
                 resetSelection();
+                updateGrandTotal();
             });
 
 
             // Reset product selection
             function resetSelection() {
                 document.getElementById('select-all').checked = false;
-                document.getElementById('product-search').value = '';
+                document.querySelector('input[type="search"]').value = '';
                 const checkboxes = document.querySelectorAll('#product-list input[type="checkbox"]');
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = false;

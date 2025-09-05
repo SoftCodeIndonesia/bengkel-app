@@ -19,7 +19,7 @@ class SupplierController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="flex justify-end gap-2">';
-                    $btn .= '<button type="button" data-id="' . $row->id . '" data-name="' . $row->name . '"class="select-supplier text-blue-600">Pilih';
+                    $btn .= '<button type="button" data-id="' . $row->id . '" data-name="' . $row->name . '"class="select-supplier bg-green-800 rounded-lg text-white px-5 py-1">Pilih';
                     $btn .= '</button>';
 
                     $btn .= '</div>';

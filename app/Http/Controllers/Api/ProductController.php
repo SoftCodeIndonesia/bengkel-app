@@ -44,9 +44,9 @@ class ProductController extends Controller
                     return 'Rp ' . number_format($row->buying_price, 0, ',', '.');
                 })
                 ->addColumn('grade', function ($row) {
-                    $oem2 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-red-900 text-red-300">' . $row->grade . '</span>';
-                    $genuine = '<span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-900 text-green-300">' . $row->grade . '</span>';
-                    $oem1 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-yellow-900 text-yellow-300">' . $row->grade . '</span>';
+                    $oem2 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-red-100 text-red-800">' . $row->grade . '</span>';
+                    $genuine = '<span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-green-100 text-green-800">' . $row->grade . '</span>';
+                    $oem1 = '<span class=" text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm bg-yellow-100 text-yellow-800">' . $row->grade . '</span>';
                     if ($row->grade == 'Genuine') {
                         return $genuine;
                     } else if ($row->grade == 'OEM 1') {

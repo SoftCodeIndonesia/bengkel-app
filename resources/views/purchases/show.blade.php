@@ -78,14 +78,14 @@
                             <label class="block text-gray-300 text-sm">Status</label>
                             @if ($purchase->status == 'draft')
                                 <span
-                                    class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-300">DRAFT</span>
+                                    class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-gray-300">DRAFT</span>
                             @elseif ($purchase->status == 'unpaid')
                                 <span
-                                    class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300">Belum
+                                    class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-md dark:bg-yellow-900 dark:text-yellow-300">Belum
                                     Lunas</span>
                             @elseif ($purchase->status == 'paid')
                                 <span
-                                    class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Lunas</span>
+                                    class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-md dark:bg-green-900 dark:text-green-300">Lunas</span>
                             @endif
                         </div>
                     </div>
@@ -107,10 +107,22 @@
                             </tr>
                         </thead>
                         <tbody>
+
                             @foreach ($purchase->items as $item)
                                 <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-700">
                                     <td class="px-4 py-3">{{ $item->product->name }}</td>
-                                    <td class="px-4 py-3">{{ $item->product->grade ?? '-' }}</td>
+                                    <td class="px-4 py-3">
+                                        @php
+                                            $clases = [
+                                                'Genuine' => 'bg-green-100 bg-green-800',
+                                                'OEM 1' => 'bg-yellow-100 bg-yellow-800',
+                                                'OEM 2' => 'bg-red-100 bg-red-800',
+                                                '-' => 'bg-blue-100 bg-blue-800',
+                                            ];
+                                        @endphp
+                                        <span
+                                            class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-md {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
+                                    </td>
                                     <td class="px-4 py-3 text-right">Rp {{ number_format($item->unit_price, 0, ',', '.') }}
                                     </td>
                                     <td class="px-4 py-3 text-right">{{ $item->quantity }}</td>
