@@ -24,6 +24,10 @@ class CustomerVehicleController extends Controller
         if ($request->search['value']) {
             $data = $data->whereHas('customer', function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->search['value'] . '%');
+            })->orWhereHas('vehicle', function ($query) use ($request) {
+                $query->where('no_pol', 'like', '%' . $request->search['value'] . '%');
+                $query->orWhere('merk', 'like', '%' . $request->search['value'] . '%');
+                $query->orWhere('tipe', 'like', '%' . $request->search['value'] . '%');
             });
         }
 
