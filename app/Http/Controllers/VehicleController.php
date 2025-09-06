@@ -21,7 +21,7 @@ class VehicleController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('customer', function ($row) {
-                    return $row->customers()->first()->name;
+                    return $row->customers()->first()->name ?? '-';
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="flex justify-end gap-2">';
