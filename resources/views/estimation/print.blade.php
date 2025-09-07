@@ -1,50 +1,68 @@
 @extends('layouts.print')
 
 @section('content')
-    <div class="p-4 rounded-lg border-gray-600">
+    <div class="px-2 py-5 rounded-lg border-gray-600">
         <div class="overflow-x-auto">
-            <p class="mb-1">Informasi Pelanggan</p>
+
             <div class="flex justify-between mb-2 items-center gap-5">
                 <div class="flex-1 space-y-1">
-                    <table style="width: 100%; table-layout: fixed;">
+                    <table style="width: 100%; table-layout: fixed;border: none;">
                         <thead>
                             <tr>
-                                <th class="text-left px-2" width="100px">Nama</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->customer->name }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Doc No</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->unique_id }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">Email</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->customer->email }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Tanggal</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->created_at->format('y-m-d') }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">No.Telp</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->customer->phone }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Nama</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->customer->name }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">Alamat</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->customer->address }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Email</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->customer->email }}
+                                </td>
                             </tr>
+                            <tr>
+                                <th class="text-left px-2 border-none" width="100px">No.Telp</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->customer->phone }}
+                                </td>
+                            </tr>
+
                         </thead>
                     </table>
                 </div>
                 <div class="flex-1 space-y-1">
-                    <table style="width: 100%; table-layout: fixed;">
+                    <table style="width: 100%; table-layout: fixed; border: none;">
                         <thead>
                             <tr>
-                                <th class="text-left px-2" width="100px">Merk</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->vehicle->merk }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Alamat</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->customer->address }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">Tipe</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->vehicle->tipe }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Merk</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->vehicle->merk }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">No Polisi</th>
-                                <td class="text-left px-2">{{ $jobOrder->customerVehicle->vehicle->no_pol }}</td>
+                                <th class="text-left px-2 border-none" width="100px">Tipe</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->vehicle->tipe }}
+                                </td>
                             </tr>
                             <tr>
-                                <th class="text-left px-2" width="100px">Kilometer</th>
-                                <td class="text-left px-2">{{ $jobOrder->km }}</td>
+                                <th class="text-left px-2 border-none" width="100px">No Polisi</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->customerVehicle->vehicle->no_pol }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-left px-2 border-none" width="100px">Kilometer</th>
+                                <td class="text-left px-2 border-none">: {{ $jobOrder->km }}</td>
                             </tr>
                         </thead>
                     </table>
@@ -56,14 +74,14 @@
     </div>
     <div class="px-1">
 
-        <div class="px-4 rounded-lg border-gray-600 mt-2">
+        <div class="px-4 rounded-lg border-gray-600">
             <p class="mb-1">Deskripsi Kerusakan</p>
 
             <table class="" style="width: 100%; table-layout: fixed;">
                 <thead class="">
                     <tr>
-                        <th class="px-2 py-1 text-left" width="30px">No</th>
-                        <th class="px-2 py-1 text-left">Deskripsi</th>
+                        <th class="px-2 text-left" width="30px">No</th>
+                        <th class="px-2 text-left">Deskripsi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,8 +90,8 @@
                     @endphp
                     @foreach ($jobOrder->breakdowns as $breakdown)
                         <tr>
-                            <td class="px-2 py-1 text-left">{{ $no }}</td>
-                            <td class="px-4 py-1 text-left">{{ $breakdown->name }}</td>
+                            <td class="px-2 text-left">{{ $no }}</td>
+                            <td class="px-2 text-left">{{ $breakdown->name }}</td>
                         </tr>
                         @php
                             $no++;
@@ -86,7 +104,7 @@
         </div>
 
 
-        <div class="px-4 rounded-lg border-gray-600 mt-2">
+        <div class="px-4 rounded-lg border-gray-600 mt-4">
             <div class="flex justify-between items-center">
                 <p class="mb-1">Sparepart & Jasa</p>
 
@@ -96,11 +114,11 @@
                     <thead class="">
                         <tr>
 
-                            <th class="py-1 px-2" width="30px">No</th>
-                            <th class="px-4 py-1 text-left" width="50%">Sparepart/Jasa</th>
-                            <th class="px-4 py-1 text-right">FRT/QTY</th>
-                            <th class="px-4 py-1 text-right">Harga</th>
-                            <th class="py-1 text-right px-2">Subtotal</th>
+                            <th class=" px-2" width="30px">No</th>
+                            <th class="px-4  text-left" width="50%">Sparepart/Jasa</th>
+                            <th class="px-4  text-right">FRT/QTY</th>
+                            <th class="px-4  text-right">Harga</th>
+                            <th class=" text-right px-2">Subtotal</th>
                         </tr>
                     </thead>
                     @php
@@ -111,13 +129,13 @@
                             @if ($item->product->tipe != 'jasa')
                                 <tr class="border">
 
-                                    <td class="py-1 px-2">{{ $index }}</td>
-                                    <td class="px-4 py-1 " width="40%">{{ $item->product->name }}</td>
-                                    <td class="px-4 py-1 text-right">{{ $item->quantity }}
+                                    <td class=" px-2">{{ $index }}</td>
+                                    <td class="px-4  " width="40%">{{ $item->product->name }}</td>
+                                    <td class="px-4  text-right">{{ $item->quantity }}
                                     </td>
-                                    <td class="px-4 py-1 text-right">
+                                    <td class="px-4  text-right">
                                         {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="px-2 py-1 text-right">
+                                    <td class="px-2  text-right">
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
 
                                 </tr>
@@ -130,12 +148,12 @@
                             @if ($item->product->tipe == 'jasa')
                                 <tr class="border">
 
-                                    <td class="py-1 px-2">{{ $index }}</td>
-                                    <td class="px-4 py-1 " width="40%">{{ $item->product->name }}</td>
-                                    <td class="px-4 py-1 text-right">{{ $item->quantity }}
+                                    <td class="px-2">{{ $index }}</td>
+                                    <td class="px-4 " width="40%">{{ $item->product->name }}</td>
+                                    <td class="px-4 text-right">{{ $item->quantity }}
                                     </td>
-                                    <td class="px-4 py-1 text-right"></td>
-                                    <td class="px-2 py-1 text-right">
+                                    <td class="px-4 text-right"></td>
+                                    <td class="px-2 text-right">
                                         {{ number_format($item->total_price, 0, ',', '.') }}</td>
 
                                 </tr>
@@ -149,36 +167,42 @@
             </div>
         </div>
 
-        <div class="p-4 rounded-lg border-gray-600 mt-2">
-            <p class="mb-1">Rincian Biaya</p>
+        <div class="p-4 flex rounded-lg border-gray-600 mt-2 gap-5">
+            <div class="note">
+                <p class="font-bold">Note</p>
+                <p>Estimasi Tidak Mengikat Dan Sewaktu-Waktu Dapat Berubah</p>
+                <p>Beberapa Item Part Belum Bisa Diestimasi Sebelum Dilakukan Pembongkaran</p>
+                <p>Masa Berlaku Estimasi Dari Tanggal Dikeluarkan Estimasi</p>
+            </div>
+            <div class="flex-1">
+                <div class="overflow-x-auto">
+                    <table style="width: 100%; table-layout: fixed;">
+                        <thead>
+                            <tr>
+                                <th class="text-left px-2" width="100px">Subtotal</th>
+                                <td class="text-right font-bold px-2">Rp
+                                    {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left px-2" width="100px">Diskon</th>
+                                <td class="text-right font-bold px-2">
+                                    @if ($jobOrder->diskon_unit == 'percentage')
+                                        ({{ $jobOrder->diskon_value }}%)
+                                    @else
+                                        Rp
+                                        {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-left px-2" width="100px">Total</th>
+                                <td class="text-right font-bold px-2">Rp
+                                    {{ number_format($jobOrder->total, 2, ',', '.') }}</td>
+                            </tr>
+                        </thead>
+                    </table>
 
-            <div class="overflow-x-auto">
-                <table style="width: 100%; table-layout: fixed;">
-                    <thead>
-                        <tr>
-                            <th class="text-left px-2" width="100px">Subtotal</th>
-                            <td class="text-right font-bold px-2">Rp
-                                {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-left px-2" width="100px">Diskon</th>
-                            <td class="text-right font-bold px-2">
-                                @if ($jobOrder->diskon_unit == 'percentage')
-                                    ({{ $jobOrder->diskon_value }}%)
-                                @else
-                                    Rp
-                                    {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="text-left px-2" width="100px">Total</th>
-                            <td class="text-right font-bold px-2">Rp
-                                {{ number_format($jobOrder->total, 2, ',', '.') }}</td>
-                        </tr>
-                    </thead>
-                </table>
-
+                </div>
             </div>
         </div>
     </div>

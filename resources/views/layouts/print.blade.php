@@ -31,13 +31,13 @@
             display: flex;
             font-size: 10px !important;
             font-style: normal !important;
-            font-family: 'Times New Roman' !important;
+            /* font-family: 'Times New Roman' !important; */
         }
 
         table,
         th,
         td {
-            border: 1px solid black;
+            border: 1px solid rgb(187, 187, 187);
         }
     </style>
 </head>
@@ -59,28 +59,39 @@
         <!-- Page Content -->
         <main>
             <div class="bg-white shadow overflow-hidden ">
-                <div class="p-7 text-center border-b border-gray-600">
-                    {{-- <p class="text-black">{{ $data['unique_id'] }}</p>
-                    <p>{{ $data['tanggal'] }}</p> --}}
+                <div class="p-4 flex justify-between text-start border-b border-gray-40000">
 
-                    <div style="font-size: 30px; line-height: 30px" class="mt-2 font-bold">88AUTOCARE</div>
-                    <div style="font-size: 20px">Specialist Nissan - Datsun & Umum</div>
-                    <div style="font-size: 10px">Jl. K.H.M. Usman RT. 01 RW. 04, Kukusan, Kecamatan Beji, Kota Depok,
-                        Jawa Barat 16425
+
+                    <div class="">
+                        <div style="font-size: 20px" class="mt-2 font-bold">
+                            {{ $data['type'] ?? 'INVOICE' }}</div>
+                        <div style="font-size: 10px" class="font-bold">88AUTOCARE - Nissan, Datsun & Umum Specialist
+                        </div>
+                        <div style="font-size: 10px">Jl. K.H.M. Usman RT. 01 RW. 04, Kukusan, Kecamatan Beji, Kota
+                            Depok,
+                            Jawa Barat 16425
+                        </div>
+                        <table class="mt-2" style="width: auto; table-layout: fixed; border: none;">
+
+                            <tbody>
+                                <tr>
+                                    <th class="p-0 border-none text-left" width="100px">Phone</th>
+                                    <td class="p-0 border-none text-left">: 087821878358/089661739000</td>
+                                </tr>
+                                <tr>
+                                    <th class="p-0 border-none text-left">Email</th>
+                                    <td class="p-0 border-none text-left">: autocare88.workshop@gmail.com</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div style="font-size: 10px">
-                        Telepon 087821878358/089661739000
+                    <div class="">
+                        <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" width="300" alt="Logo">
                     </div>
-                    <div style="font-size: 10px">
-                        Email autocare88.workshop@gmail.com
-                    </div>
+
                 </div>
 
-                <div style="font-size: 30px; line-height: 40px" class="font-bold text-center my-6">
-                    {{ $data['type'] ?? 'INVOICE' }}
-                </div>
-
-                <div class="p-4 mt-3">
+                {{-- <div class="p-4 mt-3">
                     <table class="" style="width: auto; table-layout: fixed;">
 
                         <tbody>
@@ -94,7 +105,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> --}}
                 @yield('content')
                 <div class="mt-16 pt-8 flex justify-end" style="margin-top: 64px; padding-top: 32px;">
                     <div class="w-1/3">
