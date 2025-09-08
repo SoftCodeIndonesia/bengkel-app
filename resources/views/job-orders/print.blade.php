@@ -170,9 +170,7 @@
         <div class="p-4 flex rounded-lg border-gray-600 mt-2">
             <div class="note flex-1">
                 <p class="font-bold">Note</p>
-                <p>Garansi Service 1 Minggu</p>
-                <p>Garansi Part Genuine 6 Bulan</p>
-                <p>Garansi Part Grade 1 & 2 3 Bulan</p>
+                <p>{{ $jobOrder->notes }}</p>
             </div>
             <div class="flex-1">
                 <div class="overflow-x-auto">
