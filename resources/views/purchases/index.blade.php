@@ -148,7 +148,7 @@
                     },
                     {
                         data: 'status_tag',
-                        name: 'status_tag'
+                        name: 'status'
                     },
                     {
                         data: 'action',

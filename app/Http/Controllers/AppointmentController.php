@@ -51,6 +51,11 @@ class AppointmentController extends Controller
             'time' => 'required',
             'service_request' => 'nullable|string',
             'notes' => 'nullable|string',
+        ], [
+            'customer_id.required' => 'Customer wajib diisi',
+            'vehicle_id.exists' => 'Kendaraan belum terdaftar diisi',
+            'vehicle_id.required' => 'Kendaraan wajib diisi',
+            'date.required' => 'Tanggal wajib diisi',
         ]);
 
         $validated['created_by'] = auth()->id();

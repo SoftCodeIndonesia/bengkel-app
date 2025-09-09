@@ -101,6 +101,9 @@
                             class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full">
                             <option value="">Cari Customer</option>
                         </select>
+                        @error('customer_id')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Vehicle Selection -->
@@ -110,6 +113,9 @@
                             class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full">
                             <option value="">Cari Data Kendaraan</option>
                         </select>
+                        @error('vehicle_id')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Date and Time -->
@@ -117,12 +123,18 @@
                         <label for="date" class="block text-sm font-medium text-gray-300 mb-1">Tanggal</label>
                         <input type="date" id="date" name="date" required min="{{ date('Y-m-d') }}"
                             class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full">
+                        @error('date')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="time" class="block text-sm font-medium text-gray-300 mb-1">Jam</label>
                         <input type="time" id="time" name="time" required
                             class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full">
+                        @error('time')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
                     </div>
 
 

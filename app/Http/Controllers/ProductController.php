@@ -113,7 +113,18 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $slug = Str::slug($value);
+
+                    if (\App\Models\Product::where('slug', $slug)->exists()) {
+                        $fail('Sparepart dengan nama ' . $value . 'sudah ada!');
+                    }
+                },
+            ],
             'part_number' => 'nullable|string|unique:products,part_number',
             'description' => 'nullable|string',
             'margin' => 'nullable|numeric|min:0',
@@ -160,7 +171,20 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($product) {
+                    $slug = Str::slug($value);
+                    $query = Product::where('slug', $slug)
+                        ->where('id', '!=', $product->id);
+
+                    if ($query->exists()) {
+                        $fail("Sparepart dengan nama " . $value . " sudah ada!");
+                    }
+                },
+            ],
             'unit_price' => 'required|numeric|min:0',
             'buying_price' => 'required|numeric|min:0',
             'margin' => 'required|numeric|min:0',
