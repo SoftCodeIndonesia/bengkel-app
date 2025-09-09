@@ -44,6 +44,7 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'vehicle_id' => 'required|exists:vehicles,id',
@@ -53,7 +54,7 @@ class AppointmentController extends Controller
             'notes' => 'nullable|string',
         ], [
             'customer_id.required' => 'Customer wajib diisi',
-            'vehicle_id.exists' => 'Kendaraan belum terdaftar diisi',
+            'vehicle_id.exists' => 'Kendaraan belum terdaftar',
             'vehicle_id.required' => 'Kendaraan wajib diisi',
             'date.required' => 'Tanggal wajib diisi',
         ]);
