@@ -90,21 +90,6 @@
                         <p class="text-sm text-gray-400">Waktu & Tanggal</p>
                         <p class="text-white">{{ $appointment->date }}</p>
                     </div>
-                    <div>
-                        <p class="text-sm mb-1 text-gray-400">Status</p>
-                        @php
-                            $statusColors = [
-                                'pending' => 'bg-yellow-500',
-                                'confirmed' => 'bg-blue-500',
-                                'completed' => 'bg-green-500',
-                                'cancelled' => 'bg-red-500',
-                            ];
-                        @endphp
-                        <span
-                            class="px-3 py-1 rounded-full text-xs {{ $statusColors[$appointment->status] ?? 'bg-gray-500' }}">
-                            {{ ucfirst($appointment->status) }}
-                        </span>
-                    </div>
                     <div class="md:col-span-2">
                         <p class="text-sm text-gray-400">Service Request</p>
                         <p class="text-white">{{ $appointment->service_request }}</p>
