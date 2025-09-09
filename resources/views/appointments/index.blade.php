@@ -48,7 +48,7 @@
                             <th class="p-3 text-sm font-semibold">Vehicle</th>
                             <th class="p-3 text-sm font-semibold">Date & Time</th>
                             <th class="p-3 text-sm font-semibold">Service Request</th>
-                            <th class="p-3 text-sm font-semibold">Status</th>
+
                             <th class="p-3 text-sm font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
@@ -93,33 +93,7 @@
                         data: 'service_request',
                         name: 'service_request'
                     },
-                    {
-                        data: 'status',
-                        name: 'status',
-                        render: function(data, type, row) {
-                            let bgColor = '';
-                            let color = '';
-                            switch (data) {
-                                case 'pending':
-                                    bgColor = 'bg-yellow-500';
-                                    color = 'text-black';
-                                    break;
-                                case 'confirmed':
-                                    bgColor = 'bg-blue-500';
-                                    color = 'text-white';
-                                    break;
-                                case 'completed':
-                                    bgColor = 'bg-green-500';
-                                    color = 'text-white';
-                                    break;
-                                case 'cancelled':
-                                    bgColor = 'bg-red-500';
-                                    color = 'text-white';
-                                    break;
-                            }
-                            return `<span class="px-2 py-1 rounded-full text-xs ${color} ${bgColor}">${data}</span>`;
-                        }
-                    },
+
                     {
                         data: 'action',
                         name: 'action',
