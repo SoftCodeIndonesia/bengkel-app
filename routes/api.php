@@ -240,7 +240,7 @@ Route::get('/vehicle/search', function (Request $request) {
         ->map(function ($customer) {
 
             return [
-                'id' => $customer->id,
+                'id' => $customer->vehicle->id,
                 'text' => sprintf(
                     "%s %s (%s)",
                     $customer->vehicle->merk,

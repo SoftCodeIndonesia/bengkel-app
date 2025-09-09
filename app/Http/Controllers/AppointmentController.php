@@ -44,7 +44,7 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'vehicle_id' => 'required|exists:vehicles,id',
