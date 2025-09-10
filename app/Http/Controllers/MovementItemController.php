@@ -17,7 +17,11 @@ class MovementItemController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = MovementItem::with('creator');
+            $query = MovementItem::with('creator', 'relatedPurchaseItem');
+
+            $query->whereHas('relatedPurchaseItem', function ($item) {
+                $item->whereNull('deleted_at');
+            });
 
             $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
             $endDate = $request->input('end_date', Carbon::now()->startOfMonth()->format('Y-m-d'));

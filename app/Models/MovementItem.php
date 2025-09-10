@@ -37,8 +37,7 @@ class MovementItem extends Model
 
     public function relatedPurchaseItem()
     {
-        return $this->belongsTo(PurchaseItem::class, 'reference_id')
-            ->withTrashed();
+        return $this->belongsTo(PurchaseItem::class, 'reference_id');
     }
 
     public function getPurchaseItemAttribute()

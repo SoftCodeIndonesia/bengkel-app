@@ -96,12 +96,12 @@
                                             {{ $item->product->stok }}
                                         </td>
                                         <td class="px-3 py-4">
-                                            <input type="number" name="items[{{ $loop->index }}][quantity_requested]"
+                                            <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
                                                 value="{{ $item->quantity }}" min="1"
                                                 class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
                                         </td>
                                         <td class="px-3 py-4">
-                                            <input type="number" name="items[{{ $loop->index }}][unit_price]"
+                                            <input type="text" name="items[{{ $loop->index }}][unit_price]"
                                                 value="{{ number_format($item->unit_price, 0, ',', '.') }}"
                                                 class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
                                         </td>
