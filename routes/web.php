@@ -196,6 +196,8 @@ Route::middleware('auth')->group(function () {
         ->name('movement-items.update');
     Route::prefix('movement-items')->group(function () {
         Route::get('/', [MovementItemController::class, 'index'])->name('movement-items.index');
+        Route::get('/bulk_edit', [MovementItemController::class, 'bulk_check'])->name('movement-items.bulk_edit');
+        Route::post('/update_bulk', [MovementItemController::class, 'update_bulk'])->name('movement-items.update_bulk');
         Route::get('/supply', [MovementItemController::class, 'supply'])->name('movement-items.supply');
         Route::get('/{data}', [MovementItemController::class, 'show'])->name('movement-items.show');
         Route::get('/{data}/edit', [MovementItemController::class, 'edit'])->name('movement-items.edit');

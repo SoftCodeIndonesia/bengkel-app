@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\MovementItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class MovementItemController extends Controller
@@ -106,6 +107,57 @@ class MovementItemController extends Controller
     public function create()
     {
         //
+    }
+
+
+    public function bulk_check()
+    {
+
+        $items = MovementItem::with('creator', 'relatedPurchaseItem')->whereHas('relatedPurchaseItem', function ($item) {
+            $item->whereNull('deleted_at');
+        })->where('status', '!=', 'done')->get();
+
+        return view('sparepart.move_in.edit_bulk', compact('items'));
+    }
+    public function update_bulk(Request $request)
+    {
+
+
+
+        try {
+            DB::transaction(function () use ($request) {
+                $ids = $request->id;
+                $est_quantity = $request->est_quantity;
+                $quantities = $request->quantity;
+
+                foreach ($ids as $key => $id) {
+                    $movementItem = MovementItem::find($id);
+
+                    if ($movementItem->est_quantity == $est_quantity[$key]) {
+                        $movementItem->status = 'done';
+                    } else {
+                        $movementItem->status = 'pending';
+                    }
+
+                    $diff = $quantities[$key] - $movementItem->quantity;
+
+                    $product = Product::find($movementItem->product_id);
+                    // dd($product);
+                    if ($movementItem->move == 'in') {
+                        $product->increment('stok', $diff);
+                    } elseif ($movementItem->move == 'out') {
+                        $product->decrement('stok', $diff);
+                    }
+
+                    $movementItem->quantity = $quantities[$key];
+                    $movementItem->save();
+                }
+            });
+
+            return redirect()->route('movement-items.index')->with('success', 'Data berhasil diperbarui');
+        } catch (\Throwable $th) {
+            return redirect()->route('movement-items.index')->with('error', 'Data gagal diperbarui');
+        }
     }
 
     public function supply()

@@ -69,6 +69,9 @@
                 </form>
 
             </div>
+            <a href="{{ route('movement-items.bulk_edit') }}"
+                class="bg-blue-600 sm:w-fit w-full sm:mb-0 mb-2 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Edit
+                Sekaligus</a>
         </div>
 
         <div class="p-4">

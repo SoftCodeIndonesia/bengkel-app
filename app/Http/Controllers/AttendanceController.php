@@ -68,25 +68,40 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'date' => 'required|date',
-            'check_in' => 'nullable|date_format:H:i',
-            'check_out' => 'nullable|date_format:H:i|after:check_in',
-            'status' => 'required|in:present,late,absent,leave',
-            'notes' => 'nullable|string|max:255',
-        ]);
+
 
         try {
-            DB::beginTransaction();
+            $validated = $request->validate([
+                'date' => ['required', 'date'],
 
-            Attendance::create($request->all());
+                // validasi untuk setiap baris karyawan
+                'employee_id.*' => ['required', 'exists:employees,id'],
+                'status.*' => ['required', 'in:present,late,absent,permit,leave'],
+                'check_in.*' => ['nullable', 'date_format:H:i'],
+                'check_out.*' => ['nullable', 'date_format:H:i', 'after:check_in.*'],
+                'notes.*' => ['nullable', 'string', 'max:255'],
+            ]);
 
-            DB::commit();
+            // kalau validasi lolos, lanjut proses simpan
+            DB::transaction(function () use ($validated) {
+                foreach ($validated['employee_id'] as $index => $employeeId) {
+                    Attendance::updateOrCreate(
+                        [
+                            'employee_id' => $employeeId,
+                            'date' => $validated['date'],
+                        ],
+                        [
+                            'status'    => $validated['status'][$index],
+                            'check_in'  => $validated['check_in'][$index] ?? null,
+                            'check_out' => $validated['check_out'][$index] ?? null,
+                            'notes'     => $validated['notes'][$index] ?? null,
+                        ]
+                    );
+                }
+            });
             return redirect()->route('attendances.index')->with('success', 'Data absensi berhasil ditambahkan');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal menyimpan data absensi: ' . $e->getMessage());
+            return redirect()->route('attendances.index')->with('error', 'Gagal menyimpan data absensi: ' . $e->getMessage());
         }
     }
 
@@ -98,7 +113,7 @@ class AttendanceController extends Controller
     public function edit(Attendance $attendance)
     {
         $employees = Employee::orderBy('name')->get();
-        return view('attendances.create', compact('attendance', 'employees'));
+        return view('attendances.edit', compact('attendance', 'employees'));
     }
 
     public function update(Request $request, Attendance $attendance)
