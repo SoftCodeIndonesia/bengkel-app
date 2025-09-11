@@ -24,11 +24,14 @@ class Estimation extends JobOrder
             $tahun = $now->format('y'); // hanya 2 digit tahun
 
             // Ambil job order terakhir di tahun yang sama
-            $latest = self::whereYear('created_at', $now->year)
+            $latest = self::withTrashed()->whereYear('created_at', $now->year)
                 ->where('unique_id', 'like', "{$prefix}/%/%/{$tahun}/%")
                 ->where('status', 'estimation')
+
                 ->orderByDesc('created_at')
                 ->first();
+
+            // dd($latest);
 
             // Ambil nomor urut dari unique_id terakhir
             if ($latest) {

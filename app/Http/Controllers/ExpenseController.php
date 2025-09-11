@@ -15,15 +15,36 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        return view('expenses.index');
+        $categories = ExpenseCategory::all();
+        return view('expenses.index', compact('categories'));
     }
 
     public function getExpenses(Request $request)
     {
         $expenses = Expense::with(['category', 'recorder'])
             ->select(['id', 'date', 'expense_category_id', 'description', 'amount', 'payment_method', 'recorded_by', 'deleted_at'])
+            ->when($request->start_date, function ($q) use ($request) {
+                $q->whereDate('date', '>=', $request->start_date);
+            })
+            ->when($request->end_date, function ($q) use ($request) {
+                $q->whereDate('date', '<=', $request->end_date);
+            })
+            ->when($request->category_id, function ($q) use ($request) {
+                $q->where('expense_category_id', $request->category_id);
+            })
+            ->when($request->payment_method, function ($q) use ($request) {
+                $q->where('payment_method', $request->payment_method);
+            })
             ->whereNull('deleted_at')
             ->orderBy('date', 'desc');
+
+        // Clone untuk summary supaya filter tetap sama
+        $summaryQuery = clone $expenses;
+
+        $totalCash = (clone $summaryQuery)->where('payment_method', 'cash')->sum('amount');
+        $totalTransfer = (clone $summaryQuery)->where('payment_method', 'bank_transfer')->sum('amount');
+        $totalCredit = (clone $summaryQuery)->where('payment_method', 'credit')->sum('amount');
+        $grandTotal = (clone $summaryQuery)->sum('amount');
 
         return DataTables::of($expenses)
             ->addColumn('date_formatted', function ($expense) {
@@ -42,9 +63,16 @@ class ExpenseController extends Controller
                 <button type="button" data-id="' . $expense->id . '" data-name="' . $expense->description . '" class="text-red-400 btn-delete hover:text-red-300">Hapus</button>
             ';
             })
+            ->with([
+                'total_cash' => $totalCash,
+                'total_transfer' => $totalTransfer,
+                'total_credit' => $totalCredit,
+                'grand_total' => $grandTotal,
+            ])
             ->rawColumns(['action'])
             ->make(true);
     }
+
 
     /**
      * Show the form for creating a new resource.
