@@ -190,8 +190,9 @@
                                         </td>
                                         <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                         </td>
-                                        <td class="px-4 py-3 text-right">Rp
-                                            {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-right">
+                                            {{ $item->product->tipe != 'jasa' ? 'Rp ' . number_format($item->unit_price, 0, ',', '.') : '' }}
+                                        </td>
                                         <td class="px-4 py-3 text-right">Rp
                                             {{ number_format($item->total_price, 0, ',', '.') }}</td>
                                         @if ($item->product->tipe != 'jasa')

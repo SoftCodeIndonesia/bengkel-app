@@ -117,11 +117,11 @@ class ProductController extends Controller
                 'required',
                 'string',
                 'max:255',
-                function ($attribute, $value, $fail) {
-                    $slug = Str::slug($value);
+                function ($attribute, $value, $fail) use ($request) {
+                    $slug = Str::slug($value . ' ' . $request->grade);
 
                     if (\App\Models\Product::where('slug', $slug)->exists()) {
-                        $fail('Sparepart dengan nama ' . $value . 'sudah ada!');
+                        $fail('Sparepart dengan nama ' . $value . ' sudah ada!');
                     }
                 },
             ],
@@ -176,7 +176,7 @@ class ProductController extends Controller
                 'string',
                 'max:255',
                 function ($attribute, $value, $fail) use ($product) {
-                    $slug = Str::slug($value);
+                    $slug = Str::slug($value . ' ' . $product->grade);
                     $query = Product::where('slug', $slug)
                         ->where('id', '!=', $product->id);
 

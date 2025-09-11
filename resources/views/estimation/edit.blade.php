@@ -80,7 +80,7 @@
     <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div class="p-4 flex justify-between items-center border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Edit Estimasi Order</h2>
-            <a href="{{ route('job-orders.index') }}"
+            <a href="{{ route('estimation.index') }}"
                 class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -99,7 +99,7 @@
         @endif
 
         <div class="bg-gray-800 rounded-lg shadow p-6">
-            <form action="{{ route('job-orders.update', $jobOrder->id) }}" method="POST" id="jobOrderForm">
+            <form action="{{ route('estimation.update', $jobOrder->id) }}" method="POST" id="jobOrderForm">
                 @csrf
                 @method('PUT')
                 <!-- Customer Section -->
@@ -384,7 +384,7 @@
                                     @if ($item->product->tipe == 'jasa')
                                         <tr class="border-b border-gray-600 item-row"
                                             data-tipe="{{ $item->product->tipe }}">
-                                            <td class="p-2" width="200px">
+                                            <td class="p-2" width="300px">
                                                 <input type="hidden" name="items[{{ $itemIndex }}][id]"
                                                     value="{{ $item->id }}">
                                                 <input type="hidden" name="items[{{ $itemIndex }}][product_id]"

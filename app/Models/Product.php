@@ -81,13 +81,13 @@ class Product extends Model
 
         static::creating(function ($product) {
             if (empty($product->slug)) {
-                $product->slug = Str::slug($product->name);
+                $product->slug = Str::slug($product->name . ' ' . $product->grade);
             }
         });
 
         static::updating(function ($product) {
             if ($product->isDirty('name')) {
-                $product->slug = Str::slug($product->name);
+                $product->slug = Str::slug($product->name . ' ' . $product->grade);
             }
         });
     }
