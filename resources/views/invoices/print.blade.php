@@ -84,7 +84,7 @@
                             <th class="py-1 px-2 text-left">
                                 Part/Jasa</th>
                             <th class="py-1 px-2 text-left">
-                                Grade</th>
+                                Kategori</th>
                             <th class="py-1 px-2 text-end">Harga Satan
                             </th>
                             <th class="py-1 px-2 text-end">Qty
@@ -101,16 +101,13 @@
                         @if ($invoice->tipe === 'sales')
                             @foreach ($reference->items ?? [] as $item)
                                 <tr class="border-gray-200">
-                                    <td class="py-1 px-2 text-left">{{ $item->product->name }}
+                                    <td class="py-1 px-2 text-left">{{ $item->product->name }}</td>
+                                    <td class="py-1 px-2 text-left">{{ ucfirst($item->product->tipe ?? '') }}</td>
+                                    <td class="py-1 px-2 text-end">Rp{{ number_format($item->unit_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="py-1 px-2 text-left">{{ $item->product->grade }}
+                                    <td class="py-1 px-2 text-end">{{ $item->quantity }}</td>
+                                    <td class="py-1 px-2 text-end">Rp{{ number_format($item->total_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="py-1 px-2 text-end">Rp
-                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="py-1 px-2 text-end">
-                                        {{ $item->quantity }}</td>
-                                    <td class="py-1 px-2 text-end">Rp
-                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         @else
@@ -118,8 +115,7 @@
                                 <tr>
                                     <td class="py-1 px-2 text-left">{{ $item->product->name }}
                                     </td>
-                                    <td class="py-1 px-2 text-left">
-                                        {{ $item->product->tipe == 'jasa' ? '-' : $item->product->grade }}
+                                    <td class="py-1 px-2 text-left">{{ ucfirst($item->product->tipe ?? '') }}
                                     </td>
                                     <td class="py-1 px-2 text-end">
                                         {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
@@ -159,9 +155,8 @@
 
         <div class="note flex-1 mt-5 p-2">
             <p class="font-bold">Note</p>
-            <p>Garansi Service 1 Minggu</p>
             <p>Garansi Part Genuine 6 Bulan</p>
-            <p>Garansi Part Grade 1 & 2 3 Bulan</p>
+            <p>Garansi Part OEM 3 Bulan</p>
         </div>
 
     </div>

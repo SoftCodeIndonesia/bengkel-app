@@ -40,6 +40,7 @@
 
                             <th class="py-1" width="20px">No</th>
                             <th class="px-4 py-1 text-left" width="50%">Sparepart/Jasa</th>
+                            <th class="px-4 py-1 text-left">Kategori</th>
                             <th class="px-4 py-1 text-right">QTY</th>
                             <th class="px-4 py-1 text-right">Harga</th>
                             <th class="px-2 py-1 text-right">Subtotal</th>
@@ -52,6 +53,7 @@
 
                                 <td class="py-1 text-center">{{ $loop->iteration }}</td>
                                 <td class="px-4 py-1 " width="40%">{{ $item->product->name }}</td>
+                                <td class="px-4 text-left">{{ ucfirst($item->product->tipe) }}</td>
                                 <td class="px-4 py-1 text-right">{{ $item->quantity }}
                                 </td>
                                 <td class="px-4 py-1 text-right">

@@ -116,6 +116,7 @@
 
                             <th class=" px-2" width="30px">No</th>
                             <th class="px-4  text-left" width="50%">Sparepart/Jasa</th>
+                            <th class="px-4  text-left">Kategori</th>
                             <th class="px-4  text-right">FRT/QTY</th>
                             <th class="px-4  text-right">Harga</th>
                             <th class=" text-right px-2">Subtotal</th>
@@ -131,6 +132,7 @@
 
                                     <td class=" px-2">{{ $index }}</td>
                                     <td class="px-4  " width="40%">{{ $item->product->name }}</td>
+                                    <td class="px-4">{{ ucfirst($item->product->tipe) }}</td>
                                     <td class="px-4  text-right">{{ $item->quantity }}
                                     </td>
                                     <td class="px-4  text-right">
@@ -150,6 +152,7 @@
 
                                     <td class="px-2">{{ $index }}</td>
                                     <td class="px-4 " width="40%">{{ $item->product->name }}</td>
+                                    <td class="px-4">Jasa</td>
                                     <td class="px-4 text-right">{{ $item->quantity }}
                                     </td>
                                     <td class="px-4 text-right"></td>

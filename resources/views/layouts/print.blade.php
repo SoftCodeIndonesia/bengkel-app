@@ -43,7 +43,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen">
 
 
 
@@ -58,7 +58,7 @@
 
         <!-- Page Content -->
         <main>
-            <div class="bg-white shadow overflow-hidden ">
+            <div class="bg-white overflow-hidden ">
                 <div class="p-4 flex justify-between text-start border-b border-gray-40000">
 
 
@@ -107,19 +107,19 @@
                     </table>
                 </div> --}}
                 @yield('content')
-                <div class="mt-16 pt-8 flex justify-end" style="margin-top: 64px; padding-top: 32px;">
-                    <div class="w-1/3">
-                        <div class="text-center">
-                            <p class="mb-4">Hormat Kami,</p>
-                            <div class="mt-12">
 
-                                <p class="text-black">88AutoCare</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </main>
+
+        <footer class="fixed bottom-0 left-0 right-0">
+            <div class="w-1/3 ml-auto text-center">
+                <p class="mb-4">Hormat Kami,</p>
+                <div class="mt-12">
+                    <p class="text-black">88AutoCare</p>
+                </div>
+            </div>
+        </footer>
     </div>
     @stack('scripts')
     <script>
