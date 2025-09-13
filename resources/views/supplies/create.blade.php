@@ -97,7 +97,7 @@
                                         </td>
                                         <td class="px-3 py-4">
                                             <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
-                                                value="{{ $item->quantity }}" min="1"
+                                                value="{{ $item->quantity }}" min="1" readonly
                                                 class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
                                         </td>
                                         <td class="px-3 py-4">

@@ -494,7 +494,8 @@
                                                     class="kategori text-center text-gray-300">{{ $item->product->tipe }}</span>
                                             </td>
                                             <td class="p-2" width="100px">
-                                                <input type="number" name="items[{{ $itemIndex }}][quantity]"
+                                                <input type="number" data-min="{{ $item->quantity }}"
+                                                    name="items[{{ $itemIndex }}][quantity]"
                                                     value="{{ $item->quantity }}"
                                                     class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                                             </td>
@@ -748,7 +749,7 @@
                             <span class="kategori text-gray-300">${kategori}</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
+                            <input type="number" name="items[${itemCounter}][quantity]" data-min="1" min="1" value="1"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
@@ -909,7 +910,16 @@
                 };
 
 
-                qtyInput.addEventListener('input', calculateItemTotal);
+                qtyInput.addEventListener('input', function(e) {
+                    const min = this.dataset.min;
+
+                    if (parseInt(this.value) < min) {
+                        this.value = min;
+                    }
+                    
+                    calculateItemTotal();
+
+                });
                 diskonValue.addEventListener('input', calculateItemTotal);
 
                 row.querySelector('.remove-item').addEventListener('click', () => {

@@ -68,7 +68,7 @@
                                                     <input type="number"
                                                         name="items[{{ $loop->index }}][quantity_fulfilled]"
                                                         id="search-dropdown"
-                                                        class="block item-quantity w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                                        class="block item-quantity w-full z-20 text-sm text-gray-50 bg-gray-800 rounded-lg rounded-s-gray-100 rounded-s-2 border border-gray-800  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                                                         value="{{ old('items[' . $loop->index . '][quantity_fulfilled]', 0) }}"
                                                         min="0"
                                                         max="{{ $item->quantity_requested - $item->quantity_fulfilled }}"

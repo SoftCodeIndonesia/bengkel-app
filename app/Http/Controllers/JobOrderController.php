@@ -16,6 +16,7 @@ use App\Models\CustomerVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ServicePackage;
+use App\Models\Supply;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\ValidationException;
@@ -434,36 +435,26 @@ class JobOrderController extends Controller
                     $orderItem->diskon_value = $item['diskon_value'];
                     $orderItem->price_after_diskon = $subtotal - $potongan;
 
+                    $supplyItem = SupplyItem::where('item_id', $orderItem->id)->get()->first();
+                    // dd($item['id']);
+                    if ($supplyItem) {
+                        // dd($supplyItem);
+                        $supplyItem->quantity_requested = $item['quantity'] - $supplyItem->quantity_fulfilled;
+                        $supplyItem->status = 'partial';
+                        $supplyItem->save();
+
+                        $supply = Supply::find($supplyItem->supply_id);
+
+                        $supply->status = 'pending';
+
+                        $supply->save();
+                    }
+
+
                     $orderItem->save();
                 }
             }
 
-            // Simpan items
-            // foreach (array_merge($request->service, $request->items) as $item) {
-
-            //     if (isset($item['id'])) {
-            //         $data = OrderItem::find($item['id']);
-            //         $data->quantity = $item['quantity'];
-            //         $data->total_price = $data->unit_price * $item['quantity'];
-            //         $data->save();
-            //     } else {
-            //         $data_item = json_decode($item['product_id']);
-
-            //         $product = Product::find($data_item->value);
-
-            //         $jobOrder->orderItems()->create([
-            //             'product_id' => $data_item->value,
-            //             'quantity' => $item['quantity'],
-            //             'unit_price' => $product->unit_price,
-            //             'total_price' => $product->unit_price * $item['quantity']
-            //         ]);
-
-            //         // Kurangi stok jika produk adalah sparepart
-            //         if ($product->tipe === 'barang') {
-            //             $product->decrement('stok', $item['quantity']);
-            //         }
-            //     }
-            // }
 
             if ($request->has('breakdowns')) {
                 foreach ($request->breakdowns as $breakdown) {
@@ -487,7 +478,7 @@ class JobOrderController extends Controller
                 }
             }
         });
-        return redirect()->route('job-orders.index')->with('success', 'Job Order berhasil dibuat');
+        return redirect()->route('job-orders.show', $jobOrder->id)->with('success', 'Job Order berhasil dibuat');
     }
 
     public function destroy(JobOrder $jobOrder)
