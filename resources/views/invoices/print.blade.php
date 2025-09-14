@@ -157,6 +157,8 @@
             <p class="font-bold">Note</p>
             <p>Garansi Part Genuine 6 Bulan</p>
             <p>Garansi Part OEM 3 Bulan</p>
+            <p>Rekening Pembayaran : BCA 8692734903 (A/N Imam Bayhaqi)</p>
+
         </div>
 
     </div>

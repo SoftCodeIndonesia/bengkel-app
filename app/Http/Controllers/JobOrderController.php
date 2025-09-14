@@ -417,8 +417,26 @@ class JobOrderController extends Controller
                         ];
                     }
 
+
+
+
                     // dd($data_input);
-                    $jobOrder->orderItems()->create($data_input);
+                    $jobOrderItem = $jobOrder->orderItems()->create($data_input);
+
+                    $findSupply = Supply::where('job_order_id', $jobOrder->id)->first();
+
+                    if ($findSupply) {
+                        // 3. Jika ada supply slip, tambahkan supply item juga
+                        $findSupply->items()->create([
+                            'product_id' => $jobOrderItem->product_id,
+                            'item_id' => $jobOrderItem->id,
+                            'quantity_requested' => $jobOrderItem->quantity,
+                            'quantity_fulfilled' => 0,
+                            'unit_price' => $jobOrderItem->unit_price,
+                            'total_price' => $jobOrderItem->total_price,
+                            'status' => 'pending',
+                        ]);
+                    }
                 } else {
                     $orderItem = OrderItem::find($item['id']);
 
