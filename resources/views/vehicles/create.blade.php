@@ -250,6 +250,11 @@
                 $('input[name="customer_id"]').val(id);
                 modalSelectCustomer.classList.add('hidden');
             })
+
+            $('#cancel-customer-selection').click(function(e) {
+                e.preventDefault();
+                modalSelectCustomer.classList.add('hidden');
+            });
         });
     </script>
 @endpush
