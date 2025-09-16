@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CustomerVehicle;
+use PDO;
 use Yajra\DataTables\DataTables;
 
 class CustomerVehicleController extends Controller
@@ -103,9 +104,17 @@ class CustomerVehicleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CustomerVehicle $customerVehicle)
+    public function destroy($id)
     {
-        //
+        $data = CustomerVehicle::find($id);
+
+        if ($data) {
+            CustomerVehicle::destroy($id);
+            return redirect()->route('vehicles.index')->with('success', 'Data Kendaraan Telah Dihapus!');
+        } else {
+            return redirect()->route('vehicles.index')->with('error', 'Data Kendaraan Tidak Ditemukan!');
+        }
+        // dd($customerVehicle);
     }
 
     public function followUps()

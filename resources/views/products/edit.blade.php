@@ -110,9 +110,12 @@
                         <label for="grade" class="block text-sm font-medium text-gray-300 mb-2">Grade</label>
                         <select name="grade" id="grade"
                             class="mt-1 block w-full bg-gray-700 border {{ $errors->has('grade') ? 'border-red-500' : 'border-gray-600' }} text-white rounded-md shadow-sm py-2 px-3">
-                            <option value="Genuine" {{ old('grade') == 'Genuine' ? 'selected' : '' }}>Genuine</option>
-                            <option value="OEM 1" {{ old('grade') == 'OEM 1' ? 'selected' : '' }}>OEM 1</option>
-                            <option value="OEM 2" {{ old('grade') == 'OEM 1' ? 'selected' : '' }}>OEM 2</option>
+                            <option value="Genuine" {{ old('grade', $product->grade) == 'Genuine' ? 'selected' : '' }}>
+                                Genuine</option>
+                            <option value="OEM 1" {{ old('grade', $product->grade) == 'OEM 1' ? 'selected' : '' }}>OEM 1
+                            </option>
+                            <option value="OEM 2" {{ old('grade', $product->grade) == 'OEM 1' ? 'selected' : '' }}>OEM 2
+                            </option>
                         </select>
                         @error('grade')
                             <p class="mt-2 text-sm text-red-400">{{ $message }}</p>

@@ -96,10 +96,10 @@ Route::middleware('auth')->group(function () {
     // Tambahkan route untuk create customer vehicle
     Route::get('/customer-vehicles/create', [CustomerVehicleController::class, 'create'])
         ->name('customer-vehicles.create');
+    Route::delete('/customer-vehicles/{id}', [CustomerVehicleController::class, 'destroy'])
+        ->name('customer-vehicles.destroy');
     Route::post('/customer-vehicles', [CustomerVehicleController::class, 'store'])
         ->name('customer-vehicles.store');
-    Route::delete('/customer-vehicles', [CustomerVehicleController::class, 'destroy'])
-        ->name('customer-vehicles.destroy');
 
     Route::resource('/follow-ups', FollowUpController::class);
 

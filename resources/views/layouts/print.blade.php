@@ -114,9 +114,12 @@
 
         <footer class="fixed bottom-0 left-0 right-0">
             <div class="w-1/3 ml-auto text-center">
-                <p class="mb-4">Hormat Kami,</p>
+                <p class="mb-4">
+                    {{ $data['type'] == 'WORK ORDER' || $data['type'] == 'ESTIMASI' ? 'Pemilik' : 'Hormat Kami,' }}</p>
                 <div class="mt-12">
-                    <p class="text-black">88AutoCare</p>
+                    <p class="text-black">
+                        {{ $data['type'] == 'WORK ORDER' || $data['type'] == 'ESTIMASI' ? $data['customer_name'] : '88AutoCare' }}
+                    </p>
                 </div>
             </div>
         </footer>
