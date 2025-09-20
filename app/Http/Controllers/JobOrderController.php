@@ -333,7 +333,6 @@ class JobOrderController extends Controller
     public function update(Request $request, JobOrder $jobOrder)
     {
 
-        // dd($request->all());
         $validated = $this->validateRequest($request);
 
         DB::transaction(function () use ($request, $jobOrder) {
@@ -392,14 +391,16 @@ class JobOrderController extends Controller
                     }
 
 
+
                     $subtotal = $product->unit_price * $item['quantity'];
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;
 
 
                     if ($product->tipe == 'jasa') {
+
                         $subtotaljasa = 100000 * $item['quantity'];
                         $data_input = [
-                            'product_id' => $data_item->id,
+                            'product_id' => $product->id,
                             'quantity' => $item['quantity'],
                             'unit_price' => 0,
                             'total_price' => $subtotaljasa,
