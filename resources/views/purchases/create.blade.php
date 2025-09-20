@@ -283,6 +283,8 @@
                             <th class="px-4 py-3" width="80%">Part</th>
                             <th class="px-4 py-3" width="80%">Grade</th>
                             <th class="px-4 py-3" width="10%">Harga</th>
+                            <th class="px-4 py-3" width="10%">Margin</th>
+                            <th class="px-4 py-3" width="10%">Harga Jual</th>
                             <th class="px-4 py-3" width="10%">Stok</th>
                         </tr>
                     </thead>
@@ -507,6 +509,16 @@
                     {
                         data: 'formatted_price_buying',
                         name: 'formatted_price_buying',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'margin',
+                        name: 'margin',
+                        className: 'px-4 py-3',
+                    },
+                    {
+                        data: 'formatted_price',
+                        name: 'formatted_price',
                         className: 'px-4 py-3',
                     },
                     {
@@ -742,11 +754,12 @@
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
                     const productGrade = productRow.querySelector('td:nth-child(3)').textContent;
                     const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
+                    const margin = productRow.querySelector('td:nth-child(5)').textContent;
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
                         addItemRow(productId, productName, originalNumber(productPrice),
-                            productGrade);
+                            productGrade, margin.replace('%', ''));
                     }
                 });
 
@@ -769,7 +782,7 @@
             }
 
             // Add item row to purchase table
-            function addItemRow(productId, productName, unitPrice, grade) {
+            function addItemRow(productId, productName, unitPrice, grade, margin) {
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
 
@@ -792,10 +805,10 @@
                     </td>
                     <td class="px-4 py-3 total-price">${formatRupiah(unitPrice)}</td>
                     <td class="px-4 py-3">
-                        <input type="number" value="20" name="items[${itemCount}][margin]" required class="margin bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="number" value="${margin ?? 20}" name="items[${itemCount}][margin]" required class="margin bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
-                        <input type="text" name="items[${itemCount}][selling_price]" value="${formatRupiah(unitPrice * 1.2)}" readonly class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="text" name="items[${itemCount}][selling_price]" value="${formatRupiah(unitPrice * (1 + (margin / 100) ?? 1.2))}" readonly class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
                         <button type="button" onclick="removeItem('${rowId}')" class="text-red-500 hover:text-red-400">

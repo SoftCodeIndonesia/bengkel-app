@@ -11,8 +11,15 @@
     <link rel="icon" href="{{ asset('assets/app/img/logo-bengkel.jpg') }}" type="image/jpg">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    {{-- <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /> --}}
+
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 12px;
+        }
+    </style>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
