@@ -783,8 +783,17 @@
 
             // Add item row to purchase table
             function addItemRow(productId, productName, unitPrice, grade, margin) {
+
+
                 const container = document.getElementById('items-container');
                 const rowId = `item-${itemCount}`;
+
+
+                const mark = parseFloat(margin) || 20;
+                const jual = parseFloat(unitPrice) + (unitPrice * (mark / 100));
+
+
+                console.log(unitPrice);
 
                 const row = document.createElement('tr');
                 row.id = rowId;
@@ -808,7 +817,7 @@
                         <input type="number" value="${margin ?? 20}" name="items[${itemCount}][margin]" required class="margin bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
-                        <input type="text" name="items[${itemCount}][selling_price]" value="${formatRupiah(unitPrice * (1 + (margin / 100) ?? 1.2))}" readonly class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <input type="text" name="items[${itemCount}][selling_price]" value="${jual}" readonly class="selling_price bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </td>
                     <td class="px-4 py-3">
                         <button type="button" onclick="removeItem('${rowId}')" class="text-red-500 hover:text-red-400">
@@ -919,7 +928,7 @@
                     .then(data => {
                         if (data.success) {
                             addItemRow(data.product.id, data.product.name, data.product.buying_price,
-                                data.product.grade);
+                                data.product.grade, data.product.margin);
                             // document.getElementById('quick-product-modal').classList.add('hidden');
 
 
