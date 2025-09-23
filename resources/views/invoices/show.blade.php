@@ -18,7 +18,8 @@
             <div class="flex space-x-2">
 
                 @if ($invoice->status === 'unpaid')
-                    <button class="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button id="to-paid-button"
+                        class="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Tandai sebagai Lunas
                     </button>
                 @endif
@@ -171,3 +172,53 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).on('click', '#to-paid-button', function() {
+            const invoice = @json($invoice);
+
+            Swal.fire({
+                title: 'Invoice Lunas?',
+                html: `Anda yakin ingin mengubah status invoice <strong>${invoice.unique_id}</strong>?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Lunas!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Buat form delete secara dinamis
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/invoices/status/${invoice.id}`;
+
+                    // Tambahkan CSRF token
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = $('meta[name="csrf-token"]').attr('content');
+                    form.appendChild(csrfToken);
+
+                    // Tambahkan method spoofing
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'PUT';
+
+                    const statusInput = document.createElement('input');
+                    statusInput.type = 'hidden';
+                    statusInput.name = 'status';
+                    statusInput.value = 'paid';
+
+                    form.appendChild(statusInput);
+                    form.appendChild(methodInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    </script>
+@endpush

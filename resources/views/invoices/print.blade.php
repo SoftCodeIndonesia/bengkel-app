@@ -72,10 +72,23 @@
         </div>
     </div>
     <div class="px-1">
+        @if ($invoice->tipe == 'services')
+            <div class="px-2 rounded-lg border-gray-600 mt-2">
+                <h5 class="font-bold">Deskripsi Perbaikan</h5>
+                <ul>
+                    @php
+                        $reference = $invoice->reference()->get()->first();
+                    @endphp
+                    @foreach ($reference->breakdowns as $key => $item)
+                        <li>{{ $key + 1 }}. {{ $item->name }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
 
 
-        <div class="px-2 rounded-lg border-gray-600 mt-2">
+        <div class="px-2 rounded-lg border-gray-600 mt-5">
 
             <div class="overflow-x-auto">
                 <table class="" style="width: 100%; border-collapse: collapse;">
@@ -152,6 +165,8 @@
                 </table>
             </div>
         </div>
+
+
 
         <div class="note flex-1 mt-5 p-2">
             <p class="font-bold">Note</p>

@@ -350,6 +350,22 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.show', $invoice->id)
             ->with('success', 'Invoice berhasil diperbarui');
     }
+    public function status(Request $request, $id)
+    {
+
+        $validated = $request->validate([
+            'status' => 'required|in:paid,unpaid'
+        ]);
+
+        $invoice = Invoice::find($id);
+
+        $invoice->update([
+            'status' => $validated['status'],
+        ]);
+
+        return redirect()->route('invoices.show', $invoice->id)
+            ->with('success', 'Invoice berhasil diperbarui');
+    }
 
     public function print(string $id)
     {
