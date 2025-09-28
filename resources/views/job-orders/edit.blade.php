@@ -501,7 +501,7 @@
                                             </td>
                                             <td class="p-2 text-right">
                                                 <span
-                                                    class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
+                                                    class="unit-price text-gray-300">{{ 'Rp ' . number_format($item->unit_price == 0 ? $item->unit_price : $item->product->unit_price, 0, ',', '.') }}
                                                 </span>
                                             </td>
                                             <td class="p-2 text-right">
@@ -916,7 +916,7 @@
                     if (parseInt(this.value) < min) {
                         this.value = min;
                     }
-                    
+
                     calculateItemTotal();
 
                 });

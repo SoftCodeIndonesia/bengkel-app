@@ -454,20 +454,20 @@ class JobOrderController extends Controller
                     $orderItem->diskon_value = $item['diskon_value'];
                     $orderItem->price_after_diskon = $subtotal - $potongan;
 
-                    $supplyItem = SupplyItem::where('item_id', $orderItem->id)->get()->first();
-                    // dd($item['id']);
-                    if ($supplyItem) {
-                        // dd($supplyItem);
-                        $supplyItem->quantity_requested = $item['quantity'] - $supplyItem->quantity_fulfilled;
-                        $supplyItem->status = 'partial';
-                        $supplyItem->save();
+                    // $supplyItem = SupplyItem::where('item_id', $orderItem->id)->get()->first();
+                    // // dd($item['id']);
+                    // if ($supplyItem) {
+                    //     // dd($supplyItem);
+                    //     $supplyItem->quantity_requested = $item['quantity'] - $supplyItem->quantity_fulfilled;
+                    //     $supplyItem->status = 'partial';
+                    //     $supplyItem->save();
 
-                        $supply = Supply::find($supplyItem->supply_id);
+                    //     $supply = Supply::find($supplyItem->supply_id);
 
-                        $supply->status = 'pending';
+                    //     $supply->status = 'pending';
 
-                        $supply->save();
-                    }
+                    //     $supply->save();
+                    // }
 
 
                     $orderItem->save();

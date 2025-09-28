@@ -71,6 +71,23 @@ class StockOpnameController extends Controller
         return view('opnames.edit', compact('opname'));
     }
 
+    public function createForm(Request $request)
+    {
+        return view('opnames.form');
+    }
+    public function printForm(Request $request)
+    {
+
+        $product_ids = collect($request->items)->pluck('product_id');
+        $products = Product::whereIn('id', $product_ids)->get();
+        $data['notes'] = $request->notes;
+        $data['tanggal'] = $request->opname_date;
+        $data['type'] = 'STOK OPNAME';
+        $data['customer_name'] = '';
+        return view('opnames.print', compact('products', 'data'));
+    }
+
+
     public function store(Request $request)
     {
 
@@ -160,6 +177,19 @@ class StockOpnameController extends Controller
     public function show(StockOpname $stockOpname)
     {
         return view('opnames.show', compact('stockOpname'));
+    }
+
+    public function print(string $id)
+    {
+
+
+        $opename = StockOpname::with('items', 'creator')->find($id);
+
+        $data['unique_id'] = $opename->unique_id;
+        $data['type'] = 'STOK OPNAME';
+        $data['customer_name'] = '';
+        $data['tanggal'] = $opename->opename_date->format('d M Y H:i');
+        return view('opnames.print', compact('opename', 'data'));
     }
 
     public function getProducts(Request $request)

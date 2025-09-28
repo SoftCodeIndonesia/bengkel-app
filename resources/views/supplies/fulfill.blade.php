@@ -51,45 +51,47 @@
                             </thead>
                             <tbody class="divide-y divide-gray-600">
                                 @foreach ($supply->items as $item)
-                                    <tr>
-                                        <td class="px-3 py-4">
-                                            <input type="hidden" name="items[{{ $loop->index }}][id]"
-                                                value="{{ $item->id }}">
-                                            <div class="text-white">{{ $item->product->name }}</div>
-                                            <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
-                                        </td>
-                                        <td class="px-3 py-4 text-white">{{ $item->product->stok }}</td>
-                                        <td class="px-3 py-4 text-white">{{ $item->quantity_requested }}</td>
-                                        <td class="px-3 py-4 text-white">{{ $item->quantity_fulfilled }}</td>
-                                        <td class="px-3 py-4">
-                                            <div class="flex">
+                                    @if ($item->status != 'fulfilled')
+                                        <tr>
+                                            <td class="px-3 py-4">
+                                                <input type="hidden" name="items[{{ $loop->index }}][id]"
+                                                    value="{{ $item->id }}">
+                                                <div class="text-white">{{ $item->product->name }}</div>
+                                                <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
+                                            </td>
+                                            <td class="px-3 py-4 text-white">{{ $item->product->stok }}</td>
+                                            <td class="px-3 py-4 text-white">{{ $item->quantity_requested }}</td>
+                                            <td class="px-3 py-4 text-white">{{ $item->quantity_fulfilled }}</td>
+                                            <td class="px-3 py-4">
+                                                <div class="flex">
 
-                                                <div class="relative w-full">
-                                                    <input type="number"
-                                                        name="items[{{ $loop->index }}][quantity_fulfilled]"
-                                                        id="search-dropdown"
-                                                        class="block item-quantity w-full z-20 text-sm text-gray-50 bg-gray-800 rounded-lg rounded-s-gray-100 rounded-s-2 border border-gray-800  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        value="{{ old('items[' . $loop->index . '][quantity_fulfilled]', 0) }}"
-                                                        min="0"
-                                                        max="{{ $item->quantity_requested - $item->quantity_fulfilled }}"
-                                                        required />
-                                                    <button type="button" data-index="{{ $loop->index }}"
-                                                        class="absolute fill_all top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                        <svg class="w-4 h-4 text-gray-800 dark:text-white"
-                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                            width="24" height="24" fill="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path fill-rule="evenodd"
-                                                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    </button>
+                                                    <div class="relative w-full">
+                                                        <input type="number"
+                                                            name="items[{{ $loop->index }}][quantity_fulfilled]"
+                                                            id="search-dropdown"
+                                                            class="block item-quantity w-full z-20 text-sm text-gray-50 bg-gray-800 rounded-lg rounded-s-gray-100 rounded-s-2  dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white "
+                                                            value="{{ old('items[' . $loop->index . '][quantity_fulfilled]', 0) }}"
+                                                            min="0"
+                                                            max="{{ $item->quantity_requested - $item->quantity_fulfilled }}"
+                                                            required />
+                                                        <button type="button" data-index="{{ $loop->index }}"
+                                                            class="absolute fill_all top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                            <svg class="w-4 h-4 text-gray-800 dark:text-white"
+                                                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                                width="24" height="24" fill="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
 
-                                    </tr>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

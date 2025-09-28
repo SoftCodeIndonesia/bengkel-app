@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\JobOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderItem extends Model
@@ -17,6 +18,11 @@ class OrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class)->withTrashed();
+    }
+
+    public function supplyItem(): HasOne
+    {
+        return $this->hasOne(SupplyItem::class, 'item_id', 'id');
     }
 
     public function jobOrder()

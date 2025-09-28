@@ -85,31 +85,33 @@
                             </thead>
                             <tbody class="divide-y divide-gray-600">
                                 @foreach ($jobOrder->sparepart as $item)
-                                    <tr>
-                                        <td class="px-3 py-4">
-                                            <input type="hidden" name="items[{{ $loop->index }}][item_id]"
-                                                value="{{ $item->id }}">
-                                            <div class="text-white">{{ $item->product->name }}</div>
-                                            <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
-                                        </td>
-                                        <td class="px-3 py-4 text-white">
-                                            {{ $item->product->stok }}
-                                        </td>
-                                        <td class="px-3 py-4">
-                                            <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
-                                                value="{{ $item->quantity }}" min="1" readonly
-                                                class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
-                                        </td>
-                                        <td class="px-3 py-4">
-                                            <input type="text" name="items[{{ $loop->index }}][unit_price]"
-                                                value="{{ number_format($item->unit_price, 0, ',', '.') }}"
-                                                class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
-                                        </td>
-                                        <td class="px-3 py-4 text-white">
-                                            <span
-                                                class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
-                                        </td>
-                                    </tr>
+                                    @if ($item->supplyItem->status != 'fulfilled')
+                                        <tr>
+                                            <td class="px-3 py-4">
+                                                <input type="hidden" name="items[{{ $loop->index }}][item_id]"
+                                                    value="{{ $item->id }}">
+                                                <div class="text-white">{{ $item->product->name }}</div>
+                                                <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
+                                            </td>
+                                            <td class="px-3 py-4 text-white">
+                                                {{ $item->product->stok }}
+                                            </td>
+                                            <td class="px-3 py-4">
+                                                <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
+                                                    value="{{ $item->quantity }}" min="1" readonly
+                                                    class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
+                                            </td>
+                                            <td class="px-3 py-4">
+                                                <input type="text" name="items[{{ $loop->index }}][unit_price]"
+                                                    value="{{ number_format($item->unit_price, 0, ',', '.') }}"
+                                                    class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
+                                            </td>
+                                            <td class="px-3 py-4 text-white">
+                                                <span
+                                                    class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

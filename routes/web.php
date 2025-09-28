@@ -288,6 +288,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('attendances', AttendanceController::class);
 
     Route::get('stock-opname/products', [StockOpnameController::class, 'getProducts'])->name('stock-opname.products');
+    Route::get('stock-opname/create-form', [StockOpnameController::class, 'createForm'])->name('stock-opname-create-form');
+    Route::post('stock-opname/print-form', [StockOpnameController::class, 'printForm'])->name('stock-opname-print-form');
     Route::resource('stock-opname', StockOpnameController::class);
 });
 // Di routes/web.php

@@ -104,7 +104,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="supply_id" class="block text-sm font-medium text-gray-300 mb-1">Supply</label>
-                        <select id="supply_id" name="supply_id"
+                        {{-- <select id="supply_id" name="supply_id"
                             class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required>
                             <option value="">Pilih Supply</option>
@@ -115,7 +115,21 @@
                                     ({{ $supply->jobOrder->customerVehicle->customer->name }})
                                 </option>
                             @endforeach
-                        </select>
+                        </select> --}}
+                        <div class="relative w-full">
+                            <input type="hidden" name="supply_id" />
+                            <input type="text" id="no_supply" name="no_supply"
+                                class="bg-gray-700 border border-gray-600 placeholder-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                placeholder="Cari Nomor Supply....." readonly>
+                            <button type="button" id="modal-select-supply"
+                                class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-500 rounded-e-lg hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-blue-300 "><svg
+                                    class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -194,71 +208,176 @@
             </button>
         </div>
     </template>
+
+
+    <div id="supply-selection-modal"
+        class="fixed hidden inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-5xl h-full max-h-full flex flex-col">
+            <div class="p-4 border-b border-gray-700">
+                <h3 class="text-xl font-semibold text-white">Cari Nomor Supply</h3>
+            </div>
+
+            <div class="relative overflow-x-auto flex-1 p-6">
+                <table class="w-full text-sm text-left text-gray-400" id="supply-table" style="width: 100%;">
+                    <thead class="text-xs uppercase bg-gray-700 text-gray-400
+                    sticky top-0">
+                        <tr>
+                            <th class="py-3 text-sm font-semibold">No</th>
+                            <th class="py-3 text-sm font-semibold">Job Order</th>
+                            <th class="py-3 text-sm font-semibold">Jumlah Part</th>
+                            <th class="py-3 text-sm font-semibold">Tanggal</th>
+                            <th class="py-3 text-sm font-semibold">Status</th>
+                            <th class="py-3 text-sm font-semibold">Dibuat Oleh</th>
+                            <th class="py-3 text-sm font-semibold text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supply-list">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-700 flex justify-end">
+                <button type="button" id="cancel-retur-selection"
+                    class="mr-2 px-4 py-2 bg-gray-600 text-white rounded-lg">Batal</button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inisialisasi Tom Select untuk supply
-            new TomSelect('#supply_id', {
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc"
-                },
-                render: {
-                    option: function(item, escape) {
+            const modalSelectSupply = document.getElementById('supply-selection-modal');
 
-                        return `
-                                <div class="flex items-center p-2 bg-gray-700 text-gray-400" data-json="${item}">
-                                    <div class="ml-2">
-                                        <div class="text-gray-300">${escape(item.text)}</div>
-                                    </div>
-                                </div>`;
-                    },
-                    item: function(item, escape) {
-                        return `<div class="bg-gray-600 text-gray-300 px-2 py-1 rounded">${escape(item.text)}</div>`;
-                    },
-                    no_results: function(data, escape) {
 
-                        return `<div class="p-2 text-gray-400">Tidak ditemukan "${escape(data.input)}"</div>`;
+
+            const tableSupply = $('#supply-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('supply.datatable') }}",
+                columnDefs: [{
+                        targets: 6,
+                        className: 'text-right'
+                    }, // status_badge
+                ],
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
-                    option_create: function(data, escape) {
-                        return `<div class="create p-2 text-gray-400 hover:bg-gray-600">Tambah baru: <strong>${escape(data.input)}</strong></div>`;
+                    {
+                        data: 'job_order_unique',
+                        name: 'job_order_unique',
+                    },
+                    {
+                        data: 'count_part',
+                        name: 'count_part',
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                    },
+                    {
+                        data: 'status_badge',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_by',
+                        name: 'created_by',
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row) {
+                            return `<button class="bg-green-600 text-white px-2 py-1 rounded-lg btn-selected">Pilih</button>`;
+                        }
                     }
+                ],
+                order: [
+                    [4, 'desc']
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/id.json'
+                },
+                dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"<"mb-2 md:mb-0"l><"flex items-center"f>>rt<"flex flex-col md:flex-row justify-between items-center mt-4"<"mb-2 md:mb-0"i><"pagination-container"p>>',
+                initComplete: function() {
+                    $('.dataTables_length label').addClass('text-gray-400');
+                    $('.dataTables_filter label').addClass('text-gray-400');
+                    $('.dataTables_info').addClass('text-gray-400');
+                    $('.dataTables_filter input').addClass(
+                        'bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_length select').addClass(
+                        'bg-gray-700 border border-gray-600 text-green-600 rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_processing').css({
+                        'background': 'transparent',
+                        'color': 'white'
+                    });
+                },
+                drawCallback: function() {
+                    $('.dataTables_info').addClass('text-gray-400');
+                    $('.pagination-container .paginate_button').addClass(
+                        'px-3 py-1 mx-1 text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition duration-150'
+                    );
+                    $('.pagination-container .paginate_button.current').addClass(
+                        'bg-blue-600 text-white border-blue-600');
+                    $('.dataTables_paginate').addClass('flowbite-pagination');
+                    $('.paginate_button').each(function() {
+                        $(this).removeClass('paginate_button previous next first last');
+                        if ($(this).hasClass('current')) {
+                            $(this).addClass('active bg-blue-600 text-white');
+                        } else if ($(this).hasClass('disabled')) {
+                            $(this).addClass('opacity-50 cursor-not-allowed');
+                        }
+                    });
                 }
             });
 
-            // Ketika supply dipilih, tampilkan item-itemnya
-            document.getElementById('supply_id').addEventListener('change', function() {
-                const supplyId = this.value;
-                const supplyItemsContainer = document.getElementById('supplyItemsContainer');
+            $('#supply-table').on('click', '.btn-selected', function(e) {
+                e.preventDefault();
+                const rowData = tableSupply.row($(this).closest('tr')).data();
 
-                if (supplyId) {
-                    fetch(`/api/supplies/${supplyId}/items`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                            window.supplyItems = data;
-                            supplyItemsContainer.classList.remove('hidden');
+                // contoh: isi hidden supply_id & no_supply
+                document.querySelector('input[name="supply_id"]').value = rowData.id;
+                document.getElementById('no_supply').value = `${rowData.job_order.unique_id}`;
+
+                // tampilkan container items
+                document.getElementById('supplyItemsContainer').classList.remove('hidden');
+
+                console.log(rowData);
+
+                const template = document.getElementById('itemTemplate');
+                const clone = template.content.cloneNode(true);
+                const container = document.getElementById('itemsContainer');
+                const index = container.children.length;
+                const itemCard = clone.querySelector('.item-card');
+                // Update nama field dengan index
+                // const inputs = itemCard.querySelectorAll('[name]');
+                // inputs.forEach(input => {
+                //     const name = input.getAttribute('name').replace('[]', `[${index}]`);
+                //     input.setAttribute('name', name);
+                // });
 
 
-                            itemsContainer.innerHTML = '';
+                rowData.items.forEach((element, index) => {
 
-                            // Buat form item retur untuk setiap item supply
-                            data.forEach((item, index) => {
-                                const itemCard = createReturnItemForm(item, index);
-                                itemsContainer.appendChild(itemCard);
-                            })
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                } else {
-                    supplyItemsContainer.classList.add('hidden');
-                    document.getElementById('itemsContainer').innerHTML = '';
-                }
+                    container.appendChild(createReturnItemForm(element, index));
+                })
+
+
+                // tutup modal
+                document.getElementById('supply-selection-modal').classList.add('hidden');
+            });
+
+            document.getElementById('modal-select-supply').addEventListener('click', function() {
+                modalSelectSupply.classList.remove('hidden');
+                tableSupply.draw();
             });
 
             // Fungsi untuk membuat form item retur
@@ -308,6 +427,11 @@
 
                 return itemCard;
             }
+
+            $('#cancel-retur-selection').click(function(e) {
+                e.preventDefault();
+                modalSelectSupply.classList.add('hidden');
+            });
 
             // Tombol tambah item
             document.getElementById('addItemBtn').addEventListener('click', function() {

@@ -15,6 +15,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\CustomerVehicleController;
 use App\Http\Controllers\JobOrderController;
+use App\Http\Controllers\SupplyController;
 use App\Models\ServicePackage;
 
 /*
@@ -68,6 +69,7 @@ Route::get('/supplier/search-table', [SupplierController::class, 'table'])->name
 Route::get('/supplies/{supply}/items', function (App\Models\Supply $supply) {
     return $supply->items()->with(['product'])->get();
 });
+Route::get('/supplies', [SupplyController::class, 'supplyDatatable'])->name('supply.datatable');
 
 Route::get('/supplies/{supply}/products/{product}/order-items', function (App\Models\Supply $supply, App\Models\Product $product) {
     return $supply->jobOrder->orderItems()

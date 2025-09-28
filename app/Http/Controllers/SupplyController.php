@@ -79,10 +79,56 @@ class SupplyController extends Controller
         return view('supplies.index');
     }
 
+    public function supplyDatatable(Request $request)
+    {
+        $supplies = Supply::with(['jobOrder.customerVehicle.customer', 'items', 'items.product', 'jobOrder.customerVehicle.vehicle', 'creator'])
+            ->select('supplies.*');
+
+        return DataTables::of($supplies)
+            ->addIndexColumn()
+            ->addColumn('job_order_unique', function ($supply) {
+                return '#' . $supply->jobOrder->unique_id . '<br>';
+            })
+            ->addColumn('count_part', function ($supply) {
+                return '<span class="text-gray-400">' . $supply->items()->count() . '</span>';
+            })
+            ->addColumn('created_at', function ($supply) {
+                return '<span class="text-gray-400">' . $supply->created_at->format('d-m-Y') . '</span>';
+            })
+            ->addColumn('created_by', function ($supply) {
+                return '<span class="text-gray-400">' . $supply->creator->name . '</span>';
+            })
+            ->addColumn('created_at', function ($supply) {
+                return '<span class="text-gray-400">' . $supply->created_at->format('d-m-Y') . '</span>';
+            })
+            ->addColumn('status_badge', function ($supply) {
+                $statusClasses = [
+                    'pending' => 'bg-yellow-500 text-white',
+                    'processed' => 'bg-blue-500 text-white',
+                    'completed' => 'bg-green-500 text-white',
+                    'cancelled' => 'bg-red-500 text-white',
+                ];
+                return '<span class="px-2 py-1 rounded-full text-xs ' . $statusClasses[$supply->status] . '">' .
+                    ucfirst($supply->status) .
+                    '</span>';
+            })
+            ->rawColumns(['job_order_unique', 'count_part', 'created_at', 'created_by', 'status_badge', 'action'])
+            ->make(true);
+    }
+
     public function createFromJobOrder($jobOrderId)
     {
-        $jobOrder = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle', 'sparepart', 'sparepart.product'])
+
+        $supplies = Supply::where('job_order_id', $jobOrderId)->get()->first();
+
+        if ($supplies) {
+            return redirect()->route('supplies.fulfill', $supplies->id);
+        }
+
+        $jobOrder = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle', 'sparepart', 'sparepart.supplyItem', 'sparepart.product'])
             ->findOrFail($jobOrderId);
+
+        // dd($jobOrder->sparepart);
 
         $suppliers = Supplier::all();
 

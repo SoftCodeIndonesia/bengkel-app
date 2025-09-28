@@ -219,6 +219,7 @@
                                     </th>
                                     <th class="px-4 py-3">No</th>
                                     <th class="px-4 py-3">Sparepart/Jasa</th>
+                                    <th class="px-4 py-3">Kategori</th>
                                     <th class="px-4 py-3 text-right">FRT/QTY</th>
                                     <th class="px-4 py-3 text-right">Harga Satuan</th>
                                     <th class="px-4 py-3 text-right">Subtotal</th>
@@ -239,6 +240,7 @@
                                             </td>
                                             <td class="px-4 py-3">{{ $index }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                            <td class="px-4 py-3">{{ $item->product->tipe }}</td>
 
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
@@ -266,6 +268,7 @@
                                             </td>
                                             <td class="px-4 py-3">{{ $index }}</td>
                                             <td class="px-4 py-3">{{ $item->product->name }}</td>
+                                            <td class="px-4 py-3">Jasa</td>
 
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
