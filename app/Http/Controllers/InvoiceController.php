@@ -272,7 +272,7 @@ class InvoiceController extends Controller
             'status' => $validated['status'],
             'customer_id' => $customer->id,
             'customer_name' => $customer->name,
-            'customer_address' => $customer->address,
+            'customer_address' => $customer->address ?? '',
             'subtotal' => $validated['subtotal'],
             'diskon_unit' => 'nominal',
             'diskon_value' => $validated['diskon_value'] ?? 0,

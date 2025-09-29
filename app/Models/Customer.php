@@ -14,10 +14,14 @@ class Customer extends Model
 
     protected $fillable = ['name', 'email', 'phone', 'address'];
 
+
+    public function customerVehicles()
+    {
+        return $this->hasMany(CustomerVehicle::class);
+    }
     public function vehicles()
     {
-        return $this->belongsToMany(Vehicle::class, 'customer_vehicle')
-            ->withTimestamps();
+        return $this->belongsToMany(Vehicle::class, 'customer_vehicle')->using(CustomerVehicle::class);
     }
 
     public function jobOrders()

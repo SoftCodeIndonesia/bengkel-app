@@ -63,7 +63,7 @@
                         </a>
                     </div>
 
-                    @if ($customer->vehicles->count() > 0)
+                    @if ($customer->vehicles()->count() > 0)
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-600">
                                 <thead class="bg-gray-600">
@@ -80,7 +80,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-gray-700 divide-y divide-gray-600">
-                                    @foreach ($customer->vehicles as $vehicle)
+                                    @foreach ($customer->customerVehicles as $vehicle)
                                         <tr>
                                             <td class="px-4 py-3 whitespace-nowrap text-sm text-white">
                                                 {{ $vehicle->merk }} {{ $vehicle->tipe }}
@@ -102,7 +102,7 @@
                                                         </svg>
                                                     </a>
                                                     <form
-                                                        action="{{ route('customer-vehicles.destroy', $customer->vehicles->find($vehicle->id)->pivot->id) }}"
+                                                        action="{{ route('customer-vehicles.destroy', $customer->customerVehicles->find($vehicle->id)->id) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')

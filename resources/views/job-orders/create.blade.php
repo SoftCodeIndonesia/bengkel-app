@@ -828,7 +828,7 @@
                             <span class="kategori text-gray-300">${data.tipe}</span>
                         </td>
                         <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.1" step="0.1" value="${data.quantity}"
+                            <input type="number" name="items[${itemCounter}][quantity]" min="0.01" step="0.01" value="${data.quantity}"
                                 class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         
