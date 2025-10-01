@@ -3,17 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sales;
+use App\Exports\Report;
 use App\Models\Expense;
 use App\Models\JobOrder;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
     public function profitLoss(Request $request)
     {
+
+        if ($request->has('export')) {
+            return $this->previewExportExcel($request);
+        }
         // Default periode bulan berjalan
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
@@ -89,5 +95,31 @@ class ReportController extends Controller
             'expenseData',
             'profitData'
         ));
+    }
+
+    public function previewExportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+
+        $jobOrderIncome = JobOrder::with('service', 'sparepart')->where('status', 'completed')
+            ->whereBetween('service_at', [$startDate, $endDate])->get();
+
+        $salesIncome = Sales::whereBetween('sales_date', [$startDate, $endDate])->get();
+        return view('report.preview-excel', compact('jobOrderIncome', 'salesIncome'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+
+        $jobOrderIncome = JobOrder::with('service.product', 'sparepart.product')->where('status', 'completed')
+            ->whereBetween('service_at', [$startDate, $endDate])->get();
+
+
+        $salesIncome = Sales::with('items', 'items.product')->whereBetween('sales_date', [$startDate, $endDate])->get();
+
+        return Excel::download(new Report($jobOrderIncome, $salesIncome), 'laporan-' . $startDate . '-' . $endDate . '.xlsx');
     }
 }

@@ -72,7 +72,7 @@ class PurchaseController extends Controller
                 ';
                 })
                 ->editColumn('purchase_date', function ($purchase) {
-                    return Carbon::parse($purchase->date)->translatedFormat('d F Y');
+                    return Carbon::parse($purchase->purchase_date)->translatedFormat('d F Y');
                 })
                 ->editColumn('status_tag', function ($row) {
                     return '<span class="px-2 py-1 text-xs font-semibold rounded-full ' . $row->statusColor() . '">' . ucfirst($row->statusText()) . '</span>';

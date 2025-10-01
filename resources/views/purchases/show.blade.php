@@ -48,7 +48,8 @@
                         </div>
                         <div>
                             <label class="block text-gray-300 text-sm">Tanggal</label>
-                            <p class="text-white">{{ Carbon::parse($purchase->date)->translatedFormat('d F Y') }}</p>
+                            <p class="text-white">{{ Carbon::parse($purchase->purchase_date)->translatedFormat('d F Y') }}
+                            </p>
                         </div>
                     </div>
                 </div>

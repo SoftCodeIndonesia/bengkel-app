@@ -20,13 +20,13 @@
                         Filter
                     </button>
                 </form>
-                <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center w-full sm:w-fit justify-center">
+                <a href="{{ request()->fullUrlWithQuery(['export' => 'excel']) }}"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center w-full sm:w-fit justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                     </svg>
-                    PDF
+                    Download Excel
                 </a>
             </div>
         </div>

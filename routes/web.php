@@ -254,6 +254,10 @@ Route::middleware('auth')->group(function () {
     // routes/web.php
     Route::get('/reports/profit-loss', [ReportController::class, 'profitLoss'])
         ->name('reports.profit-loss');
+    Route::get('/reports/prevew-excel', [ReportController::class, 'previewExportExcel'])
+        ->name('reports.preview-excel');
+
+    Route::get('/reports/export-excel', [ReportController::class, 'exportExcel'])->name('reports.export-excel');
 
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('roles', RoleController::class)->except(['show']);

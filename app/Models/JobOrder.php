@@ -80,7 +80,7 @@ class JobOrder extends Model
 
     public function service()
     {
-        return $this->hasMany(OrderItem::class)
+        return $this->hasMany(OrderItem::class, 'order_id', 'id')
             ->whereHas('product', function ($query) {
                 $query->where('tipe', 'jasa');
             });
