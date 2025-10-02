@@ -20,7 +20,7 @@
                         Filter
                     </button>
                 </form>
-                <a href="{{ request()->fullUrlWithQuery(['export' => 'excel']) }}"
+                <a href="{{ route('reports.export-excel', request()->only(['start_date', 'end_date'])) }}"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center w-full sm:w-fit justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

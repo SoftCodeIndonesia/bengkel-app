@@ -37,12 +37,12 @@ class JobOrderController extends Controller
 
             if ($startDate) {
                 $data->when($startDate, function ($query) use ($startDate) {
-                    $query->whereDate('created_at', '>=', $startDate);
+                    $query->whereDate('service_at', '>=', $startDate);
                 });
             }
             if ($endDate) {
                 $data->when($endDate, function ($query) use ($endDate) {
-                    $query->whereDate('created_at', '<=', $endDate);
+                    $query->whereDate('service_at', '<=', $endDate);
                 });
             }
             if ($status) {

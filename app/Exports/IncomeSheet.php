@@ -34,37 +34,51 @@ class IncomeSheet implements FromArray, WithHeadings, WithStyles, ShouldAutoSize
 
         // Work Orders
         foreach ($this->jobOrderIncome as $wo) {
-            foreach ($wo->service as $keyJasa => $jasa) {
-                foreach ($wo->sparepart as $part) {
+            $jasaList = $wo->service;
+            $partList = $wo->sparepart;
+
+            $maxCount = max(count($jasaList), count($partList));
+
+            for ($i = 0; $i < $maxCount; $i++) {
+                $jasa = $jasaList[$i] ?? null;
+                $part = $partList[$i] ?? null;
+
+                $marginNominal = 0;
+                $margin = 0;
+
+                if ($part) {
                     $marginNominal = $part->price_after_diskon - ($part->product->buying_price * $part->quantity);
                     $margin = $part->price_after_diskon > 0
-                        ? ($marginNominal / $part->price_after_diskon) * 100
+                        ? ($marginNominal / $part->price_after_diskon)
                         : 0;
 
-                    $rows[] = [
-                        'WO',
-                        $keyJasa == 0 ? $wo->unique_id : '',
-                        $wo->service_at->format('d-m-Y'),
-                        $jasa->product->name,
-                        $jasa->quantity,
-                        100000 * $jasa->quantity * ($jasa->diskon_value / 100),
-                        $jasa->price_after_diskon,
-                        $part->product->name,
-                        $part->quantity,
-                        $part->product->buying_price,
-                        $part->unit_price,
-                        $part->price_after_diskon,
-                        round($margin, 2) . '%',
-                        $marginNominal,
-                    ];
-
-                    $totalJasa += $jasa->total_price;
                     $totalQtyPart += $part->quantity;
                     $totalHargaPart += $part->unit_price * $part->quantity;
                     $totalHargaBeliPart += $part->product->buying_price * $part->quantity;
                     $totalPart += $part->price_after_diskon;
                     $totalMarginNominal += $marginNominal;
                 }
+
+                if ($jasa) {
+                    $totalJasa += $jasa->total_price;
+                }
+
+                $rows[] = [
+                    $i == 0 ? 'WO' : '', // sumber hanya di baris pertama
+                    $i == 0 ? $wo->unique_id : '', // nomor WO hanya di baris pertama
+                    $i == 0 ? $wo->service_at->format('d-m-Y') : '',
+                    $jasa ? $jasa->product->name : '',
+                    $jasa ? $jasa->quantity : '',
+                    $jasa ? (100000 * $jasa->quantity * ($jasa->diskon_value / 100)) : '',
+                    $jasa ? $jasa->price_after_diskon : '',
+                    $part ? $part->product->name : '',
+                    $part ? $part->quantity : '',
+                    $part ? $part->product->buying_price : '',
+                    $part ? $part->unit_price : '',
+                    $part ? $part->price_after_diskon : '',
+                    $part ? round($margin, 2) : '',
+                    $part ? $marginNominal : '',
+                ];
             }
         }
 
@@ -73,23 +87,23 @@ class IncomeSheet implements FromArray, WithHeadings, WithStyles, ShouldAutoSize
             foreach ($so->items as $keyPart => $part) {
                 $marginNominal = $part->price_after_discount - ($part->product->buying_price * $part->quantity);
                 $margin = $part->price_after_discount > 0
-                    ? ($marginNominal / $part->price_after_discount) * 100
+                    ? ($marginNominal / $part->price_after_discount)
                     : 0;
 
                 $rows[] = [
-                    'SO',
+                    $keyPart == 0 ? 'SO' : '',
                     $keyPart == 0 ? $so->unique_id : '',
                     $so->created_at->format('d-m-Y'),
-                    '-',
-                    '-',
-                    '-',
-                    '-',
+                    null,
+                    null,
+                    null,
+                    null,
                     $part->product->name,
                     $part->quantity,
                     $part->product->buying_price,
                     $part->unit_price,
                     $part->price_after_discount,
-                    round($margin, 2) . '%',
+                    round($margin, 2),
                     $marginNominal,
                 ];
 
@@ -106,21 +120,22 @@ class IncomeSheet implements FromArray, WithHeadings, WithStyles, ShouldAutoSize
             'TOTAL',
             '',
             '',
-            'TOTAL JASA',
             '',
             '',
-            $totalJasa,
             '',
-            $totalQtyPart,
-            $totalHargaBeliPart,
-            $totalHargaPart,
-            $totalPart,
+            '=SUM(G2:G' . (count($rows) + 1) . ')', // total jasa
             '',
-            $totalMarginNominal,
+            '=SUM(I2:I' . (count($rows) + 1) . ')', // total qty
+            '=SUM(J2:J' . (count($rows) + 1) . ')', // total harga beli
+            '=SUM(K2:K' . (count($rows) + 1) . ')', // total harga jual
+            '=SUM(L2:L' . (count($rows) + 1) . ')', // total part
+            '=AVERAGE(M2:M' . (count($rows)) . ')', // rata2 margin %
+            '=SUM(N2:N' . (count($rows) + 1) . ')', // total margin nominal
         ];
 
         return $rows;
     }
+
 
     public function headings(): array
     {
@@ -172,12 +187,28 @@ class IncomeSheet implements FromArray, WithHeadings, WithStyles, ShouldAutoSize
             ],
         ]);
 
+        $sheet->getStyle('E2:E' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // FRT
+        $sheet->getStyle('F2:F' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Diskon Jasa
+        $sheet->getStyle('G2:G' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Total Jasa
+        $sheet->getStyle('I2:I' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Qty
+        $sheet->getStyle('J2:J' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Harga Beli
+        $sheet->getStyle('K2:K' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Harga Jual
+        $sheet->getStyle('L2:L' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Total Setelah Diskon
+        $sheet->getStyle('M2:M' . $highestRow)->getNumberFormat()->setFormatCode('0.00%');        // Margin % → otomatis jadi persen
+        $sheet->getStyle('N2:N' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');        // Margin Rp
+
+
         // Rata kanan untuk kolom angka (Qty, Harga, Diskon, Total, Margin)
-        $sheet->getStyle('D2:D' . $highestRow)->getAlignment()->setHorizontal('right'); // Harga Jasa
-        $sheet->getStyle('F2:F' . $highestRow)->getAlignment()->setHorizontal('right'); // Qty Part
-        $sheet->getStyle('G2:G' . $highestRow)->getAlignment()->setHorizontal('right'); // Harga Part
-        $sheet->getStyle('H2:H' . $highestRow)->getAlignment()->setHorizontal('right'); // Diskon
-        $sheet->getStyle('I2:I' . $highestRow)->getAlignment()->setHorizontal('right'); // Total
+        $sheet->getStyle('E2:E' . $highestRow)->getAlignment()->setHorizontal('right'); // FRT
+        $sheet->getStyle('F2:F' . $highestRow)->getAlignment()->setHorizontal('right'); // Diskon Jasa
+        $sheet->getStyle('G2:G' . $highestRow)->getAlignment()->setHorizontal('right'); // Total Jasa
+        $sheet->getStyle('I2:I' . $highestRow)->getAlignment()->setHorizontal('right'); // Qty
+        $sheet->getStyle('J2:J' . $highestRow)->getAlignment()->setHorizontal('right'); // Harga Beli
+        $sheet->getStyle('K2:K' . $highestRow)->getAlignment()->setHorizontal('right'); // Harga Jual
+        $sheet->getStyle('L2:L' . $highestRow)->getAlignment()->setHorizontal('right'); // Total Setelah Diskon
+        $sheet->getStyle('M2:M' . $highestRow)->getAlignment()->setHorizontal('right'); // Margin %
+        $sheet->getStyle('N2:N' . $highestRow)->getAlignment()->setHorizontal('right'); // Margin Rp
+
 
         // Baris terakhir (Total keseluruhan) dibuat bold
         $sheet->getStyle('A' . $highestRow . ':' . $highestCol . $highestRow)->applyFromArray([

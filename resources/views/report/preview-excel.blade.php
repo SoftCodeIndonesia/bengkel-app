@@ -20,7 +20,7 @@
                     <thead class="uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 w-32">Sumber</th>
-                            <th class="p-3 w-40">Nomor Dokumen</th>
+                            <th class="p-3 w-64">Nomor Dokumen</th>
                             <th class="p-3 w-64">Tanggal</th>
                             <th class="p-3 w-64">Nama Jasa</th>
                             <th class="p-3 w-20">FRT</th>
@@ -47,37 +47,46 @@
                         @endphp
 
                         {{-- Work Orders --}}
-                        @foreach ($jobOrderIncome as $wo)
+                        @foreach ($jobOrderIncome as $keyWo => $wo)
                             @foreach ($wo->service as $keyJasa => $jasa)
-                                @foreach ($wo->sparepart as $part)
+                                @foreach ($wo->sparepart as $keyPart => $part)
                                     <tr>
-                                        <td class="p-3">{{ 'WO' }}</td>
-                                        <td class="p-3">{{ $keyJasa == 0 ? $wo->unique_id : '' }}</td>
-                                        <td class="p-3">{{ $wo->service_at->format('d-m-Y') }}</td>
-                                        <td class="p-3">{{ $jasa->product->name }}</td>
-                                        <td class="p-3">{{ $jasa->quantity }}</td>
+                                        <td class="p-3 w-64">{{ 'WO' }}</td>
+                                        <td class="p-3 w-64">
+                                            {{ $keyPart == 0 ? $wo->unique_id : '' }}</td>
+                                        <td class="p-3 w-64">{{ $keyPart == 0 ? $wo->service_at->format('d-m-Y') : '' }}
+                                        </td>
+                                        <td class="p-3 w-64">{{ $keyPart == 0 ? $jasa->product->name : '' }}</td>
+                                        <td class="p-3 w-64">{{ $keyPart == 0 ? $jasa->quantity : '' }}</td>
 
-                                        <td class="p-3">
-                                            {{ number_format(100000 * $jasa->quantity * ($jasa->diskon_value / 100), 0, ',', '.') }}
+                                        <td class="p-3 w-64">
+                                            {{ $keyPart == 0 ? number_format(100000 * $jasa->quantity * ($jasa->diskon_value / 100), 0, ',', '.') : '' }}
                                         </td>
-                                        <td class="p-3">{{ number_format($jasa->price_after_diskon, 0, ',', '.') }}</td>
-                                        <td class="p-3">{{ $part->product->name }}</td>
-                                        <td class="p-3">{{ $part->quantity }}</td>
-                                        <td class="p-3">{{ number_format($part->product->buying_price, 0, ',', '.') }}
+                                        <td class="p-3 w-64">
+                                            {{ $keyPart == 0 ? number_format($jasa->price_after_diskon, 0, ',', '.') : '' }}
                                         </td>
-                                        <td class="p-3">{{ number_format($part->unit_price, 0, ',', '.') }}</td>
-                                        <td class="p-3">{{ number_format($part->price_after_diskon, 0, ',', '.') }}</td>
-                                        <td class="p-3">
+                                        <td class="p-3 w-64">{{ $part->product->name }}</td>
+                                        <td class="p-3 w-64">{{ $part->quantity }}</td>
+                                        <td class="p-3 w-64">{{ number_format($part->product->buying_price, 0, ',', '.') }}
+                                        </td>
+                                        <td class="p-3 w-64">{{ number_format($part->unit_price, 0, ',', '.') }}</td>
+                                        <td class="p-3 w-64">{{ number_format($part->price_after_diskon, 0, ',', '.') }}
+                                        </td>
+                                        <td class="p-3 w-64">
                                             @php
-                                                $margin =
-                                                    (($part->price_after_diskon -
-                                                        $part->product->buying_price * $part->quantity) /
-                                                        $part->price_after_diskon) *
-                                                    100;
+                                                if ($part->price_after_diskon > 0) {
+                                                    $margin =
+                                                        (($part->price_after_diskon -
+                                                            $part->product->buying_price * $part->quantity) /
+                                                            $part->price_after_diskon) *
+                                                        100;
+                                                } else {
+                                                    $margin = 0; // atau bisa juga null tergantung kebutuhan
+                                                }
                                             @endphp
                                             {{ round($margin, 2) }}%
                                         </td>
-                                        <td class="p-3">
+                                        <td class="p-3 w-64">
                                             @php
                                                 $marginNominal =
                                                     $part->price_after_diskon -
@@ -95,6 +104,9 @@
                                         $totalMarginNominal += $marginNominal;
                                     @endphp
                                 @endforeach
+                                @php
+                                    $totalJasa += $jasa->total_price;
+                                @endphp
                             @endforeach
                         @endforeach
 
@@ -103,30 +115,35 @@
                         @foreach ($salesIncome as $key => $so)
                             @foreach ($so->items as $keyPart => $part)
                                 <tr>
-                                    <td class="p-3">{{ 'SO' }}</td>
-                                    <td class="p-3">{{ $keyPart == 0 ? $so->unique_id : '' }}</td>
-                                    <td class="p-3">{{ $so->created_at->format('d-m-Y') }}</td>
-                                    <td class="p-3">-</td>
-                                    <td class="p-3">-</td>
+                                    <td class="p-3 w-64">{{ 'SO' }}</td>
+                                    <td class="p-3 w-64">{{ $keyPart == 0 ? $so->unique_id : '' }}</td>
+                                    <td class="p-3 w-64">{{ $so->created_at->format('d-m-Y') }}</td>
+                                    <td class="p-3 w-64">-</td>
+                                    <td class="p-3 w-64">-</td>
 
-                                    <td class="p-3">-</td>
-                                    <td class="p-3">-</td>
-                                    <td class="p-3">{{ $part->product->name }}</td>
-                                    <td class="p-3">{{ $part->quantity }}</td>
-                                    <td class="p-3">{{ number_format($part->product->buying_price, 0, ',', '.') }}</td>
-                                    <td class="p-3">{{ number_format($part->unit_price, 0, ',', '.') }}</td>
-                                    <td class="p-3">{{ number_format($part->price_after_discount, 0, ',', '.') }}</td>
-                                    <td class="p-3">
+                                    <td class="p-3 w-64">-</td>
+                                    <td class="p-3 w-64">-</td>
+                                    <td class="p-3 w-64">{{ $part->product->name }}</td>
+                                    <td class="p-3 w-64">{{ $part->quantity }}</td>
+                                    <td class="p-3 w-64">{{ number_format($part->product->buying_price, 0, ',', '.') }}
+                                    </td>
+                                    <td class="p-3 w-64">{{ number_format($part->unit_price, 0, ',', '.') }}</td>
+                                    <td class="p-3 w-64">{{ number_format($part->price_after_discount, 0, ',', '.') }}</td>
+                                    <td class="p-3 w-64">
                                         @php
-                                            $margin =
-                                                (($part->price_after_discount -
-                                                    $part->product->buying_price * $part->quantity) /
-                                                    $part->price_after_discount) *
-                                                100;
+                                            if ($part->price_after_discount > 0) {
+                                                $margin =
+                                                    (($part->price_after_discount -
+                                                        $part->product->buying_price * $part->quantity) /
+                                                        $part->price_after_discount) *
+                                                    100;
+                                            } else {
+                                                $margin = 0;
+                                            }
                                         @endphp
                                         {{ round($margin, 2) }}%
                                     </td>
-                                    <td class="p-3">
+                                    <td class="p-3 w-64">
                                         @php
                                             $marginNominal =
                                                 $part->price_after_discount -
@@ -147,19 +164,19 @@
 
                         {{-- Total Row --}}
                         <tr class="bg-gray-700 font-bold text-white">
-                            <td class="p-3" colspan="3">TOTAL</td>
-                            <td class="p-3">Total Jasa</td>
-                            <td class="p-3"></td>
+                            <td class="p-3 w-64" colspan="3">TOTAL</td>
+                            <td class="p-3 w-64"></td>
+                            <td class="p-3 w-64"></td>
 
-                            <td class="p-3"></td>
-                            <td class="p-3">{{ number_format($totalJasa, 0, ',', '.') }}</td>
-                            <td class="p-3"></td>
-                            <td class="p-3">{{ $totalQtyPart }}</td>
-                            <td class="p-3">{{ number_format($totalHargaBeliPart, 0, ',', '.') }}</td>
-                            <td class="p-3">{{ number_format($totalHargaPart, 0, ',', '.') }}</td>
-                            <td class="p-3">{{ number_format($totalPart, 0, ',', '.') }}</td>
-                            <td class="p-3"></td>
-                            <td class="p-3">{{ number_format($totalMarginNominal, 0, ',', '.') }}</td>
+                            <td class="p-3 w-64"></td>
+                            <td class="p-3 w-64">{{ number_format($totalJasa, 0, ',', '.') }}</td>
+                            <td class="p-3 w-64"></td>
+                            <td class="p-3 w-64">{{ $totalQtyPart }}</td>
+                            <td class="p-3 w-64">{{ number_format($totalHargaBeliPart, 0, ',', '.') }}</td>
+                            <td class="p-3 w-64">{{ number_format($totalHargaPart, 0, ',', '.') }}</td>
+                            <td class="p-3 w-64">{{ number_format($totalPart, 0, ',', '.') }}</td>
+                            <td class="p-3 w-64"></td>
+                            <td class="p-3 w-64">{{ number_format($totalMarginNominal, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>

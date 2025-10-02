@@ -26,10 +26,14 @@ class ReportController extends Controller
 
         // Hitung pendapatan
         $jobOrderIncome = JobOrder::where('status', 'completed')
-            ->whereBetween('service_at', [$startDate, $endDate])
+            ->whereDate('service_at', '>=', $startDate)
+            ->whereDate('service_at', '<=', $endDate)
             ->sum('total');
 
-        $salesIncome = Sales::whereBetween('sales_date', [$startDate, $endDate])
+
+
+        $salesIncome = Sales::whereDate('sales_date', '>=', $startDate)
+            ->whereDate('sales_date', '<=', $endDate)
             ->sum('total');
 
         $totalIncome = $jobOrderIncome + $salesIncome;
@@ -114,12 +118,41 @@ class ReportController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
 
-        $jobOrderIncome = JobOrder::with('service.product', 'sparepart.product')->where('status', 'completed')
-            ->whereBetween('service_at', [$startDate, $endDate])->get();
+        $jobOrderIncome = JobOrder::with('service.product', 'sparepart.product')->where('status', 'completed');
+
+        if ($startDate) {
+            $jobOrderIncome->when($startDate, function ($query) use ($startDate) {
+                $query->whereDate('service_at', '>=', $startDate);
+            });
+        }
+        if ($endDate) {
+            $jobOrderIncome->when($endDate, function ($query) use ($endDate) {
+                $query->whereDate('service_at', '<=', $endDate);
+            });
+        }
+
+        $jobOrderIncome = $jobOrderIncome->get();
 
 
-        $salesIncome = Sales::with('items', 'items.product')->whereBetween('sales_date', [$startDate, $endDate])->get();
+        $salesIncome = Sales::with('items', 'items.product');
 
-        return Excel::download(new Report($jobOrderIncome, $salesIncome), 'laporan-' . $startDate . '-' . $endDate . '.xlsx');
+        if ($startDate) {
+            $salesIncome->when($startDate, function ($query) use ($startDate) {
+                $query->whereDate('sales_date', '>=', $startDate);
+            });
+        }
+        if ($endDate) {
+            $salesIncome->when($endDate, function ($query) use ($endDate) {
+                $query->whereDate('sales_date', '<=', $endDate);
+            });
+        }
+
+        $salesIncome = $salesIncome->get();
+
+        $purchaseExpenses = Purchase::with('items', 'items.product')->where('status', 'paid')->whereBetween('purchase_date', [$startDate, $endDate])->whereNull('deleted_at')->get();
+
+        $operationalExpenses = Expense::whereBetween('date', [$startDate, $endDate])->whereNull('deleted_at')->get();
+
+        return Excel::download(new Report($jobOrderIncome, $salesIncome, $purchaseExpenses, $operationalExpenses), 'laporan-' . $startDate . '-' . $endDate . '.xlsx');
     }
 }
