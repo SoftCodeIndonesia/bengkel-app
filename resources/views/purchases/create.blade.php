@@ -850,6 +850,8 @@
                     updateSellingPrice(row);
                 });
 
+                updateGrandTotal();
+
                 itemCount++;
             }
 

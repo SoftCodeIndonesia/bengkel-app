@@ -122,7 +122,7 @@ class MovementItemController extends Controller
     public function update_bulk(Request $request)
     {
 
-
+        // dd($request->all());
 
         try {
             DB::transaction(function () use ($request) {
@@ -133,7 +133,7 @@ class MovementItemController extends Controller
                 foreach ($ids as $key => $id) {
                     $movementItem = MovementItem::find($id);
 
-                    if ($movementItem->est_quantity == $est_quantity[$key]) {
+                    if ($movementItem->est_quantity == $quantities[$key]) {
                         $movementItem->status = 'done';
                     } else {
                         $movementItem->status = 'pending';

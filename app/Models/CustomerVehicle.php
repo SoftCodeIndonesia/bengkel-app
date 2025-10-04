@@ -8,8 +8,9 @@ use App\Models\JobOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CustomerVehicle extends Model
+class CustomerVehicle extends Pivot
 {
     use HasFactory, SoftDeletes;
 
@@ -32,9 +33,7 @@ class CustomerVehicle extends Model
             $q->whereBetween('service_at', [
                 now()->subMonths(6)->toDateTimeString(),
                 now()->subMonths(3)->toDateTimeString()
-            ])
-                ->orderBy('service_at', 'desc')
-                ->limit(1);
+            ])->orderBy('service_at', 'desc')->limit(1);
         });
     }
 

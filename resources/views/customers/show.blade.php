@@ -80,7 +80,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-gray-700 divide-y divide-gray-600">
-                                    @foreach ($customer->customerVehicles as $vehicle)
+                                    @foreach ($customer->vehicles as $vehicle)
                                         <tr>
                                             <td class="px-4 py-3 whitespace-nowrap text-sm text-white">
                                                 {{ $vehicle->merk }} {{ $vehicle->tipe }}
@@ -101,8 +101,7 @@
                                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                         </svg>
                                                     </a>
-                                                    <form
-                                                        action="{{ route('customer-vehicles.destroy', $customer->customerVehicles->find($vehicle->id)->id) }}"
+                                                    <form action="{{ route('vehicles.show', $vehicle->id) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')

@@ -92,6 +92,7 @@ class CustomerController extends Controller
 
         DB::transaction(function () use ($validated) {
             // Buat customer
+            $vehiclesToAttach = [];
             $customer = Customer::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -112,10 +113,13 @@ class CustomerController extends Controller
                         ]
                     );
 
+                    $vehiclesToAttach[] = $vehicle->id;
                     // Hubungkan dengan customer
-                    $customer->vehicles()->attach($vehicle->id);
+
                 }
             }
+
+            $customer->vehicles()->attach($vehiclesToAttach);
         });
 
         return redirect()->route('customers.index')
