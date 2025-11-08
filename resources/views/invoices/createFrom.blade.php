@@ -129,6 +129,12 @@
                                 </option>
                             </select>
                         </div>
+                        <div class="flex-1">
+                            <label class="block text-gray-300 mb-2">Tanggal Invoice</label>
+                            <input type="date" value="date('Y-d-')" name="date"
+                                class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+
+                        </div>
                     </div>
                 </div>
 
