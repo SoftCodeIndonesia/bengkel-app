@@ -99,6 +99,10 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        $followUpAfterVehicles = Invoice::with('reference')->where(['status' => 'paid', 'tipe' => 'services'])->get();
+
+        // $data['']
+        // dd($followUpAfterVehicles[0]->reference->customerVehicle);
         // dd($followUpVehicles[0]);
 
         // dd($followUpVehicles);
@@ -110,6 +114,7 @@ class DashboardController extends Controller
             'fastMovingProducts',
             'slowMovingProducts',
             'followUpVehicles',
+            'followUpAfterVehicles',
         ));
     }
 

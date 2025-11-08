@@ -88,28 +88,28 @@
                         <tbody>
                             <tr class="border-b border-gray-600">
                                 <td class="px-6 py-4">Job Order</td>
-                                <td class="px-6 py-4 text-right">Rp {{ number_format($jobOrderIncome, 2) }}</td>
+                                <td class="px-6 py-4 text-right">Rp {{ number_format($invoiceJoIncome, 2) }}</td>
                                 <td class="px-6 py-4">
                                     <div class="w-full bg-gray-600 rounded-full h-2.5">
                                         <div class="bg-blue-600 h-2.5 rounded-full"
-                                            style="width: {{ $totalIncome > 0 ? ($jobOrderIncome / $totalIncome) * 100 : 0 }}%">
+                                            style="width: {{ $totalIncome > 0 ? ($invoiceJoIncome / $totalIncome) * 100 : 0 }}%">
                                         </div>
                                     </div>
                                     <span
-                                        class="text-xs">{{ $totalIncome > 0 ? number_format(($jobOrderIncome / $totalIncome) * 100, 2) : 0 }}%</span>
+                                        class="text-xs">{{ $totalIncome > 0 ? number_format(($invoiceJoIncome / $totalIncome) * 100, 2) : 0 }}%</span>
                                 </td>
                             </tr>
                             <tr class="border-b border-gray-600">
                                 <td class="px-6 py-4">Penjualan</td>
-                                <td class="px-6 py-4 text-right">Rp {{ number_format($salesIncome, 2) }}</td>
+                                <td class="px-6 py-4 text-right">Rp {{ number_format($invoiceSoIncome, 2) }}</td>
                                 <td class="px-6 py-4">
                                     <div class="w-full bg-gray-600 rounded-full h-2.5">
                                         <div class="bg-green-600 h-2.5 rounded-full"
-                                            style="width: {{ $totalIncome > 0 ? ($salesIncome / $totalIncome) * 100 : 0 }}%">
+                                            style="width: {{ $totalIncome > 0 ? ($invoiceSoIncome / $totalIncome) * 100 : 0 }}%">
                                         </div>
                                     </div>
                                     <span
-                                        class="text-xs">{{ $totalIncome > 0 ? number_format(($salesIncome / $totalIncome) * 100, 2) : 0 }}%</span>
+                                        class="text-xs">{{ $totalIncome > 0 ? number_format(($invoiceSoIncome / $totalIncome) * 100, 2) : 0 }}%</span>
                                 </td>
                             </tr>
                         </tbody>

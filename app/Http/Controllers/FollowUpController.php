@@ -75,21 +75,43 @@ class FollowUpController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request->all());
+        // $customerVehicle = CustomerVehicle::find($request->customer_vehicle_id);
+        // // dd($customerVehicle->jobOrders()->where('job_orders.status', 'completed')
+        // //     ->latest('service_at')
+        // //     ->first());
+        // FollowUp::create([
+        //     'customer_vehicle_id' => $request->customer_vehicle_id,
+        //     'last_service_date' => CustomerVehicle::where('id', $request->customer_vehicle_id)
+        //         ->jobOrders()
+        //         ->where('job_orders.status', 'completed')
+        //         ->latest('service_at')
+        //         ->first()
+        //         ->service_at,
+        //     'contact_date' => $request->contact_date,
+        //     'contacted' => true,
+        //     'notes' => $request->notes,
+        //     'job_order_id' => $request->order_id,
+        // ]);
+
+        // die;
+        // return redirect()->back()->with('success', 'Follow up berhasil dicatat');
+
+
+        $request->validate([
+            'order_id' => 'required|exists:job_orders,id',
+            'customer_vehicle_id' => 'required|exists:customer_vehicle,id',
+            'contact_date' => 'required|date',
+            'notes' => 'nullable|string',
+        ]);
+
+
 
         try {
-            $request->validate([
-                'order_id' => 'required|exists:job_orders,id',
-                'customer_vehicle_id' => 'required|exists:customer_vehicle,id',
-                'contact_date' => 'required|date',
-                'notes' => 'nullable|string',
-            ]);
-
             FollowUp::create([
                 'customer_vehicle_id' => $request->customer_vehicle_id,
                 'last_service_date' => CustomerVehicle::find($request->customer_vehicle_id)
                     ->jobOrders()
-                    ->where('status', 'completed')
+                    ->where('job_orders.status', 'completed')
                     ->latest('service_at')
                     ->first()
                     ->service_at,

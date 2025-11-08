@@ -17,6 +17,13 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+
+            $columnOrder = [
+                '0' => 'created_at',
+                '2' => 'date',
+                '5' => 'total',
+            ];
+
             $invoices = Invoice::query()
                 ->with('customer')
                 ->select(['invoices.*']);
@@ -39,6 +46,14 @@ class InvoiceController extends Controller
             // Filter by status
             if ($request->has('status') && !empty($request->status)) {
                 $invoices->where('status', $request->status);
+            }
+
+            if ($request->has('order')) {
+                foreach ($request->order as $key => $order) {
+                    $invoices->orderBy($columnOrder[$order['column']], $order['dir']);
+                }
+            } else {
+                $invoices->orderBy('date', 'DESC');
             }
 
             return DataTables::of($invoices)
@@ -149,6 +164,7 @@ class InvoiceController extends Controller
         $type = $request->query('type');
         $referenceId = $request->query('reference_id');
 
+
         $reference = null;
         $customer = null;
 
@@ -248,9 +264,9 @@ class InvoiceController extends Controller
             'tipe' => 'required|in:sales,services',
             'reference_id' => 'required',
             'customer_id' => 'required|exists:customers,id',
-            'due_date' => 'nullable|date',
             'diskon_value' => 'nullable|numeric|min:0',
             'status' => 'required',
+            'date' => 'required',
         ]);
 
 
@@ -277,7 +293,7 @@ class InvoiceController extends Controller
             'diskon_unit' => 'nominal',
             'diskon_value' => $validated['diskon_value'] ?? 0,
             'total' => $validated['total'],
-            'date' => $validated['due_date'] ?? now()->addDays(7)
+            'date' => $validated['date'],
         ]);
 
         return redirect()->route('invoices.show', $invoice)

@@ -48,10 +48,6 @@
                             <span class="text-white ml-2">{{ $invoice->created_at->format('d M Y H:i') }}</span>
                         </div>
                         <div>
-                            <span class="text-gray-400">Jatuh Tempo:</span>
-                            <span class="text-white ml-2">{{ $invoice->due_date?->format('d M Y H:i') ?? '-' }}</span>
-                        </div>
-                        <div>
                             <span class="text-gray-400">Referensi:</span>
                             <span class="text-white ml-2">{{ $invoice->reference->unique_id ?? 'Tidak ada referensi' }}
                                 ({{ $invoice->tipe }})</span>

@@ -93,6 +93,56 @@
         <div class="p-4">
             <div class="bg-gray-700 rounded-lg shadow overflow-hidden">
                 <div class="p-4 border-b border-gray-600">
+                    <h3 class="text-lg font-semibold text-white">Follow Up After Service</h3>
+                    <p class="text-gray-400 text-sm">Kendaraan yang terakhir service lebih dari 3 bulan lalu</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-400">
+                        <thead class="text-xs text-gray-400 uppercase bg-gray-600">
+                            <tr>
+                                <th class="px-4 py-3">No</th>
+                                <th class="px-4 py-3">Pelanggan</th>
+                                <th class="px-4 py-3">Kendaraan</th>
+                                <th class="px-4 py-3">No. Polisi</th>
+                                <th class="px-4 py-3">Terakhir Service</th>
+                                <th class="px-4 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($followUpAfterVehicles as $index => $invoice)
+                                <tr class="border-b border-gray-600 hover:bg-gray-600">
+                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
+                                    <td class="px-4 py-3 font-medium text-white">
+                                        {{ $invoice->reference->customerVehicle->customer->name }}<br>
+                                        <span
+                                            class="text-xs text-gray-400">{{ $invoice->reference->customerVehicle->customer->phone }}</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {{ $invoice->reference->customerVehicle->vehicle->merk }}
+                                        {{ $invoice->reference->customerVehicle->vehicle->tipe }}
+                                    </td>
+                                    <td class="px-4 py-3">{{ $invoice->reference->customerVehicle->vehicle->no_pol }}</td>
+                                    <td class="px-4 py-3">
+                                        {{ $invoice->reference->service_at->format('d M Y') }}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <button
+                                            onclick="openFollowUpModal({{ $invoice->reference->customer_vehicle_id }}, {{ $invoice->reference->id }})"
+                                            data-jo="{{ $invoice->reference->id }}"
+                                            class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
+                                            Follow Up
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="p-4">
+            <div class="bg-gray-700 rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-600">
                     <h3 class="text-lg font-semibold text-white">Follow Up Kendaraan</h3>
                     <p class="text-gray-400 text-sm">Kendaraan yang terakhir service lebih dari 3 bulan lalu</p>
                 </div>

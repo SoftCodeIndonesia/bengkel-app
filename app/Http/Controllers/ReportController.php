@@ -10,12 +10,14 @@ use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
     public function profitLoss(Request $request)
     {
+
 
         if ($request->has('export')) {
             return $this->previewExportExcel($request);
@@ -25,18 +27,32 @@ class ReportController extends Controller
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
 
         // Hitung pendapatan
+        $invoiceIncome = Invoice::where('status', 'paid')
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->sum('total');
+
+        // Hitung pendapatan
         $jobOrderIncome = JobOrder::where('status', 'completed')
             ->whereDate('service_at', '>=', $startDate)
             ->whereDate('service_at', '<=', $endDate)
             ->sum('total');
 
+        $invoiceJoIncome = Invoice::where(['status' => 'paid', 'tipe' => 'services'])
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->sum('total');
+        $invoiceSoIncome = Invoice::where(['status' => 'paid', 'tipe' => 'sales'])
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->sum('total');
 
 
         $salesIncome = Sales::whereDate('sales_date', '>=', $startDate)
             ->whereDate('sales_date', '<=', $endDate)
             ->sum('total');
 
-        $totalIncome = $jobOrderIncome + $salesIncome;
+        $totalIncome = $invoiceIncome;
 
         // Hitung pengeluaran
         $purchaseExpenses = Purchase::where('status', 'paid')->whereBetween('purchase_date', [$startDate, $endDate])->whereNull('deleted_at')
@@ -92,6 +108,8 @@ class ReportController extends Controller
             'totalIncome',
             'purchaseExpenses',
             'operationalExpenses',
+            'invoiceJoIncome',
+            'invoiceSoIncome',
             'totalExpenses',
             'profitLoss',
             'chartLabels',

@@ -39,7 +39,7 @@ class CustomerVehicle extends Pivot
 
     public function jobOrders()
     {
-        return $this->hasMany(JobOrder::class);
+        return $this->hasMany(JobOrder::class, 'customer_vehicle_id');
     }
 
     public function latestJobOrder()

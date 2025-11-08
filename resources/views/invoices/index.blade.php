@@ -176,7 +176,8 @@
                         },
                         {
                             data: 'unique_id',
-                            name: 'unique_id'
+                            name: 'unique_id',
+                            orderable: false,
                         },
                         {
                             data: 'date',
@@ -184,11 +185,13 @@
                         },
                         {
                             data: 'tipe',
-                            name: 'tipe'
+                            name: 'tipe',
+                            orderable: false,
                         },
                         {
                             data: 'customer_name',
-                            name: 'customer_name'
+                            name: 'customer_name',
+                            orderable: false,
                         },
                         {
                             data: 'total',
@@ -203,13 +206,14 @@
                             render: function(data, type, row) {
                                 const color = data === 'paid' ? 'bg-green-500' : 'bg-yellow-500';
                                 return `<span class="px-2 py-1 rounded-full text-xs text-gray-800 ${color}">${data}</span>`;
-                            }
+                            },
+                            orderable: false,
                         },
                         {
                             data: 'action',
                             name: 'action',
                             orderable: false,
-                            searchable: false
+                            searchable: false,
                         },
                     ],
 
