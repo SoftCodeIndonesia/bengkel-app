@@ -53,6 +53,14 @@ class JobOrderController extends Controller
                 $data->where('status', '!=', 'estimation');
             }
 
+            foreach ($request->order as $key => $value) {
+                if ($value['column'] == 0 || $value['column'] == 4) {
+                    $data->orderBy('service_at', $value['dir']);
+                } else {
+                    $data->orderBy('total', $value['dir']);
+                }
+            }
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('customer_name', function ($row) {
@@ -156,6 +164,7 @@ class JobOrderController extends Controller
 
 
 
+
         DB::transaction(function () use ($request) {
 
             if ($request->customer_vehicle_id) {
@@ -171,7 +180,10 @@ class JobOrderController extends Controller
                 $vehicle = Vehicle::create($request->only(['merk', 'tipe', 'no_pol']));
 
                 $customerVehicle = CustomerVehicle::create(['customer_id' => $customer->id, 'vehicle_id' => $vehicle->id]);
+
+                $customerVehicle = CustomerVehicle::where(['customer_id' => $customer->id, 'vehicle_id' => $vehicle->id])->get()->first();
             }
+
 
             $subtotal = $request->subtotal;
             $total = $request->total;
