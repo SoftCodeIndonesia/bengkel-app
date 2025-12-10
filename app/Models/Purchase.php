@@ -22,6 +22,7 @@ class Purchase extends Model
         'status',
         'source_documents',
         'original_filename',
+        'payment_date',
     ];
 
     protected $statusColors = [

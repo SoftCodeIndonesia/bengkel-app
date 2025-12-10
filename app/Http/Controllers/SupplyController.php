@@ -273,7 +273,7 @@ class SupplyController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
+            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])->where('status', 'progress')
                 ->select('*');
 
 

@@ -37,6 +37,7 @@ class ProductController extends Controller
                     return '
                     <input type="checkbox" class="row-checkbox product-checkbox text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500" value="' . $row->id . '">
                     <input type="hidden" class="tipe" value="' . $row->tipe . '" />
+                    <input type="hidden" class="buying_price" value="' . $row->buying_price . '" />
                     ' . $html . '
                     ';
                 })

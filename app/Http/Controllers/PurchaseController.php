@@ -103,9 +103,19 @@ class PurchaseController extends Controller
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'supplier_name' => 'required',
+            'status' => 'required',
             'purchase_date' => 'required|date',
             'notes' => 'nullable|string',
             'invoice_number' => 'nullable|string',
+            'payment_date' => [
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->status == 'lunas' && empty($value)) {
+                        $fail('Payment date wajib diisi ketika status lunas.');
+                    }
+                },
+            ],
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required',
             'items.*.quantity' => 'required|integer|min:1',

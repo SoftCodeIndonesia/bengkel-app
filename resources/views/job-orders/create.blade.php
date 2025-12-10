@@ -658,7 +658,7 @@
             });
 
             // Function to add item row
-            function addItemRow(kategori, productName, grade, productId, unit_price, quantity) {
+            function addItemRow(kategori, productName, grade, productId, unit_price, quantity, buying_price) {
 
                 let containerStr = '';
                 if (tipe == 'jasa') {
@@ -689,7 +689,9 @@
                         </td>
                         <td class="p-2" width="100px">
                             <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                                class="buying_price bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                            <input type="number" name="items[${itemCounter}][buying_price]" min="1" value="${buying_price}"
+                                class="buying_price bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">
                             <span class="unit-price text-gray-300">Rp ${formatRupiah(unit_price)}</span>
@@ -1379,11 +1381,16 @@
                     const productName = productRow.querySelector('td:nth-child(2)').textContent;
                     const grade = productRow.querySelector('td:nth-child(3)').textContent;
                     const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
+
+                    const buying_price = productRow.querySelector('.buying_price').value;
+                    console.log('harga belii', buying_price);
+
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
                         selectedProducts.push(productId);
                         addItemRow(kategori, productName, grade, productId, originalNumber(
-                            productPrice), quantity);
+                            productPrice), quantity, originalNumber(
+                            buying_price));
                     }
                 });
 

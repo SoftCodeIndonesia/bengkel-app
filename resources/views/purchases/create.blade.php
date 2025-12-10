@@ -188,6 +188,13 @@
                         <option value="paid">Lunas</option>
                     </select>
                 </div>
+
+                <div>
+                    <label for="payment_date" class="block mb-2 text-sm font-medium text-gray-300">Tanggal
+                        Pembayaran</label>
+                    <input type="date" id="payment_date" value="{{ old('payment_date') }}" name="payment_date" required
+                        class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                </div>
             </div>
 
             <div class="mb-6">
