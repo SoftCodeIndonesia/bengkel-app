@@ -110,11 +110,11 @@ class SalesController extends Controller
                     'price_after_discount' => $total * (1 - ($item['dicount_percentage'] / 100)),
                 ]);
 
-                // Update stok jika produk adalah barang
-                if ($product->tipe === 'barang') {
-                    $product->stok -= $item['quantity'];
-                    $product->save();
-                }
+                // // Update stok jika produk adalah barang
+                // if ($product->tipe === 'barang') {
+                //     $product->stok -= $item['quantity'];
+                //     $product->save();
+                // }
             }
 
             DB::commit();

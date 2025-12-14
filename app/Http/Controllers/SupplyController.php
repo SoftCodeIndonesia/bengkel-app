@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sales;
 use App\Models\Supply;
 use App\Models\Product;
 use App\Models\JobOrder;
@@ -20,14 +21,19 @@ class SupplyController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $supplies = Supply::with(['jobOrder.customerVehicle.customer', 'jobOrder.customerVehicle.vehicle', 'creator'])
+            $supplies = Supply::with(['salesOrder', 'salesOrder.items', 'jobOrder.customerVehicle.customer', 'jobOrder.customerVehicle.vehicle', 'creator'])
                 ->select('supplies.*');
 
             return DataTables::of($supplies)
                 ->addIndexColumn()
                 ->addColumn('job_order', function ($supply) {
-                    return '#' . $supply->jobOrder->unique_id . '<br>' .
-                        '<span class="text-gray-400">' . $supply->jobOrder->customerVehicle->vehicle->merk . ' ' . $supply->jobOrder->customerVehicle->vehicle->tipe . '</span>';
+                    // echo json_encode($supply->jobOrder);
+                    if ($supply->jobOrder != null) {
+                        return '#' . $supply->jobOrder->unique_id ?? '-' . '<br>' .
+                            '<span class="text-gray-400">' . $supply->jobOrder->customerVehicle->vehicle->merk . ' ' . $supply->jobOrder->customerVehicle->vehicle->tipe . '</span>';
+                    } else {
+                        return '#' . $supply->salesOrder->unique_id ?? '-';
+                    }
                 })
                 ->addColumn('count_part', function ($supply) {
                     return '<span class="text-gray-400">' . $supply->items()->count() . '</span>';
@@ -87,7 +93,12 @@ class SupplyController extends Controller
         return DataTables::of($supplies)
             ->addIndexColumn()
             ->addColumn('job_order_unique', function ($supply) {
-                return '#' . $supply->jobOrder->unique_id . '<br>';
+                if ($supply->jobOrder != null) {
+                    return '#' . $supply->jobOrder->unique_id ?? '-' . '<br>' .
+                        '<span class="text-gray-400">' . $supply->jobOrder->customerVehicle->vehicle->merk . ' ' . $supply->jobOrder->customerVehicle->vehicle->tipe . '</span>';
+                } else {
+                    return '#' . $supply->salesOrder->unique_id;
+                }
             })
             ->addColumn('count_part', function ($supply) {
                 return '<span class="text-gray-400">' . $supply->items()->count() . '</span>';
@@ -128,19 +139,86 @@ class SupplyController extends Controller
         $jobOrder = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle', 'sparepart', 'sparepart.supplyItem', 'sparepart.product'])
             ->findOrFail($jobOrderId);
 
-        // dd($jobOrder->sparepart);
+
+
+        $type = 'wo';
 
         $suppliers = Supplier::all();
 
-        return view('supplies.create', compact('jobOrder', 'suppliers'));
+        return view('supplies.create', compact('jobOrder', 'suppliers', 'type'));
+    }
+    public function createFromSales($salesId)
+    {
+
+
+        $supplies = Supply::where('sales_id', $salesId)->get()->first();
+        if ($supplies) {
+            return redirect()->route('supplies.fulfill', $supplies->id);
+        }
+
+        $salesOrder = Sales::with('customer')->find($salesId);
+
+        // dd($jobOrder->sparepart);
+        $type = 'sales';
+
+        $suppliers = Supplier::all();
+
+        return view('supplies.create', compact('salesOrder', 'suppliers', 'type'));
     }
 
     public function store(Request $request)
+    {
+
+        if ($request->has('sales_id')) {
+            return $this->storeSO($request);
+        } else {
+            return $this->storeWO($request);
+        }
+    }
+
+    private function storeSO(Request $request)
+    {
+
+        $validated = $request->validate([
+            'sales_id' => 'required|exists:sales,id',
+            'items' => 'required|array',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.sales_item_id' => 'required|exists:sales_items,id',
+            'items.*.quantity_requested' => 'required|integer|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
+        ]);
+
+
+        $supply = Supply::create([
+            'sales_id' => $validated['sales_id'],
+            'notes' => $validated['notes'],
+            'created_by' => auth()->id(),
+            'status' => 'pending',
+        ]);
+
+        foreach ($validated['items'] as $item) {
+            SupplyItem::create([
+                'supply_id' => $supply->id,
+                'product_id' => $item['product_id'],
+                'sales_item_id' => $item['sales_item_id'],
+                'quantity_requested' => $item['quantity_requested'],
+                'unit_price' => $item['unit_price'],
+                'total_price' => $item['quantity_requested'] * $item['unit_price'],
+                'status' => 'pending',
+            ]);
+        }
+
+        return redirect()->route('supplies.show', $supply->id)
+            ->with('success', 'Permintaan supply berhasil dibuat');
+    }
+    private function storeWO(Request $request)
     {
         // dd($request->all());
         $validated = $request->validate([
             'job_order_id' => 'required|exists:job_orders,id',
             'items' => 'required|array',
+            'items.*.product_id' => 'required|exists:products,id',
             'items.*.item_id' => 'required|exists:order_items,id',
             'items.*.quantity_requested' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
@@ -157,7 +235,7 @@ class SupplyController extends Controller
         foreach ($validated['items'] as $item) {
             SupplyItem::create([
                 'supply_id' => $supply->id,
-                'product_id' => OrderItem::find($item['item_id'])->product_id,
+                'product_id' => $item['product_id'],
                 'item_id' => $item['item_id'],
                 'quantity_requested' => $item['quantity_requested'],
                 'unit_price' => $item['unit_price'],
@@ -173,6 +251,8 @@ class SupplyController extends Controller
     public function show(Supply $supply)
     {
         $supply->load([
+            'salesOrder',
+            'salesOrder.customer',
             'jobOrder.customerVehicle.customer',
             'jobOrder.customerVehicle.vehicle',
             'items.product',
@@ -188,7 +268,15 @@ class SupplyController extends Controller
         $supply->load(['items.product']);
         $products = Product::whereIn('id', $supply->items->pluck('product_id'))->get();
 
-        return view('supplies.fulfill', compact('supply', 'products'));
+        if ($supply->job_order_id) {
+            $type = 'wo';
+        } else if ($supply->sales_id) {
+            $type = 'sales';
+        }
+
+        // dd($supply);
+
+        return view('supplies.fulfill', compact('supply', 'products', 'type'));
     }
 
     public function fulfill(Request $request, Supply $supply)
@@ -273,7 +361,7 @@ class SupplyController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])->where('status', 'progress')
+            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])->whereHas('sparepart')->where('status', '!=', 'estimation')->doesntHave('supply')
                 ->select('*');
 
 
@@ -307,6 +395,26 @@ class SupplyController extends Controller
                 ->orderColumn('service_at', 'service_at $1')
                 ->orderColumn('formatted_total', 'total $1')
                 ->rawColumns(['status_badge', 'action'])
+                ->make(true);
+        }
+
+        return view('supplies.select-job-order');
+    }
+    public function salectSalesOrder(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $sales = Sales::with('customer')->whereHas('items')->doesntHave('supply');
+
+            return DataTables::of($sales)
+                ->addIndexColumn()
+                ->addColumn('action', function ($sales) {
+                    return '<a href="' . route('supplies.create-sales-order', $sales->id) . '" class="text-blue-500 hover:text-blue-400">Pilih</a>';
+                })
+                ->editColumn('sales_date', function ($sale) {
+                    return $sale->sales_date->format('d M Y H:i');
+                })
+                ->rawColumns(['action'])
                 ->make(true);
         }
 

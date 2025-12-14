@@ -215,7 +215,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('supplies', SupplyController::class)->except(['edit', 'update', 'destroy']);
     Route::get('supplies/create-from-job/{jobOrder}', [SupplyController::class, 'createFromJobOrder'])->name('supplies.create-from-job');
+    Route::get('supplies/create-sales-order/{salesId}', [SupplyController::class, 'createFromSales'])->name('supplies.create-sales-order');
     Route::get('supplies/select/joborder', [SupplyController::class, 'selectJobOrder'])->name('supplies.select-job-order');
+    Route::get('supplies/select/sales', [SupplyController::class, 'salectSalesOrder'])->name('supplies.select-sales-order');
     Route::post('supplies/create-from-selected', [SupplyController::class, 'createFromSelected'])->name('supplies.create-from-selected');
     Route::get('supplies/{supply}/fulfill', [SupplyController::class, 'fulfillForm'])->name('supplies.fulfill');
     Route::put('supplies/{supply}/fulfill', [SupplyController::class, 'fulfill'])->name('supplies.fulfill.store');
@@ -242,7 +244,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('sales', \App\Http\Controllers\SalesController::class);
     Route::get('sales/delete_item/{id}/{sale_id}', [\App\Http\Controllers\SalesController::class, 'delete_item'])->name('delete_item_sales');
     Route::get('sales/{id}/print', [\App\Http\Controllers\SalesController::class, 'print'])->name('print_so');
-    Route::delete('/sales-items/{id}', [SaleController::class, 'destroyItem'])->name('sales-items.destroy');
+    Route::delete('/sales-items/{id}', [SalesController::class, 'destroyItem'])->name('sales-items.destroy');
 
     Route::resource('returns', \App\Http\Controllers\ReturnController::class);
     Route::post('returns/{returnItem}/status', [\App\Http\Controllers\ReturnController::class, 'updateStatus'])->name('returns.update-status');

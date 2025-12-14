@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Supply;
 use App\Models\Invoice;
 use App\Models\Breakdown;
 use App\Models\OrderItem;
@@ -52,6 +53,11 @@ class JobOrder extends Model
     public function breakdowns()
     {
         return $this->hasMany(Breakdown::class, 'order_id');
+    }
+
+    public function supply()
+    {
+        return $this->hasOne(Supply::class, 'job_order_id');
     }
 
     public function orderItems()

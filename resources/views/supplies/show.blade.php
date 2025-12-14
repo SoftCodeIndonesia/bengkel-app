@@ -6,7 +6,9 @@
         <div class="p-4 border-b border-gray-600 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-semibold text-white">Detail Permintaan Supply</h2>
-                <p class="text-gray-400 text-sm">Job Order: #{{ $supply->jobOrder->unique_id }}</p>
+
+                <p class="text-gray-400 text-sm">Work/Sales Order:
+                    #{{ $supply->job_order_id ? $supply->jobOrder->unique_id : $supply->salesOrder->unique_id }}</p>
             </div>
             <div class="flex space-x-2">
                 @php
@@ -37,46 +39,96 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-700 p-4 rounded-lg">
                     <h3 class="text-lg font-medium text-white mb-4">Informasi Pelanggan</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Nama</label>
-                            <div class="bg-gray-600 text-white p-2 rounded">
-                                {{ $supply->jobOrder->customerVehicle->customer->name }}</div>
+                    @if ($supply->job_order_id)
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Nama</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->jobOrder->customerVehicle->customer->name }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Telepon</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->jobOrder->customerVehicle->customer->phone }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Kendaraan</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->jobOrder->customerVehicle->vehicle->merk }}
+                                    {{ $supply->jobOrder->customerVehicle->vehicle->tipe }}
+                                    ({{ $supply->jobOrder->customerVehicle->vehicle->no_pol }})
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Telepon</label>
-                            <div class="bg-gray-600 text-white p-2 rounded">
-                                {{ $supply->jobOrder->customerVehicle->customer->phone }}</div>
+                    @elseif($supply->sales_id)
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Nama</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->salesOrder->customer->name }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Telepon</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->salesOrder->customer->phone }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Email</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->salesOrder->customer->email ?? '-' }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Alamat</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->salesOrder->customer->address }}
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Kendaraan</label>
-                            <div class="bg-gray-600 text-white p-2 rounded">
-                                {{ $supply->jobOrder->customerVehicle->vehicle->merk }}
-                                {{ $supply->jobOrder->customerVehicle->vehicle->tipe }}
-                                ({{ $supply->jobOrder->customerVehicle->vehicle->no_pol }})
+                    @endif;
+                </div>
+
+                @if ($supply->job_order_id)
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium text-white mb-4">Informasi Work Order</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Nomor Work Order</label>
+                                <div class="bg-gray-600 text-gray-300 p-2 rounded">{{ $supply->jobOrder->unique_id }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Tanggal</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->jobOrder->service_at->format('d-m-Y H:i') }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Catatan</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">{{ $supply->jobOrder->notes ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="bg-gray-700 p-4 rounded-lg">
-                    <h3 class="text-lg font-medium text-white mb-4">Informasi Work Order</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Nomor Work Order</label>
-                            <div class="bg-gray-600 text-gray-300 p-2 rounded">{{ $supply->jobOrder->unique_id }}</div>
-                        </div>
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Tanggal</label>
-                            <div class="bg-gray-600 text-white p-2 rounded">
-                                {{ $supply->jobOrder->service_at->format('d-m-Y H:i') }}</div>
-                        </div>
-                        <div>
-                            <label class="block text-gray-300 text-sm mb-1">Catatan</label>
-                            <div class="bg-gray-600 text-white p-2 rounded">{{ $supply->jobOrder->notes ?? '-' }}</div>
+                @elseif($supply->sales_id)
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-lg font-medium text-white mb-4">Informasi Sales Order</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Nomor Sales Order</label>
+                                <div class="bg-gray-600 text-gray-300 p-2 rounded">{{ $supply->salesOrder->unique_id }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Tanggal</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">
+                                    {{ $supply->salesOrder->sales_date->format('d-m-Y H:i') }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-1">Catatan</label>
+                                <div class="bg-gray-600 text-white p-2 rounded">{{ $supply->salesOrder->notes ?? '-' }}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <div class="bg-gray-700 p-4 rounded-lg">

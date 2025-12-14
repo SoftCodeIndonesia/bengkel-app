@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Supply;
 use App\Models\Customer;
 use App\Models\SalesItem;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,11 @@ class Sales extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function supply()
+    {
+        return $this->hasOne(Supply::class, 'sales_id');
     }
 
     public function items(): HasMany

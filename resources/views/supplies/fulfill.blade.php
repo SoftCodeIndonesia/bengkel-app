@@ -5,7 +5,11 @@
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Penuhi Permintaan Supply</h2>
-            <p class="text-gray-400 text-sm">Job Order: #{{ $supply->jobOrder->unique_id }}</p>
+            @if ($type == 'wo')
+                <p class="text-gray-400 text-sm">Work Order: #{{ $supply->jobOrder->unique_id }}</p>
+            @elseif($type == 'sales')
+                <p class="text-gray-400 text-sm">Sales Order: #{{ $supply->salesOrder->unique_id }}</p>
+            @endif
         </div>
 
         @if ($errors->any())

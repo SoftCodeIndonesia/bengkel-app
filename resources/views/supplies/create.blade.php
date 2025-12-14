@@ -5,7 +5,11 @@
     <div class="bg-gray-800 shadow overflow-hidden">
         <div class="p-4 border-b border-gray-600">
             <h2 class="text-xl font-semibold text-white">Buat Permintaan Supply</h2>
-            <p class="text-gray-400 text-sm">Work Order: #{{ $jobOrder->unique_id }}</p>
+            @if ($type == 'wo')
+                <p class="text-gray-400 text-sm">Work Order: #{{ $jobOrder->unique_id }}</p>
+            @elseif($type == 'sales')
+                <p class="text-gray-400 text-sm">Sales Order: #{{ $salesOrder->unique_id }}</p>
+            @endif
         </div>
 
         @if ($errors->any())
@@ -18,47 +22,84 @@
 
         <form action="{{ route('supplies.store') }}" method="POST" id="form-supply">
             @csrf
-            <input type="hidden" name="job_order_id" value="{{ $jobOrder->id }}">
 
+            @if ($type == 'wo')
+                <input type="hidden" name="job_order_id" value="{{ $jobOrder->id }}">
+            @elseif($type == 'sales')
+                <input type="hidden" name="sales_id" value="{{ $salesOrder->id }}">
+            @endif;
             <div class="p-4 space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="text-lg font-medium text-white mb-4">Informasi Work Order</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-gray-300 text-sm mb-1">Nomor Order</label>
-                                <div class="bg-gray-600 text-white p-2 rounded">
-                                    {{ $jobOrder->unique_id }}</div>
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm mb-1">Tanggal</label>
-                                <div class="bg-gray-600 text-white p-2 rounded">
-                                    {{ $jobOrder->service_at->format('d-m-Y H:i') }}
+                @if ($type == 'wo')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-white mb-4">Informasi Work Order</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Nomor Order</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $jobOrder->unique_id }}</div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Tanggal</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $jobOrder->service_at->format('d-m-Y H:i') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg">
-                        <h3 class="text-lg font-medium text-white mb-4">Informasi Pelanggan</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-gray-300 text-sm mb-1">Nama</label>
-                                <div class="bg-gray-600 text-white p-2 rounded">
-                                    {{ $jobOrder->customerVehicle->customer->name }}</div>
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm mb-1">Kendaraan</label>
-                                <div class="bg-gray-600 text-white p-2 rounded">
-                                    {{ $jobOrder->customerVehicle->vehicle->merk }}
-                                    {{ $jobOrder->customerVehicle->vehicle->tipe }}
-                                    ({{ $jobOrder->customerVehicle->vehicle->no_pol }})
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-white mb-4">Informasi Pelanggan</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Nama</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $jobOrder->customerVehicle->customer->name }}</div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Kendaraan</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $jobOrder->customerVehicle->vehicle->merk }}
+                                        {{ $jobOrder->customerVehicle->vehicle->tipe }}
+                                        ({{ $jobOrder->customerVehicle->vehicle->no_pol }})
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
+                @elseif($type == 'sales')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-white mb-4">Informasi Pelanggan</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Nama</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $salesOrder->customer->name }}</div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Email</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $salesOrder->customer->email ?? '-' }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Telepon</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $salesOrder->customer->phone }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-1">Alamat</label>
+                                    <div class="bg-gray-600 text-white p-2 rounded">
+                                        {{ $salesOrder->customer->address }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                </div>
-
+                    </div>
+                @endif
                 <div class="bg-gray-700 p-4 rounded-lg">
                     <h3 class="text-lg font-medium text-white mb-4">Item yang Dibutuhkan</h3>
 
@@ -84,11 +125,77 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-600">
-                                @foreach ($jobOrder->sparepart as $item)
-                                    @if ($item->supplyItem && $item->supplyItem->status != 'fulfilled')
+                                @if ($type == 'wo')
+                                    @foreach ($jobOrder->sparepart as $item)
+                                        @if ($item->supplyItem && $item->supplyItem->status != 'fulfilled')
+                                            <tr>
+                                                <td class="px-3 py-4">
+                                                    <input type="hidden" name="items[{{ $loop->index }}][product_id]"
+                                                        value="{{ $item->product_id }}">
+                                                    <input type="hidden" name="items[{{ $loop->index }}][item_id]"
+                                                        value="{{ $item->id }}">
+                                                    <div class="text-white">{{ $item->product->name }}</div>
+                                                    <div class="text-gray-400 text-sm">{{ $item->product->barcode }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-3 py-4 text-white">
+                                                    {{ $item->product->stok }}
+                                                </td>
+                                                <td class="px-3 py-4">
+                                                    <input type="text"
+                                                        name="items[{{ $loop->index }}][quantity_requested]"
+                                                        value="{{ $item->quantity }}" min="1" readonly
+                                                        class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
+                                                </td>
+                                                <td class="px-3 py-4">
+                                                    <input type="text" name="items[{{ $loop->index }}][unit_price]"
+                                                        value="{{ number_format($item->unit_price, 0, ',', '.') }}"
+                                                        class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
+                                                </td>
+                                                <td class="px-3 py-4 text-white">
+                                                    <span
+                                                        class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td class="px-3 py-4">
+                                                    <input type="hidden" name="items[{{ $loop->index }}][product_id]"
+                                                        value="{{ $item->product_id }}">
+                                                    <input type="hidden" name="items[{{ $loop->index }}][item_id]"
+                                                        value="{{ $item->id }}">
+                                                    <div class="text-white">{{ $item->product->name }}</div>
+                                                    <div class="text-gray-400 text-sm">{{ $item->product->barcode }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-3 py-4 text-white">
+                                                    {{ $item->product->stok }}
+                                                </td>
+                                                <td class="px-3 py-4">
+                                                    <input type="text"
+                                                        name="items[{{ $loop->index }}][quantity_requested]"
+                                                        value="{{ $item->quantity }}" min="1" readonly
+                                                        class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
+                                                </td>
+                                                <td class="px-3 py-4">
+                                                    <input type="text" name="items[{{ $loop->index }}][unit_price]"
+                                                        value="{{ number_format($item->unit_price, 0, ',', '.') }}"
+                                                        class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
+                                                </td>
+                                                <td class="px-3 py-4 text-white">
+                                                    <span
+                                                        class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @elseif($type == 'sales')
+                                    @foreach ($salesOrder->items as $item)
                                         <tr>
                                             <td class="px-3 py-4">
-                                                <input type="hidden" name="items[{{ $loop->index }}][item_id]"
+                                                <input type="hidden" name="items[{{ $loop->index }}][product_id]"
+                                                    value="{{ $item->product_id }}">
+                                                <input type="hidden" name="items[{{ $loop->index }}][sales_item_id]"
                                                     value="{{ $item->id }}">
                                                 <div class="text-white">{{ $item->product->name }}</div>
                                                 <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
@@ -97,7 +204,8 @@
                                                 {{ $item->product->stok }}
                                             </td>
                                             <td class="px-3 py-4">
-                                                <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
+                                                <input type="text"
+                                                    name="items[{{ $loop->index }}][quantity_requested]"
                                                     value="{{ $item->quantity }}" min="1" readonly
                                                     class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
                                             </td>
@@ -111,34 +219,8 @@
                                                     class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
                                             </td>
                                         </tr>
-                                    @else
-                                        <tr>
-                                            <td class="px-3 py-4">
-                                                <input type="hidden" name="items[{{ $loop->index }}][item_id]"
-                                                    value="{{ $item->id }}">
-                                                <div class="text-white">{{ $item->product->name }}</div>
-                                                <div class="text-gray-400 text-sm">{{ $item->product->barcode }}</div>
-                                            </td>
-                                            <td class="px-3 py-4 text-white">
-                                                {{ $item->product->stok }}
-                                            </td>
-                                            <td class="px-3 py-4">
-                                                <input type="text" name="items[{{ $loop->index }}][quantity_requested]"
-                                                    value="{{ $item->quantity }}" min="1" readonly
-                                                    class="bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-20">
-                                            </td>
-                                            <td class="px-3 py-4">
-                                                <input type="text" name="items[{{ $loop->index }}][unit_price]"
-                                                    value="{{ number_format($item->unit_price, 0, ',', '.') }}"
-                                                    class="unit_price bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-24">
-                                            </td>
-                                            <td class="px-3 py-4 text-white">
-                                                <span
-                                                    class="item-total">{{ number_format($item->total_price, 0, ',', '.') }}</span>
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>

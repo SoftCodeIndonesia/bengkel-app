@@ -28,8 +28,18 @@
             border-bottom: 1px solid #4b5563 !important;
         }
 
+        #sales-order-table {
+            border-bottom: 1px solid #4b5563 !important;
+        }
+
         /* Tambahan styling untuk dark mode */
         #job-orders-table tbody tr {
+            background-color: transparent !important;
+            /* Background dark dan border */
+        }
+
+        /* Tambahan styling untuk dark mode */
+        #sales-order-table tbody tr {
             background-color: transparent !important;
             /* Background dark dan border */
         }
@@ -61,7 +71,7 @@
                     <thead class="uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th class="p-3 text-sm font-semibold">No</th>
-                            <th class="p-3 text-sm font-semibold">Job Order</th>
+                            <th class="p-3 text-sm font-semibold">Work/Sales Order</th>
                             <th class="p-3 text-sm font-semibold">Jumlah Part</th>
                             <th class="p-3 text-sm font-semibold">Tanggal</th>
                             <th class="p-3 text-sm font-semibold">Status</th>
@@ -101,23 +111,69 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-4">
-                    <div class="relative overflow-x-auto">
-                        <table id="job-orders-table" style="width: 100% !important"
-                            class="w-full text-sm text-left text-gray-400">
-                            <thead class="text-xs uppercase bg-gray-700 text-gray-300">
-                                <tr>
-                                    <th class="p-3">No</th>
-                                    <th class="p-3">Nomor JO</th>
-                                    <th class="p-3">Pelanggan</th>
-                                    <th class="p-3">Kendaraan</th>
-                                    <th class="p-3">Tanggal</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Total</th>
-                                    <th class="p-3 text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
+
+
+                    <div class="mb-4 border-b border-default">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
+                            data-tabs-toggle="#default-tab-content" role="tablist">
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 rounded-t-base" id="profile-tab"
+                                    data-tabs-target="#profile" type="button" role="tab" aria-controls="profile"
+                                    aria-selected="false">Work Order</button>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-2 rounded-t-base hover:text-fg-brand hover:border-brand"
+                                    id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab"
+                                    aria-controls="dashboard" aria-selected="false">Penjualan</button>
+                            </li>
+                        </ul>
                     </div>
+                    <div id="default-tab-content">
+                        <div class="hidden p-4 rounded-base bg-neutral-secondary-soft" id="profile" role="tabpanel"
+                            aria-labelledby="profile-tab">
+                            <div class="relative overflow-x-auto">
+                                <table id="job-orders-table" style="width: 100% !important"
+                                    class="w-full text-sm text-left text-gray-400">
+                                    <thead class="text-xs uppercase bg-gray-700 text-gray-300">
+                                        <tr>
+                                            <th class="p-3">No</th>
+                                            <th class="p-3">Nomor JO</th>
+                                            <th class="p-3">Pelanggan</th>
+                                            <th class="p-3">Kendaraan</th>
+                                            <th class="p-3">Tanggal</th>
+                                            <th class="p-3">Status</th>
+                                            <th class="p-3">Total</th>
+                                            <th class="p-3 text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="hidden p-4 rounded-base bg-neutral-secondary-soft" id="dashboard" role="tabpanel"
+                            aria-labelledby="dashboard-tab">
+                            <div class="relative overflow-x-auto">
+                                <table id="sales-order-table" style="width: 100% !important"
+                                    class="w-full text-sm text-left text-gray-400">
+                                    <thead class="text-xs uppercase bg-gray-700 text-gray-300">
+                                        <tr>
+                                            <th class="p-3">No</th>
+                                            <th class="p-3">Nomor JO</th>
+                                            <th class="p-3">Pelanggan</th>
+                                            <th class="p-3">Kendaraan</th>
+                                            <th class="p-3">Tanggal</th>
+                                            <th class="p-3">Status</th>
+                                            <th class="p-3">Total</th>
+                                            <th class="p-3 text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -245,6 +301,90 @@
                         data: 'formatted_total',
                         name: 'total',
                         orderable: true,
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                dom: '<"flex flex-col md:flex-row justify-between items-center mb-4"<"mb-2 md:mb-0"l><"flex items-center"f>>rt<"flex flex-col md:flex-row justify-between items-center mt-4"<"mb-2 md:mb-0"i><"pagination-container"p>>',
+                initComplete: function() {
+                    $('.dataTables_length label').addClass('text-gray-400');
+                    $('.dataTables_filter label').addClass('text-gray-400');
+                    $('.dataTables_info').addClass('text-gray-400');
+                    $('.dataTables_filter input').addClass(
+                        'bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_length select').addClass(
+                        'bg-gray-700 border border-gray-600 text-green-600 rounded-md shadow-sm py-1 px-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+                    );
+                    $('.dataTables_processing').css({
+                        'background': 'transparent',
+                        'color': 'white'
+                    });
+                },
+                drawCallback: function() {
+                    $('.dataTables_info').addClass('text-gray-400');
+                    $('.pagination-container .paginate_button').addClass(
+                        'px-3 py-1 mx-1 text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition duration-150'
+                    );
+                    $('.pagination-container .paginate_button.current').addClass(
+                        'bg-blue-600 text-white border-blue-600');
+                    $('.dataTables_paginate').addClass('flowbite-pagination');
+                    $('.paginate_button').each(function() {
+                        $(this).removeClass('paginate_button previous next first last');
+                        if ($(this).hasClass('current')) {
+                            $(this).addClass('active bg-blue-600 text-white');
+                        } else if ($(this).hasClass('disabled')) {
+                            $(this).addClass('opacity-50 cursor-not-allowed');
+                        }
+                    });
+                }
+            });
+            const soTable = $('#sales-order-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('supplies.select-sales-order') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'unique_id',
+                        name: 'unique_id'
+                    },
+                    {
+                        data: 'sales_date',
+                        name: 'sales_date'
+                    },
+                    {
+                        data: 'customer_name',
+                        name: 'customer_name'
+                    },
+                    {
+                        data: 'subtotal',
+                        name: 'subtotal',
+                        render: function(data, type, row) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
+                        }
+                    },
+                    {
+                        data: 'diskon_value',
+                        name: 'diskon_value',
+                        render: function(data, type, row) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
+                        }
+                    },
+                    {
+                        data: 'total',
+                        name: 'total',
+                        render: function(data, type, row) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
+                        }
                     },
                     {
                         data: 'action',

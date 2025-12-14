@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Sales;
 use App\Models\JobOrder;
 use App\Models\SupplyItem;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ class Supply extends Model
 
     protected $fillable = [
         'job_order_id',
+        'sales_id',
         'status',
         'notes',
         'created_by'
@@ -28,6 +30,10 @@ class Supply extends Model
     public function jobOrder()
     {
         return $this->belongsTo(JobOrder::class);
+    }
+    public function salesOrder()
+    {
+        return $this->belongsTo(Sales::class, 'sales_id');
     }
 
 
