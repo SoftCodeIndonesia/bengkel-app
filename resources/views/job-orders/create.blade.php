@@ -689,8 +689,8 @@
                         </td>
                         <td class="p-2" width="100px">
                             <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
-                                class="buying_price bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                            <input type="number" name="items[${itemCounter}][buying_price]" min="1" value="${buying_price}"
+                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                            <input type="hidden" name="items[${itemCounter}][buying_price]" min="1" value="${buying_price}"
                                 class="buying_price bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
                         </td>
                         <td class="p-2 text-right">

@@ -696,6 +696,26 @@
 
             calculateTotal();
 
+            const container = document.getElementById('breakdowns-container');
+
+            container.addEventListener('click', function(e) {
+                const btn = e.target.closest('.remove-breakdown');
+                if (!btn) return;
+
+                const row = btn.closest('.breakdown-row');
+                if (!row) return;
+
+                const idInput = row.querySelector('input[type="hidden"][name*="[id]"]');
+
+                // Kalau data lama (punya ID)
+                if (idInput && idInput.value) {
+                    idInput.value = 'delete_' + idInput.value;
+                    row.style.display = 'none'; // sembunyikan, JANGAN dihapus
+                } else {
+                    // Kalau data baru (belum tersimpan)
+                    row.remove();
+                }
+            });
 
 
 
@@ -711,6 +731,8 @@
                 table.draw();
                 modalSelectProduct.classList.remove('hidden');
             });
+
+
 
             // Add service row
             document.getElementById('add-service').addEventListener('click', function() {
