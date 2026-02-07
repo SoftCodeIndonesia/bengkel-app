@@ -36,7 +36,7 @@ class EstimationController extends Controller
                     return $row->customerVehicle->customer->name;
                 })
                 ->addColumn('vehicle', function ($row) {
-                    return $row->customerVehicle->vehicle->merk . ' - ' . $row->customerVehicle->vehicle->no_pol;
+                    return ($row->customerVehicle->vehicle?->merk ?? 'N/A') . ' - ' . ($row->customerVehicle->vehicle?->no_pol ?? 'N/A');
                 })
                 ->addColumn('formatted_total', function ($row) {
                     return 'Rp ' . number_format($row->total, 0, ',', '.');
