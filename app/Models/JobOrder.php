@@ -108,6 +108,7 @@ class JobOrder extends Model
                 ->where('status', '!=', "estimation")
                 ->where('unique_id', 'like', "{$prefix}/%/%/{$tahun}/%")
                 ->orderByDesc('created_at')
+                ->withTrashed()
                 ->first();
 
 
@@ -127,7 +128,9 @@ class JobOrder extends Model
             // Format dengan padding 4 digit
             $nomorUrut = str_pad($nextUrut, 4, '0', STR_PAD_LEFT);
 
-            $jobOrder->unique_id = "{$prefix}/{$tanggal}/{$bulan}/{$tahun}/{$nomorUrut}";
+            $generated = "{$prefix}/{$tanggal}/{$bulan}/{$tahun}/{$nomorUrut}";
+
+            $jobOrder->unique_id = $generated;
         });
     }
 
