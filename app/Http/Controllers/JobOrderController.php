@@ -10,16 +10,13 @@ use App\Models\JobOrder;
 use App\Models\OrderItem;
 use App\Models\ReturnItem;
 use App\Models\SupplyItem;
-use App\Models\MovementItem;
 use Illuminate\Http\Request;
 use App\Models\CustomerVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ServicePackage;
 use App\Models\Supply;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Validation\ValidationException;
 
 class JobOrderController extends Controller
 {
@@ -33,7 +30,7 @@ class JobOrderController extends Controller
 
 
             $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
-                ->select('*');
+                ->select('*')->orderBy('created_at', 'desc');
 
             if ($startDate) {
                 $data->when($startDate, function ($query) use ($startDate) {

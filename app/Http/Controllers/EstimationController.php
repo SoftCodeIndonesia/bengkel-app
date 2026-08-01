@@ -8,14 +8,12 @@ use App\Models\Customer;
 use App\Models\JobOrder;
 use App\Models\OrderItem;
 use App\Models\Estimation;
-use App\Models\MovementItem;
 use Illuminate\Http\Request;
 use App\Models\ServicePackage;
 use App\Models\CustomerVehicle;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class EstimationController extends Controller
 {
@@ -27,7 +25,7 @@ class EstimationController extends Controller
 
         if ($request->ajax()) {
             $data = Estimation::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
-                ->select('*');
+                ->select('*')->orderBy('created_at', 'desc');
 
 
             return DataTables::of($data)
@@ -124,6 +122,7 @@ class EstimationController extends Controller
                 $vehicle = Vehicle::create($request->only(['merk', 'tipe', 'no_pol']));
 
                 $customerVehicle = CustomerVehicle::create(['customer_id' => $customer->id, 'vehicle_id' => $vehicle->id]);
+                $customerVehicle = CustomerVehicle::where(['customer_id' => $customer->id, 'vehicle_id' => $vehicle->id])->get()->first();
             }
 
             $subtotal = $request->subtotal;
@@ -131,9 +130,6 @@ class EstimationController extends Controller
 
             $diskonUnit = 'nominal';
             $diskonValue = $request->total_diskon_item ?? 0;
-
-            // dd()
-
 
             $jobOrder = Estimation::create([
                 'customer_vehicle_id' => $customerVehicle->id,
