@@ -55,10 +55,30 @@
         }
 
         function originalNumber(angka) {
-            if (!angka) return '';
+            if (angka === null || angka === undefined || angka === '') return 0;
 
-            angka = parseInt(angka.replace(/\D/g, ''));
-            return angka;
+            // Jika sudah berupa number, return langsung
+            if (typeof angka === 'number') return angka;
+
+            // Konversi ke string
+            let str = String(angka);
+
+            // Hapus "Rp" dan spasi
+            str = str.replace(/Rp/g, '').trim();
+
+            // Handle format Indonesia: "1.500.000,50" atau "1.500,50"
+            // Step 1: Hapus titik ribuan (.)
+            // Step 2: Ubah koma desimal (,) menjadi titik (.)
+            str = str.replace(/\./g, '').replace(/,/g, '.');
+
+            // Hapus semua karakter selain angka dan titik
+            str = str.replace(/[^0-9.]/g, '');
+
+            // Parse ke float
+            const result = parseFloat(str);
+
+            // Jika NaN, return 0
+            return isNaN(result) ? 0 : result;
         }
     </script>
 

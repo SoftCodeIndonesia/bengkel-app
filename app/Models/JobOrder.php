@@ -24,12 +24,19 @@ class JobOrder extends Model
         'subtotal',
         'diskon_unit',
         'diskon_value',
+        'ppn_value',
+        'ppn_amount',
+        'fee_amount',
         'total',
         'notes',
     ];
 
     protected $casts = [
         'service_at' => 'datetime',
+        'ppn_value' => 'float',
+        'ppn_amount' => 'float',
+        'fee_amount' => 'float',
+        
     ];
 
     protected $statuses = [

@@ -205,12 +205,6 @@
                         Hapus Item Terpilih
                     </button>
                 </div>
-                @php 
-                $sumTotalPrice = 0;
-                $sumSubtotal = 0;
-                $sumDiskon = 0;
-                
-                @endphp
                 <div class="overflow-x-auto">
                     <form id="delete-items-form" action="{{ route('job-orders.delete-items', $jobOrder->id) }}"
                         method="POST">
@@ -228,8 +222,8 @@
                                     <th class="px-4 py-3">Kategori</th>
                                     <th class="px-4 py-3 text-right">FRT/QTY</th>
                                     <th class="px-4 py-3 text-right">Harga Satuan</th>
-                                    <th class="px-4 py-3 text-right">Diskon</th>
                                     <th class="px-4 py-3 text-right">Subtotal</th>
+                                    <th class="px-4 py-3 text-right">Diskon</th>
                                     <th class="px-4 py-3 text-right">Total</th>
                                 </tr>
                             </thead>
@@ -239,17 +233,6 @@
                                 @endphp
                                 @foreach ($jobOrder->orderItems as $item)
                                     @if ($item->product->tipe != 'jasa')
-                                        @php
-
-                                        $diskon = $item->unit_price * ($item->diskon_value / 100);
-                                        $unit_price = $item->markup_price + $diskon;
-                                        $sumTotalPrice += $unit_price * $item->quantity;
-                                        $sumDiskon += $diskon * $item->quantity;
-
-                                        $total = $item->markup_price * $item->quantity;
-                                        $sumSubtotal += $total;
-
-                                        @endphp
                                         <tr class="border-b border-gray-600">
                                             <td class="px-4 py-3">
                                                 <input type="checkbox" name="items[]" value="{{ $item->id }}"
@@ -262,15 +245,14 @@
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
                                             <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($unit_price, 2, ',', '.') }}</td>
-                                             <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($diskon, 2, ',', '.') }}
+                                                {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                            <td class="px-4 py-3 text-right">Rp
+                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                            <td class="px-4 py-3 text-right">Rp
+                                                {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
                                             </td>
                                             <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($item->markup_price, 2, ',', '.') }}</td>
-                                            
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($total, 2, ',', '.') }}</td>
+                                                {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
                                         </tr>
                                         @php
                                             $index++;
@@ -279,17 +261,6 @@
                                 @endforeach
                                 @foreach ($jobOrder->orderItems as $item)
                                     @if ($item->product->tipe == 'jasa')
-                                        @php
-                                            $basePrice = 100000 * $item->quantity;
-                                            $diskon = $basePrice * ($item->diskon_value / 100);
-                                            
-                                            $unit_price = $item->markup_price + $diskon;
-                                            $sumTotalPrice += $unit_price * $item->quantity;
-                                            $sumDiskon += $diskon * $item->quantity;
-
-                                            $total = $item->markup_price * $item->quantity;
-                                            $sumSubtotal += $total;
-                                        @endphp
                                         <tr class="border-b border-gray-600">
                                             <td class="px-4 py-3">
                                                 <input type="checkbox" name="items[]" value="{{ $item->id }}"
@@ -301,15 +272,20 @@
 
                                             <td class="px-4 py-3 text-right">{{ $item->quantity }}
                                             </td>
+                                            <td class="px-4 py-3 text-right"></td>
                                             <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($unit_price, 2, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($diskon, 2, ',', '.') }}</td>
-                                            <td class="px-4 py-3 text-right">Rp
-                                                    {{ number_format($item->markup_price, 2, ',', '.') }}
+                                                {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                            @if ($item->product->tipe != 'jasa')
+                                                <td class="px-4 py-3 text-right">Rp
+                                                    {{ number_format($item->unit_price * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
                                                 </td>
+                                            @elseif($item->product->tipe == 'jasa')
+                                                <td class="px-4 py-3 text-right">Rp
+                                                    {{ number_format(100000 * $item->quantity * ($item->diskon_value / 100), 0, ',', '.') }}
+                                                </td>
+                                            @endif
                                             <td class="px-4 py-3 text-right">Rp
-                                                {{ number_format($total, 2, ',', '.') }}</td>
+                                                {{ number_format($item->price_after_diskon, 2, ',', '.') }}</td>
                                         </tr>
                                         @php
                                             $index++;
@@ -326,29 +302,23 @@
                 <h3 class="text-lg font-medium text-white mb-4">Rincian Biaya</h3>
                 <div class="overflow-x-auto">
                     <div class="flex justify-between mb-2 items-center">
-                        <span class="text-gray-300">Total Price:</span>
+                        <span class="text-gray-300">Subtotal:</span>
                         <span id="subtotal" class="text-gray-300">Rp
-                            {{ number_format($sumTotalPrice, 2, ',', '.') }}</span>
+                            {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between mb-2">
                         <span class="text-gray-300">Diskon:</span>
-                        <span id="subtotal" class="text-gray-300">Rp
-                                {{ number_format($sumDiskon, 2, ',', '.') }}</span>
-                    </div>
-                    <div class="flex justify-between mb-2 items-center">
-                        <span class="text-gray-300">Subtotal:</span>
-                        <span id="subtotal" class="text-gray-300">Rp
-                            {{ number_format($sumTotalPrice - $sumDiskon, 2, ',', '.') }}</span>
-                    </div>
-                    <div class="flex justify-between mb-2 items-center">
-                        <span class="text-gray-300">PPN:</span>
-                        <span id="subtotal" class="text-gray-300">Rp
-                            {{ number_format($jobOrder->ppn_amount, 2, ',', '.') }}</span>
+                        @if ($jobOrder->diskon_unit == 'percentage')
+                            <span id="subtotal" class="text-gray-300">({{ $jobOrder->diskon_value }}%)</span>
+                        @else
+                            <span id="subtotal" class="text-gray-300">Rp
+                                {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}</span>
+                        @endif
                     </div>
                     <div class="flex justify-between text-lg font-medium">
                         <span class="text-gray-300">Total:</span>
                         <span id="total" class="text-blue-400">Rp
-                            {{ number_format(($sumTotalPrice - $sumDiskon) + $jobOrder->ppn_amount, 2, ',', '.') }}</span>
+                            {{ number_format($jobOrder->total, 2, ',', '.') }}</span>
                     </div>
                 </div>
             </div>

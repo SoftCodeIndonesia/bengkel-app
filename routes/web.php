@@ -113,6 +113,7 @@ Route::middleware('auth')->group(function () {
 
     // Job Orders
     Route::get('job-orders/print/{id}', [JobOrderController::class, 'print'])->name('job-orders.print');
+    Route::get('job-orders/internal/{jobOrder}', [JobOrderController::class, 'showInternal'])->name('job-orders.showInternal');
     Route::resource('job-orders', JobOrderController::class);
 
     // Job Orders

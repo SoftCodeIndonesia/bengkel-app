@@ -89,6 +89,8 @@
                             <th class="p-3">Kendaraan</th>
                             <th class="p-3">Tanggal</th>
                             <th class="p-3">Status</th>
+                            <th class="p-3">Subtotal</th>
+                            <th class="p-3">PPN</th>
                             <th class="p-3">Total</th>
                             <th class="p-3 text-right">Aksi</th>
                         </tr>
@@ -148,6 +150,16 @@
                         data: 'status_badge',
                         name: 'status',
                         orderable: false
+                    },
+                    {
+                        data: 'subtotal',
+                        name: 'Subtotal',
+                        orderable: true,
+                    },
+                    {
+                        data: 'ppn_amount',
+                        name: 'PPN',
+                        orderable: true,
                     },
                     {
                         data: 'formatted_total',

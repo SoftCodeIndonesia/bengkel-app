@@ -66,8 +66,14 @@ class JobOrderController extends Controller
                 ->addColumn('vehicle', function ($row) {
                     return $row->customerVehicle->vehicle->merk . ' - ' . $row->customerVehicle->vehicle->no_pol;
                 })
+                ->addColumn('subtotal', function ($row) {
+                    return 'Rp ' . number_format($row->subtotal + $row->fee_amount, 2, ',', '.');
+                })
+                ->addColumn('ppn_amount', function ($row) {
+                    return 'Rp ' . number_format($row->ppn_amount, 2, ',', '.');
+                })
                 ->addColumn('formatted_total', function ($row) {
-                    return 'Rp ' . number_format($row->total, 0, ',', '.');
+                    return 'Rp ' . number_format(($row->subtotal + $row->fee_amount) + $row->ppn_amount, 2, ',', '.');
                 })
                 ->addColumn('service_at', function ($row) {
                     return $row->service_at->format('d M Y H:i');
@@ -184,9 +190,14 @@ class JobOrderController extends Controller
 
             $subtotal = $request->subtotal;
             $total = $request->total;
+            $grantTotal = $request->grand_total;
+            $ppn_value = $request->ppn;
+            $ppn_amount = $request->ppn_amount;
 
             $diskonUnit = 'nominal';
             $diskonValue = $request->total_diskon_item ?? 0;
+
+            $total_internal = $request->total_sparepart + $request->total_jasa - $request->total_fee_hidden;
 
             // dd()
 
@@ -196,10 +207,13 @@ class JobOrderController extends Controller
                 'km' => $request->km,
                 'service_at' => $request->service_at,
                 'status' => 'draft',
-                'subtotal' => $request->total_sparepart + $request->total_jasa,
+                'subtotal' => $total_internal,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
-                'total' => $total,
+                'ppn_value' => $ppn_value,
+                'ppn_amount' => $ppn_amount,
+                'fee_amount' => $request->total_fee_hidden,
+                'total' => $total_internal,
                 'notes' => $request->notes,
             ]);
 
@@ -216,16 +230,22 @@ class JobOrderController extends Controller
 
 
                 $subtotal = $product->unit_price * $item['quantity'];
+                $subtotalMarkup = $item['subtotal'];
                 $potongan = ($item['diskon_value'] / 100) * $subtotal;
-
+                $fee_value = $item['fee_value'];
+                $fee_amount = $item['fee_amount'];
+                $total = $item['total'];
                 if ($product->tipe == 'jasa') {
                     $subtotaljasa = 100000 * $item['quantity'];
                     $data_input = [
                         'product_id' => $product->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => 0,
-                        'total_price' => $subtotaljasa,
+                        'total_price' => $subtotalMarkup,
+                        'markup_price' => $item['markup_price'],
                         'diskon_value' => $item['diskon_value'] ?? 0,
+                        'fee_value' => $fee_value ?? 0,
+                        'fee_amount' => $fee_amount ?? 0,
                         'price_after_diskon' => $subtotaljasa - $potongan,
                     ];
                 } else {
@@ -233,8 +253,11 @@ class JobOrderController extends Controller
                         'product_id' => $product->id,
                         'quantity' => $item['quantity'],
                         'unit_price' => $product->unit_price,
-                        'total_price' => $subtotal,
+                        'total_price' => $subtotalMarkup,
+                        'markup_price' => $item['markup_price'],
                         'diskon_value' => $item['diskon_value'] ?? 0,
+                        'fee_value' => $fee_value ?? 0,
+                        'fee_amount' => $fee_amount ?? 0,
                         'price_after_diskon' => $subtotal - $potongan,
                     ];
                 }
@@ -299,6 +322,23 @@ class JobOrderController extends Controller
 
         return view('job-orders.show', compact('jobOrder'));
     }
+    public function showInternal(JobOrder $jobOrder)
+    {
+        $jobOrder->load([
+            'customerVehicle.customer',
+            'customerVehicle.vehicle',
+            'orderItems.product',
+            'breakdowns',
+            'invoice',
+            'orderItems',
+            'orderItems.product'
+        ]);
+
+        // dd($jobOrder->statuses());
+
+
+        return view('job-orders.show_internal', compact('jobOrder'));
+    }
     public function print(string $id)
     {
 
@@ -342,6 +382,7 @@ class JobOrderController extends Controller
     public function update(Request $request, JobOrder $jobOrder)
     {
 
+        // dd($request->all());
         $validated = $this->validateRequest($request);
 
         DB::transaction(function () use ($request, $jobOrder) {
@@ -363,19 +404,27 @@ class JobOrderController extends Controller
 
             $subtotal = $request->subtotal;
             $total = $request->total;
+            $grantTotal = $request->grand_total;
 
             $diskonUnit = 'nominal';
             $diskonValue = $request->total_diskon_item ?? 0;
+            $total_internal = $request->total_sparepart + $request->total_jasa - $request->total_fee_hidden;
+
+            $ppn_value = $request->ppn;
+            $ppn_amount = $request->ppn_amount;
 
             $jo_data = [
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
                 'status' => $jobOrder->status,
-                'subtotal' => $request->total_sparepart + $request->total_jasa,
+                'subtotal' => $total_internal,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
-                'total' => $total,
+                'ppn_value' => $ppn_value,
+                'ppn_amount' => $ppn_amount,
+                'total' => $total_internal,
+                'fee_amount' => $request->total_fee_hidden,
                 'notes' => $request->notes,
             ];
 
@@ -402,18 +451,22 @@ class JobOrderController extends Controller
 
 
                     $subtotal = $product->unit_price * $item['quantity'];
+                    $subtotalMarkup = $item['subtotal'];
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;
-
-
+                    $fee_value = $item['fee_value'];
+                    $fee_amount = $item['fee_amount'];
+                    $total = $item['total'];
                     if ($product->tipe == 'jasa') {
-
                         $subtotaljasa = 100000 * $item['quantity'];
                         $data_input = [
                             'product_id' => $product->id,
                             'quantity' => $item['quantity'],
                             'unit_price' => 0,
-                            'total_price' => $subtotaljasa,
+                            'total_price' => $subtotalMarkup,
+                            'markup_price' => $item['markup_price'],
                             'diskon_value' => $item['diskon_value'] ?? 0,
+                            'fee_value' => $fee_value ?? 0,
+                            'fee_amount' => $fee_amount ?? 0,
                             'price_after_diskon' => $subtotaljasa - $potongan,
                         ];
                     } else {
@@ -421,8 +474,11 @@ class JobOrderController extends Controller
                             'product_id' => $product->id,
                             'quantity' => $item['quantity'],
                             'unit_price' => $product->unit_price,
-                            'total_price' => $subtotal,
+                            'total_price' => $subtotalMarkup,
+                            'markup_price' => $item['markup_price'],
                             'diskon_value' => $item['diskon_value'] ?? 0,
+                            'fee_value' => $fee_value ?? 0,
+                            'fee_amount' => $fee_amount ?? 0,
                             'price_after_diskon' => $subtotal - $potongan,
                         ];
                     }
@@ -458,9 +514,19 @@ class JobOrderController extends Controller
 
                     $potongan = ($item['diskon_value'] / 100) * $subtotal;
 
+                   
+                    $subtotalMarkup = $item['subtotal'];
+                    $potongan = ($item['diskon_value'] / 100) * $subtotal;
+                    $fee_value = $item['fee_value'];
+                    $fee_amount = $item['fee_amount'];
+                    $total = $item['total'];
+
                     $orderItem->quantity = $item['quantity'];
-                    $orderItem->total_price = $subtotal;
+                    $orderItem->total_price = $subtotalMarkup;
+                    $orderItem->markup_price = $item['markup_price'];
                     $orderItem->diskon_value = $item['diskon_value'];
+                    $orderItem->fee_value = $fee_value;
+                    $orderItem->fee_amount = $fee_amount;
                     $orderItem->price_after_diskon = $subtotal - $potongan;
 
                     // $supplyItem = SupplyItem::where('item_id', $orderItem->id)->get()->first();

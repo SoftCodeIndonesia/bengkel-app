@@ -368,15 +368,19 @@
                         <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
                             id="service-table">
                             <thead class="uppercase bg-gray-700 text-gray-400">
-                                <tr>
-                                    <th class="p-2">Jasa</th>
-                                    <th class="p-2">Kategori</th>
-                                    <th class="p-2">FRT (Jam)</th>
-                                    <th class="p-2">Subtotal</th>
-                                    <th class="p-2">Diskon (%)</th>
-                                    <th class="p-2">Total</th>
-                                    <th class="p-2">Aksi</th>
-                                </tr>
+                                    <tr>
+                                        <th class="p-2">Jasa</th>
+                                        <th class="p-2">Kategori</th>
+                                        <th class="p-2">FRT (Jam)</th>
+                                        <th class="p-2">Diskon (%)</th>
+                                        <th class="p-2">Diskon (Rp)</th>
+                                        <th class="p-2">Subtotal</th>
+                                        <th class="p-2">Fee (%)</th>
+                                        <th class="p-2">Fee (Rp)</th>
+                                        <th class="p-2">Harga Jual</th>
+                                        <th class="p-2">Total</th>
+                                        <th class="p-2">Aksi</th>
+                                    </tr>
                             </thead>
                             <tbody id="service-items-container">
                                 <!-- Service rows will be added here -->
@@ -403,17 +407,21 @@
                         <table class="min-w-full divide-y divide-gray-600 bg-gray-700 text-white text-sm"
                             id="sparepart-table">
                             <thead class="uppercase bg-gray-700 text-gray-400">
-                                <tr>
-                                    <th class="p-2 text-left">Sparepart</th>
-                                    <th class="p-2">Grade</th>
-                                    <th class="p-2">Kategori</th>
-                                    <th class="p-2">QTY</th>
-                                    <th class="p-2">Harga Satuan</th>
-                                    <th class="p-2">Subtotal</th>
-                                    <th class="p-2">Diskon (%)</th>
-                                    <th class="p-2">Total</th>
-                                    <th class="p-2">Aksi</th>
-                                </tr>
+                                    <tr>
+                                        <th class="p-2 text-left">Sparepart</th>
+                                        <th class="p-2">Grade</th>
+                                        <th class="p-2">Kategori</th>
+                                        <th class="p-2">QTY</th>
+                                        <th class="p-2">Harga Dasar</th>
+                                        <th class="p-2">Diskon (%)</th>
+                                        <th class="p-2">Diskon (Rp)</th>
+                                        <th class="p-2">Subtotal</th>
+                                        <th class="p-2">Fee (%)</th>
+                                        <th class="p-2">Fee (Rp)</th>
+                                        <th class="p-2">Harga Jual</th>
+                                        <th class="p-2">Total</th>
+                                        <th class="p-2">Aksi</th>
+                                    </tr>
                             </thead>
                             <tbody id="sparepart-items-container">
                                 <!-- Sparepart rows will be added here -->
@@ -457,16 +465,50 @@
                                     class="bg-gray-700 border-none text-end text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     readonly>
                             </div>
+                            <!-- ✅ TOTAL FEE - BARU -->
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">Total Fee:</span>
+                                <input type="text" name="total_fee" id="total-fee" value="Rp 0"
+                                    class="bg-gray-700 border-none text-end text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                    readonly>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Subtotal -->
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-300">Subtotal:</span>
+                        <input type="text" id="total" value="Rp 0"
+                            class="bg-gray-700 border-none text-end text-white rounded-md py-1 px-2 w-40"
+                            readonly>
+                    </div>
+
+                    <!-- PPN -->
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-300">PPN (%):</span>
+                        <div class="flex items-center gap-2">
+                            <input type="number" name="ppn" id="ppn" min="0" max="100" step="0.01"
+                                value="0"
+                                class="w-20 bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 text-right focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <span class="text-gray-300">%</span>
+                            <input type="text" id="ppn-amount" name="ppn_amount" value="Rp 0"
+                                class="bg-gray-700 border-none text-end text-white rounded-md py-1 px-2 w-32"
+                                readonly>
+                        </div>
+                    </div>
+
+                    <!-- Grand Total -->
                     <div class="border-t border-gray-600 pt-2 mt-2">
                         <div class="flex justify-between text-lg font-medium">
                             <span class="text-gray-300">Grand Total:</span>
-                            <input type="text" name="total" id="total" value="Rp 0"
+                            <input type="text" name="grand_total" id="grand-total" value="Rp 0"
                                 class="bg-gray-700 border-none text-end text-blue-400 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 readonly>
                         </div>
                     </div>
+
+                    <input type="hidden" name="total" id="total-hidden" value="0">
+                    <input type="hidden" name="total_fee_hidden" id="total-fee-hidden" value="0">
                 </div>
 
                 <!-- Form Actions -->
@@ -551,6 +593,85 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Edit Item -->
+    <!-- Modal Edit Item -->
+    <div id="edit-item-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-md">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-white"> Edit Item</h3>
+                <button type="button" id="close-edit-modal" class="text-gray-400 hover:text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-4">
+                <!-- Product Info -->
+                <div class="mb-3">
+                    <p class="text-xs text-gray-400">Produk</p>
+                    <p class="text-white font-medium text-sm" id="edit-product-name">-</p>
+                    <p class="text-xs text-gray-400" id="edit-product-type">-</p>
+                </div>
+
+                <input type="hidden" id="edit-item-index" value="">
+                <input type="hidden" id="edit-item-type" value="">
+
+                <!-- Form Fields -->
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300">Quantity</label>
+                        <input type="number" id="edit-quantity" min="0.01" step="0.01"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1.5 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300">Diskon (%)</label>
+                        <input type="number" id="edit-diskon" min="0" max="100" step="0.01"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1.5 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300">Fee (%)</label>
+                        <input type="number" id="edit-fee" min="0" max="100" step="0.01"
+                            class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1.5 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="mt-3 p-2.5 bg-gray-700 rounded-lg">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400">Subtotal:</span>
+                        <span class="text-white" id="edit-preview-subtotal">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400">Diskon:</span>
+                        <span class="text-white" id="edit-preview-diskon">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400">Fee:</span>
+                        <span class="text-white" id="edit-preview-fee">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-medium border-t border-gray-600 pt-1.5 mt-1.5">
+                        <span class="text-gray-300">Total:</span>
+                        <span class="text-blue-400" id="edit-preview-total">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 border-t border-gray-700 flex justify-end space-x-2">
+                <button type="button" id="cancel-edit"
+                    class="px-3 py-1.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-500">
+                    Batal
+                </button>
+                <button type="button" id="save-edit"
+                    class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -560,6 +681,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             const modalSelectProduct = document.getElementById('product-selection-modal');
             const modalSelectCustomer = document.getElementById('select-customer');
+            document.getElementById('ppn')?.addEventListener('input', function() {
+                calculateTotal();
+            });
             modalSelectCustomer.classList.add('hidden');
             modalSelectProduct.classList.add('hidden');
 
@@ -657,7 +781,7 @@
                 modalSelectProduct.classList.remove('hidden');
             });
 
-            // Function to add item row
+            // Function to add item row (VIEW ONLY - input via modal)
             function addItemRow(kategori, productName, grade, productId, unit_price, quantity, buying_price) {
 
                 let containerStr = '';
@@ -673,13 +797,14 @@
                 const row = document.createElement('tr');
                 row.id = rowId;
                 row.classList.add('border-b', 'border-gray-600', 'item-row');
+                row.dataset.index = itemCounter;
 
                 if (tipe === 'barang') {
                     row.innerHTML = `
                         <td class="p-2 text-left" width="300px">
                             <input type="hidden" name="items[${itemCounter}][type]" value="barang">
                             <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
-                            <span>${productName}</span>
+                            <span class="product-name text-gray-300">${productName}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="grade text-gray-300">${grade}</span>
@@ -687,32 +812,60 @@
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${kategori}</span>
                         </td>
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="1"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                            <input type="hidden" name="items[${itemCounter}][buying_price]" min="1" value="${buying_price}"
-                                class="buying_price bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="unit-price text-gray-300">Rp ${formatRupiah(unit_price)}</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp ${formatRupiah(unit_price * quantity)}</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="0"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp ${formatRupiah(unit_price * quantity)}</span>
-                        </td>
                         <td class="p-2 text-center">
+                            <span class="qty-display text-gray-300">${quantity}</span>
+                            <input type="hidden" name="items[${itemCounter}][quantity]" class="quantity-hidden" value="${quantity}">
+                            <input type="hidden" name="items[${itemCounter}][buying_price]" value="${buying_price}">
+                        </td>
+                        <!-- Harga Dasar -->
+                        <td class="p-2 text-right">
+                            <span class="unit-price text-gray-300">Rp ${formatNumber(unit_price)}</span>
+                            <input type="hidden" class="base-price-hidden" value="${unit_price}">
+                        </td>
+                        <!-- Diskon (%) -->
+                        <td class="p-2 text-center">
+                            <span class="diskon-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_value]" class="diskon-hidden" value="0">
+                        </td>
+                        <!-- Diskon (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="diskon-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_amount]" class="diskon-amount-hidden" value="0">
+                        </td>
+                        <!-- Subtotal (unit_price - diskon) -->
+                        <td class="p-2 text-right">
+                            <span class="subtotal-display text-gray-300">Rp ${formatNumber(unit_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][subtotal]" class="subtotal-hidden" value="${unit_price}">
+                        </td>
+                        <!-- Fee (%) -->
+                        <td class="p-2 text-center">
+                            <span class="fee-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_value]" class="fee-hidden" value="0">
+                        </td>
+                        <!-- Fee (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="fee-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_amount]" class="fee-amount-hidden" value="0">
+                        </td>
+                        <!-- Harga Jual (subtotal + fee) -->
+                        <td class="p-2 text-right">
+                            <span class="markup-price-display text-gray-300">Rp ${formatNumber(unit_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][markup_price]" class="markup-price-hidden" value="${unit_price}">
+                        </td>
+                        <!-- Total (harga_jual × qty) -->
+                        <td class="p-2 text-right">
+                            <span class="total-display text-gray-300">Rp ${formatNumber(unit_price * quantity)}</span>
+                            <input type="hidden" name="items[${itemCounter}][total]" class="total-hidden" value="${unit_price * quantity}">
+                        </td>
+                        <td class="p-2 text-center" width="100px">
+                            <button type="button" class="edit-item text-blue-500 hover:text-blue-400 mr-2" data-index="${itemCounter}">
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                            </button>
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
                         </td>
@@ -723,33 +876,61 @@
                         <td class="p-2" width="300px">
                             <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
                             <input type="hidden" name="items[${itemCounter}][product_id]" value="${productId}">
-                            <span>${productName}</span>
+                            <span class="product-name text-gray-300">${productName}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">jasa</span>
                         </td>
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" value="${quantity}" min="0.1" step="0.01"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        <td class="p-2 text-center">
+                            <span class="qty-display text-gray-300">${quantity}</span>
+                            <input type="hidden" name="items[${itemCounter}][quantity]" class="quantity-hidden" value="${quantity}">
+                            <input type="hidden" class="base-price-hidden" value="${base_price}">
                         </td>
                         
-                        <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp ${formatRupiah(base_price * quantity)}</span>
-                        </td>
-                        <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="0"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
-                        </td>
-                        <td class="p-2 text-right">
-                            <span class="total-after-diskon text-gray-300">Rp ${formatRupiah(base_price * quantity)}</span>
-                        </td>
+                        <!-- Diskon (%) -->
                         <td class="p-2 text-center">
+                            <span class="diskon-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_value]" class="diskon-hidden" value="0">
+                        </td>
+                        <!-- Diskon (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="diskon-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_amount]" class="diskon-amount-hidden" value="0">
+                        </td>
+                        <!-- Subtotal (unit_price - diskon) -->
+                        <td class="p-2 text-right">
+                            <span class="subtotal-display text-gray-300">Rp ${formatNumber(base_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][subtotal]" class="subtotal-hidden" value="${base_price}">
+                        </td>
+                        <!-- Fee (%) -->
+                        <td class="p-2 text-center">
+                            <span class="fee-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_value]" class="fee-hidden" value="0">
+                        </td>
+                        <!-- Fee (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="fee-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_amount]" class="fee-amount-hidden" value="0">
+                        </td>
+                        <!-- Harga Jual (subtotal + fee) -->
+                        <td class="p-2 text-right">
+                            <span class="markup-price-display text-gray-300">Rp ${formatNumber(base_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][markup_price]" class="markup-price-hidden" value="${base_price}">
+                        </td>
+                        <!-- Total (harga_jual × qty) -->
+                        <td class="p-2 text-right">
+                            <span class="total-display text-gray-300">Rp ${formatNumber(base_price * quantity)}</span>
+                            <input type="hidden" name="items[${itemCounter}][total]" class="total-hidden" value="${base_price * quantity}">
+                        </td>
+                        <td class="p-2 text-center" width="100px">
+                            <button type="button" class="edit-item text-blue-500 hover:text-blue-400 mr-2" data-index="${itemCounter}">
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                            </button>
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
                         </td>
@@ -758,11 +939,7 @@
 
                 tbody.appendChild(row);
 
-                // Initialize TomSelect for the new row
-                const select = row.querySelector('.product-select');
-                // initializeProductSelect(select, tipe);
-
-                // Add event listeners for calculations
+                // Initialize event listeners for the new row
                 initItemRowEvents(row, tipe);
 
                 itemCounter++;
@@ -776,13 +953,17 @@
                 const row = document.createElement('tr');
                 row.id = rowId;
                 row.classList.add('border-b', 'border-gray-600', 'item-row');
+                row.dataset.index = itemCounter;
 
                 if (type === 'barang') {
+                    // ============================================
+                    // 🟢 BARANG (SPAREPART)
+                    // ============================================
                     row.innerHTML = `
-                        <td class="p-2" width="300px">
+                        <td class="p-2 text-left" width="300px">
                             <input type="hidden" name="items[${itemCounter}][type]" value="barang">
                             <input type="hidden" name="items[${itemCounter}][product_id]" value="${data.id}">
-                            <span>${data.name}</span>
+                            <span class="product-name text-gray-300">${data.name}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="grade text-gray-300">${data.grade ?? '-'}</span>
@@ -790,67 +971,119 @@
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${data.tipe}</span>
                         </td>
-                        
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="1" value="${data.quantity}"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        <td class="p-2 text-center">
+                            <span class="qty-display text-gray-300">${data.quantity}</span>
+                            <input type="hidden" name="items[${itemCounter}][quantity]" class="quantity-hidden" value="${data.quantity}">
                         </td>
+                        <!-- ✅ unit_price -->
                         <td class="p-2 text-right">
                             <span class="unit-price text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                            <input type="hidden" class="base-price-hidden" value="${data.unit_price}">
                         </td>
+                        <!-- ✅ fee (%) -->
+                        <td class="p-2 text-center">
+                            <span class="fee-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_value]" class="fee-hidden" value="0">
+                        </td>
+                        <!-- ✅ Fee (Rp) -->
                         <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                            <span class="fee-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_amount]" class="fee-amount-hidden" value="0">
                         </td>
+                        <!-- ✅ harga_jual (markup_price) -->
                         <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="${data.discount}"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
+                            <span class="markup-price-display text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][markup_price]" class="markup-price-hidden" value="${data.unit_price}">
                         </td>
+                        <!-- ✅ diskon (%) -->
+                        <td class="p-2 text-center">
+                            <span class="diskon-display text-gray-300">${data.discount || 0}%</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_value]" class="diskon-hidden" value="${data.discount || 0}">
+                        </td>
+                        <!-- ✅ diskon (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="diskon-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_amount]" class="diskon-amount-hidden" value="0">
+                        </td>
+                        <!-- ✅ total harga jual -->
                         <td class="p-2 text-right">
                             <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                            <input type="hidden" name="items[${itemCounter}][total]" class="total-hidden" value="${data.total}">
                         </td>
-                        <td class="p-2 text-center">
+                        <td class="p-2 text-center" width="100px">
+                            <button type="button" class="edit-item text-blue-500 hover:text-blue-400 mr-2" data-index="${itemCounter}">
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                            </button>
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
                         </td>
                     `;
                 } else {
+                    // ============================================
+                    // 🟡 JASA (SERVICE)
+                    // ============================================
                     row.innerHTML = `
                         <td class="p-2" width="300px">
                             <input type="hidden" name="items[${itemCounter}][type]" value="jasa">
                             <input type="hidden" name="items[${itemCounter}][product_id]" value="${data.id}">
-                            <span>${data.name}</span>
+                            <span class="product-name text-gray-300">${data.name}</span>
                         </td>
                         <td class="p-2 text-center">
                             <span class="kategori text-gray-300">${data.tipe}</span>
                         </td>
-                        <td class="p-2" width="100px">
-                            <input type="number" name="items[${itemCounter}][quantity]" min="0.01" step="0.01" value="${data.quantity}"
-                                class="quantity bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 w-full">
+                        <td class="p-2 text-center">
+                            <span class="qty-display text-gray-300">${data.quantity}</span>
+                            <input type="hidden" name="items[${itemCounter}][quantity]" class="quantity-hidden" value="${data.quantity}">
                         </td>
-                        
+                        <!-- ✅ unit_price -->
                         <td class="p-2 text-right">
-                            <span class="subtotal text-gray-300">Rp ${formatNumber(data.subtotal)}</span>
+                            <span class="unit-price text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                            <input type="hidden" class="base-price-hidden" value="${data.unit_price}">
                         </td>
+                        <!-- ✅ fee (%) -->
+                        <td class="p-2 text-center">
+                            <span class="fee-display text-gray-300">0%</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_value]" class="fee-hidden" value="0">
+                        </td>
+                        <!-- ✅ Fee (Rp) -->
                         <td class="p-2 text-right">
-                            <input type="number" name="items[${itemCounter}][diskon_value]" min="0" max="100" step="0.01"
-                                value="${data.discount}"
-                                class="diskon-value w-full bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2"
-                                placeholder="%">
+                            <span class="fee-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][fee_amount]" class="fee-amount-hidden" value="0">
                         </td>
+                        <!-- ✅ harga_jual (markup_price) -->
+                        <td class="p-2 text-right">
+                            <span class="markup-price-display text-gray-300">Rp ${formatNumber(data.unit_price)}</span>
+                            <input type="hidden" name="items[${itemCounter}][markup_price]" class="markup-price-hidden" value="${data.unit_price}">
+                        </td>
+                        <!-- ✅ diskon (%) -->
+                        <td class="p-2 text-center">
+                            <span class="diskon-display text-gray-300">${data.discount || 0}%</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_value]" class="diskon-hidden" value="${data.discount || 0}">
+                        </td>
+                        <!-- ✅ diskon (Rp) -->
+                        <td class="p-2 text-right">
+                            <span class="diskon-amount-display text-gray-300">Rp 0</span>
+                            <input type="hidden" name="items[${itemCounter}][diskon_amount]" class="diskon-amount-hidden" value="0">
+                        </td>
+                        <!-- ✅ total harga jual -->
                         <td class="p-2 text-right">
                             <span class="total-after-diskon text-gray-300">Rp ${formatNumber(data.total)}</span>
+                            <input type="hidden" name="items[${itemCounter}][total]" class="total-hidden" value="${data.total}">
                         </td>
-                        <td class="p-2 text-center">
+                        <td class="p-2 text-center" width="100px">
+                            <button type="button" class="edit-item text-blue-500 hover:text-blue-400 mr-2" data-index="${itemCounter}">
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                            </button>
                             <button type="button" class="remove-item text-red-500 hover:text-red-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
                         </td>
@@ -859,11 +1092,7 @@
 
                 tbody.appendChild(row);
 
-                // Initialize TomSelect for the new row
-                const select = row.querySelector('.product-select');
-
-
-                // Add event listeners for calculations
+                // Initialize event listeners for the new row
                 initItemRowEvents(row, type);
 
                 itemCounter++;
@@ -905,51 +1134,160 @@
                 });
             }
 
-            // Initialize item row events
+            // Initialize item row events (VIEW ONLY - input via modal)
             function initItemRowEvents(row, type) {
+                // Ambil semua elemen display
+                const qtyDisplay = row.querySelector('.qty-display');
+                const unitPriceText = row.querySelector('.unit-price');
+                const feeDisplay = row.querySelector('.fee-display');
+                const feeAmountDisplay = row.querySelector('.fee-amount-display');
+                const markupPriceDisplay = row.querySelector('.markup-price-display');
+                const diskonDisplay = row.querySelector('.diskon-display');
+                const diskonAmountDisplay = row.querySelector('.diskon-amount-display');
+                const totalText = row.querySelector('.total-after-diskon');
+                const subtotalDisplay = row.querySelector('.subtotal-display');
 
-                const qtyInput = row.querySelector('.quantity');
-                const diskonValue = row.querySelector('.diskon-value');
-                const kategori = row.querySelector('.kategori');
-                const priceText = row.querySelector('.unit-price');
-                const subtotalText = row.querySelector('.subtotal');
-                const totalAfterDiskonText = row.querySelector('.total-after-diskon');
+                // Hidden inputs
+                const quantityHidden = row.querySelector('.quantity-hidden');
+                const basePriceHidden = row.querySelector('.base-price-hidden');
+                const feeHidden = row.querySelector('.fee-hidden');
+                const feeAmountHidden = row.querySelector('.fee-amount-hidden');
+                const markupPriceHidden = row.querySelector('.markup-price-hidden');
+                const diskonHidden = row.querySelector('.diskon-hidden');
+                const diskonAmountHidden = row.querySelector('.diskon-amount-hidden');
+                const totalHidden = row.querySelector('.total-hidden');
+                const subtotalHidden = row.querySelector('.subtotal-hidden');
 
-                const calculateItemTotal = () => {
-                    const price = originalNumber(priceText?.textContent ?? 0);
-                    const qty = parseFloat(qtyInput.value);
-                    const diskon = parseFloat(diskonValue.value) || 0;
+                function updateItemDisplay(data) {
+                    const { 
+                        quantity, 
+                        diskon, 
+                        fee, 
+                        basePrice, 
+                        unitPriceAfterDiscount,
+                        subtotal,
+                        markupPrice, 
+                        total, 
+                        feeAmount, 
+                        feePerUnit, 
+                        diskonPerUnit, 
+                        diskonAmount 
+                    } = data;
 
-                    var subtotal = 0;
-                    if (type == 'jasa') {
-                        subtotal = 100000 * qty;
-                    } else {
-                        subtotal = price * qty;
-                    }
+                    // Update displays
+                    if (qtyDisplay) qtyDisplay.textContent = quantity;
+                    
+                    // ✅ Harga Dasar = basePrice (tetap, tidak berubah)
+                    if (unitPriceText) unitPriceText.textContent = 'Rp ' + formatNumber(basePrice);
+                    
+                    // Diskon (%)
+                    if (diskonDisplay) diskonDisplay.textContent = diskon + '%';
+                    
+                    // Diskon (Rp)
+                    if (diskonAmountDisplay) diskonAmountDisplay.textContent = 'Rp ' + formatNumber(diskonPerUnit);
+                    
+                    // Subtotal (unit_price - diskon) = unitPriceAfterDiscount
+                    if (subtotalDisplay) subtotalDisplay.textContent = 'Rp ' + formatNumber(subtotal);
+                    if (subtotalHidden) subtotalHidden.value = subtotal;
+                    
+                    // Fee (%)
+                    if (feeDisplay) feeDisplay.textContent = fee + '%';
+                    
+                    // Fee (Rp)
+                    if (feeAmountDisplay) feeAmountDisplay.textContent = 'Rp ' + formatNumber(feePerUnit);
+                    
+                    // Harga Jual (subtotal + fee)
+                    if (markupPriceDisplay) markupPriceDisplay.textContent = 'Rp ' + formatNumber(markupPrice);
+                    if (markupPriceHidden) markupPriceHidden.value = markupPrice;
+                    
+                    // Total (harga_jual × qty)
+                    if (totalText) totalText.textContent = 'Rp ' + formatNumber(total);
+                    if (totalHidden) totalHidden.value = total;
 
+                    // Update hidden lainnya
+                    if (quantityHidden) quantityHidden.value = quantity;
+                    if (feeHidden) feeHidden.value = fee;
+                    if (feeAmountHidden) feeAmountHidden.value = feeAmount;
+                    if (diskonHidden) diskonHidden.value = diskon;
+                    if (diskonAmountHidden) diskonAmountHidden.value = diskonAmount;
+                }
 
-                    const totalAfterDiskon = subtotal * (1 - (diskon / 100));
+                function calculateAndUpdate() {
+                    const qty = parseFloat(quantityHidden?.value) || 1;
+                    const diskon = parseFloat(diskonHidden?.value) || 0;
+                    const fee = parseFloat(feeHidden?.value) || 0;
+                    const basePrice = parseFloat(basePriceHidden?.value) || 0;
 
+                    // 1. Diskon dari unit_price
+                    const diskonPerUnit = basePrice * (diskon / 100);
+                    
+                    // 2. unit_price setelah diskon
+                    const unitPriceAfterDiscount = basePrice - diskonPerUnit;
+                    
+                    // 3. Subtotal = unit_price - diskon (per unit)
+                    const subtotal = unitPriceAfterDiscount;
+                    
+                    // 4. Fee dari subtotal
+                    const feePerUnit = subtotal * (fee / 100);
+                    
+                    // 5. Harga Jual = subtotal + fee
+                    const markupPrice = subtotal + feePerUnit;
+                    
+                    // 6. Total = harga_jual × quantity
+                    const total = markupPrice * qty;
+                    
+                    // 7. Fee amount total
+                    const feeAmount = feePerUnit * qty;
+                    
+                    // 8. Diskon amount total
+                    const diskonAmount = diskonPerUnit * qty;
 
-                    if (type != 'jasa') {
-                        priceText.textContent = 'Rp ' + formatNumber(price);
-                    }
-                    subtotalText.textContent = 'Rp ' + formatNumber(subtotal);
-                    totalAfterDiskonText.textContent = 'Rp ' + formatNumber(totalAfterDiskon);
-
+                    updateItemDisplay({ 
+                        quantity: qty, 
+                        diskon: diskon, 
+                        fee: fee, 
+                        basePrice: basePrice,
+                        unitPriceAfterDiscount: unitPriceAfterDiscount,
+                        subtotal: subtotal,
+                        markupPrice: markupPrice,
+                        total: total,
+                        feeAmount: feeAmount,
+                        feePerUnit: feePerUnit,
+                        diskonPerUnit: diskonPerUnit,
+                        diskonAmount: diskonAmount
+                    });
+                    
                     calculateTotal();
-                };
+                }
 
+                // EDIT BUTTON - Open Modal
+                const editBtn = row.querySelector('.edit-item');
+                if (editBtn) {
+                    editBtn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        openEditModal(index);
+                    });
+                }
 
-                qtyInput.addEventListener('input', calculateItemTotal);
-                diskonValue.addEventListener('input', calculateItemTotal);
+                // REMOVE BUTTON - Hapus dari array selectedProducts
+                const removeBtn = row.querySelector('.remove-item');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        const productIdInput = row.querySelector('input[name*="[product_id]"]');
+                        if (productIdInput) {
+                            const productId = productIdInput.value;
+                            const idx = selectedProducts.indexOf(productId);
+                            if (idx !== -1) {
+                                selectedProducts.splice(idx, 1);
+                            }
+                        }
+                        row.remove();
+                        calculateTotal();
+                    });
+                }
 
-                row.querySelector('.remove-item').addEventListener('click', () => {
-                    row.remove();
-                    calculateTotal();
-                });
-
-                calculateTotal();
+                // Initial calculation
+                calculateAndUpdate();
             }
 
             // Add breakdown row
@@ -977,43 +1315,62 @@
                 });
             });
 
-            // Calculate total
             function calculateTotal() {
                 let totalSparepart = 0;
                 let totalJasa = 0;
-                let totalDiskonItem = 0;
-                let subtotal = 0;
+                let totalDiskon = 0;
+                let totalFee = 0;
 
                 document.querySelectorAll('.item-row').forEach(row => {
                     const itemType = row.querySelector('.kategori').textContent;
-                    const subtotalText = row.querySelector('.subtotal').textContent;
-                    const totalAfterDiskonText = row.querySelector('.total-after-diskon').textContent;
+                    
+                    // Ambil nilai dari hidden inputs (sudah termasuk semua perhitungan)
+                    const totalHidden = row.querySelector('.total-hidden');
+                    const feeAmountHidden = row.querySelector('.fee-amount-hidden');
+                    const diskonAmountHidden = row.querySelector('.diskon-amount-hidden');
+                    
+                    const totalValue = totalHidden ? parseFloat(totalHidden.value) || 0 : 0;
+                    const feeAmount = feeAmountHidden ? parseFloat(feeAmountHidden.value) || 0 : 0;
+                    const diskonAmount = diskonAmountHidden ? parseFloat(diskonAmountHidden.value) || 0 : 0;
 
-                    const subtotalValue = parseFloat(subtotalText.replace('Rp ', '').replace(/\./g, '')) ||
-                        0;
-                    const totalAfterDiskon = parseFloat(totalAfterDiskonText.replace('Rp ', '').replace(
-                        /\./g, '')) || 0;
-
+                    // Akumulasi berdasarkan tipe
                     if (itemType != 'jasa') {
-                        totalSparepart += subtotalValue;
+                        totalSparepart += totalValue;
                     } else {
-                        totalJasa += subtotalValue;
+                        totalJasa += totalValue;
                     }
 
-                    totalDiskonItem += (subtotalValue - totalAfterDiskon);
-                    subtotal += totalAfterDiskon;
+                    totalDiskon += diskonAmount;
+                    totalFee += feeAmount;
                 });
 
+                // Subtotal = totalSparepart + totalJasa (sudah termasuk fee, setelah diskon)
+                const subtotal = totalSparepart + totalJasa;
+
+                // Hitung PPN = subtotal × ppn%
+                const ppnValue = parseFloat(document.getElementById('ppn')?.value) || 0;
+                const ppnAmount = (subtotal * ppnValue) / 100;
+
+                // Grand Total = subtotal + PPN
+                const grandTotal = subtotal + ppnAmount;
+
+                // Update display
                 document.getElementById('total-sparepart').value = 'Rp ' + formatNumber(totalSparepart);
                 document.getElementById('total-jasa').value = 'Rp ' + formatNumber(totalJasa);
-                document.getElementById('total-diskon-item').value = 'Rp ' + formatNumber(totalDiskonItem);
+                document.getElementById('total-diskon-item').value = 'Rp ' + formatNumber(totalDiskon);
+                document.getElementById('total-fee').value = 'Rp ' + formatNumber(totalFee);
                 document.getElementById('total').value = 'Rp ' + formatNumber(subtotal);
+                document.getElementById('ppn-amount').value = 'Rp ' + formatNumber(ppnAmount);
+                document.getElementById('grand-total').value = 'Rp ' + formatNumber(grandTotal);
 
-                // Update hidden inputs
-                document.querySelector('input[name="total"]').value = formatNumber(subtotal);
+                // Hidden inputs untuk submit
                 document.querySelector('input[name="total_sparepart"]').value = formatNumber(totalSparepart);
                 document.querySelector('input[name="total_jasa"]').value = formatNumber(totalJasa);
-                document.querySelector('input[name="total_diskon_item"]').value = formatNumber(totalDiskonItem);
+                document.querySelector('input[name="total_diskon_item"]').value = formatNumber(totalDiskon);
+                document.querySelector('input[name="total_fee"]').value = formatNumber(totalFee);
+                document.querySelector('input[name="total_fee_hidden"]').value = totalFee;
+                document.querySelector('input[name="ppn_amount"]').value = formatNumber(ppnAmount);
+                document.querySelector('input[name="total"]').value = formatNumber(subtotal);
             }
 
             // Format number
@@ -1059,10 +1416,21 @@
                     e.preventDefault();
                 }
 
+                document.querySelectorAll('.fee-amount-hidden').forEach(input => {
+                    const value = parseFloat(input.value) || 0;
+                    input.value = value; // Sudah dalam format number
+                });
+
+                // const ppnAmount = parseFloat(document.getElementById('ppn-amount-hidden')?.value) || 0;
+                // document.getElementById('ppn-amount-hidden').value = ppnAmount;
+
                 $('input[name="total_sparepart"]').val(originalNumber($('input[name="total_sparepart"]')
                     .val()));
                 $('input[name="total_jasa"]').val(originalNumber($('input[name="total_jasa"]').val()));
                 $('input[name="total"]').val(originalNumber($('input[name="total"]').val()));
+                $('input[name="ppn_amount"]').val(originalNumber($('input[name="ppn_amount"]').val()));
+                $('input[name="grand_total"]').val(originalNumber($('input[name="grand_total"]').val()));
+                
                 $('input[name="total_diskon_item"]').val(originalNumber($('input[name="total_diskon_item"]')
                     .val()));
 
@@ -1383,7 +1751,7 @@
                     const productPrice = productRow.querySelector('td:nth-child(4)').textContent;
 
                     const buying_price = productRow.querySelector('.buying_price').value;
-                    console.log('harga belii', buying_price);
+                    
 
                     // console.log(originalNumber(productPrice));
                     if (!selectedProducts.includes(productId)) {
@@ -1412,7 +1780,162 @@
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = false;
                 });
+
+                document.querySelectorAll('.fee-value').forEach(el => {
+                    el.value = 0;
+                });
             }
+
+
+
+            // ===== EDIT MODAL FUNCTIONS =====
+
+            function openEditModal(index) {
+                const row = document.querySelector(`.item-row[data-index="${index}"]`);
+                if (!row) return;
+
+                // Ambil data dari row
+                const productName = row.querySelector('.product-name')?.textContent || '-';
+                const kategori = row.querySelector('.kategori')?.textContent || '-';
+                const qty = parseFloat(row.querySelector('.quantity-hidden')?.value) || 1;
+                const diskon = parseFloat(row.querySelector('.diskon-hidden')?.value) || 0;
+                const fee = parseFloat(row.querySelector('.fee-hidden')?.value) || 0;
+
+                // Set data ke modal
+                document.getElementById('edit-item-index').value = index;
+                document.getElementById('edit-item-type').value = kategori;
+                document.getElementById('edit-product-name').textContent = productName;
+                document.getElementById('edit-product-type').textContent = 'Tipe: ' + kategori;
+                document.getElementById('edit-quantity').value = qty;
+                document.getElementById('edit-diskon').value = diskon;
+                document.getElementById('edit-fee').value = fee;
+
+                // Preview initial
+                previewEditChanges();
+
+                // Tampilkan modal
+                document.getElementById('edit-item-modal').classList.remove('hidden');
+            }
+
+            function closeEditModal() {
+                document.getElementById('edit-item-modal').classList.add('hidden');
+            }
+
+            function previewEditChanges() {
+                const index = document.getElementById('edit-item-index').value;
+                const row = document.querySelector(`.item-row[data-index="${index}"]`);
+                if (!row) return;
+
+                const qty = parseFloat(document.getElementById('edit-quantity').value) || 1;
+                const diskon = parseFloat(document.getElementById('edit-diskon').value) || 0;
+                const fee = parseFloat(document.getElementById('edit-fee').value) || 0;
+                const type = document.getElementById('edit-item-type').value;
+
+                const basePriceHidden = row.querySelector('.base-price-hidden');
+                const basePrice = basePriceHidden ? parseFloat(basePriceHidden.value) : 0;
+
+                const diskonPerUnit = basePrice * (diskon / 100);
+                const unitPriceAfterDiscount = basePrice - diskonPerUnit;
+                const subtotal = unitPriceAfterDiscount;
+                const feePerUnit = subtotal * (fee / 100);
+                const markupPrice = subtotal + feePerUnit;
+                const total = markupPrice * qty;
+                const feeAmount = feePerUnit * qty;
+                const diskonAmount = diskonPerUnit * qty;
+
+                // Update preview
+                document.getElementById('edit-preview-subtotal').textContent = 'Rp ' + formatNumber(subtotal * qty);
+                document.getElementById('edit-preview-diskon').textContent = 'Rp ' + formatNumber(diskonAmount);
+                document.getElementById('edit-preview-fee').textContent = 'Rp ' + formatNumber(feeAmount);
+                document.getElementById('edit-preview-total').textContent = 'Rp ' + formatNumber(total);
+            }
+
+            function saveEditChanges() {
+                const index = document.getElementById('edit-item-index').value;
+                const row = document.querySelector(`.item-row[data-index="${index}"]`);
+                if (!row) return;
+
+                const qty = parseFloat(document.getElementById('edit-quantity').value) || 1;
+                const diskon = parseFloat(document.getElementById('edit-diskon').value) || 0;
+                const fee = parseFloat(document.getElementById('edit-fee').value) || 0;
+                const type = document.getElementById('edit-item-type').value;
+
+                const basePriceHidden = row.querySelector('.base-price-hidden');
+                const basePrice = basePriceHidden ? parseFloat(basePriceHidden.value) : 0;
+
+                // ✅ PERHITUNGAN
+                const diskonPerUnit = basePrice * (diskon / 100);
+                const unitPriceAfterDiscount = basePrice - diskonPerUnit;
+                const subtotal = unitPriceAfterDiscount;  // ← subtotal = unit_price - diskon
+                const feePerUnit = subtotal * (fee / 100);
+                const markupPrice = subtotal + feePerUnit;
+                const total = markupPrice * qty;
+                const feeAmount = feePerUnit * qty;
+                const diskonAmount = diskonPerUnit * qty;
+
+                // Update hidden values
+                const quantityHidden = row.querySelector('.quantity-hidden');
+                const diskonHidden = row.querySelector('.diskon-hidden');
+                const feeHidden = row.querySelector('.fee-hidden');
+
+                if (quantityHidden) quantityHidden.value = qty;
+                if (diskonHidden) diskonHidden.value = diskon;
+                if (feeHidden) feeHidden.value = fee;
+
+                // ✅ UPDATE DISPLAYS
+                const qtyDisplay = row.querySelector('.qty-display');
+                const diskonDisplay = row.querySelector('.diskon-display');
+                const diskonAmountDisplay = row.querySelector('.diskon-amount-display');
+                const subtotalDisplay = row.querySelector('.subtotal-display');
+                const feeDisplay = row.querySelector('.fee-display');
+                const feeAmountDisplay = row.querySelector('.fee-amount-display');
+                const markupPriceDisplay = row.querySelector('.markup-price-display');
+                const unitPriceText = row.querySelector('.unit-price');
+                const totalText = row.querySelector('.total-display');
+                const feeAmountHidden = row.querySelector('.fee-amount-hidden');
+
+                if (qtyDisplay) qtyDisplay.textContent = qty;
+                if (diskonDisplay) diskonDisplay.textContent = diskon + '%';
+                if (diskonAmountDisplay) diskonAmountDisplay.textContent = 'Rp ' + formatNumber(diskonPerUnit);
+                if (subtotalDisplay) subtotalDisplay.textContent = 'Rp ' + formatNumber(subtotal);
+                if (feeDisplay) feeDisplay.textContent = fee + '%';
+                if (feeAmountDisplay) feeAmountDisplay.textContent = 'Rp ' + formatNumber(feePerUnit);
+                if (markupPriceDisplay) markupPriceDisplay.textContent = 'Rp ' + formatNumber(markupPrice);
+                if (unitPriceText) unitPriceText.textContent = 'Rp ' + formatNumber(basePrice);
+                if (totalText) totalText.textContent = 'Rp ' + formatNumber(total);
+                if (feeAmountHidden) feeAmountHidden.value = feeAmount;
+
+                // ✅ UPDATE HIDDEN
+                const subtotalHidden = row.querySelector('.subtotal-hidden');
+                const markupPriceHidden = row.querySelector('.markup-price-hidden');
+                const diskonAmountHidden = row.querySelector('.diskon-amount-hidden');
+                const totalHidden = row.querySelector('.total-hidden');
+
+                if (subtotalHidden) subtotalHidden.value = subtotal;
+                if (markupPriceHidden) markupPriceHidden.value = markupPrice;
+                if (diskonAmountHidden) diskonAmountHidden.value = diskonAmount;
+                if (totalHidden) totalHidden.value = total;
+
+                closeEditModal();
+                calculateTotal();
+            }
+
+            // ===== EVENT LISTENERS FOR MODAL =====
+
+            document.getElementById('edit-quantity')?.addEventListener('input', previewEditChanges);
+            document.getElementById('edit-diskon')?.addEventListener('input', previewEditChanges);
+            document.getElementById('edit-fee')?.addEventListener('input', previewEditChanges);
+
+            document.getElementById('save-edit')?.addEventListener('click', saveEditChanges);
+            document.getElementById('cancel-edit')?.addEventListener('click', closeEditModal);
+            document.getElementById('close-edit-modal')?.addEventListener('click', closeEditModal);
+
+            // Close modal on backdrop click
+            document.getElementById('edit-item-modal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditModal();
+                }
+            });
         });
     </script>
 @endpush
