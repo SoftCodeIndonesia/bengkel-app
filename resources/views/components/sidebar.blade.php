@@ -122,6 +122,10 @@
                             class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Paket
                             Service</a>
                     </li>
+                    <li>
+                        <a href="{{ route('job-orders.report') }}"
+                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Laporan Work Order</a>
+                    </li>
                 </ul>
             </li>
             <li>

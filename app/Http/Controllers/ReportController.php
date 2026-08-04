@@ -100,6 +100,65 @@ class ReportController extends Controller
             $profitData[] = $dailyIncome - $dailyExpense;
         }
 
+        $detailStartDate = Carbon::parse($startDate);
+        $detailEndDate = Carbon::parse($endDate);
+
+        $detailData = [];
+        for ($date = $detailStartDate->copy(); $date <= $detailEndDate; $date->addDay()) {
+            $dateFormatted = $date->format('Y-m-d');
+            
+            // PEMASUKAN: hanya dari Invoice (sudah mencakup sales + job order)
+            $dailyInvoiceIncome = Invoice::where('status', 'paid')
+                ->whereDate('date', $dateFormatted)
+                ->sum('total');
+            
+            // Rincian pemasukan berdasarkan tipe invoice
+            $dailyInvoiceJo = Invoice::where('status', 'paid')
+                ->where('tipe', 'services')
+                ->whereDate('date', $dateFormatted)
+                ->sum('total');
+            
+            $dailyInvoiceSo = Invoice::where('status', 'paid')
+                ->where('tipe', 'sales')
+                ->whereDate('date', $dateFormatted)
+                ->sum('total');
+            
+            $dailyTotalIncome = $dailyInvoiceIncome;
+            
+            // PENGELUARAN
+            $dailyPurchaseExpenses = Purchase::where('status', 'paid')
+                ->whereDate('purchase_date', $dateFormatted)
+                ->whereNull('deleted_at')
+                ->sum('total');
+            
+            $dailyOperationalExpenses = Expense::whereDate('date', $dateFormatted)
+                ->whereNull('deleted_at')
+                ->sum('amount');
+            
+            $dailyTotalExpenses = $dailyPurchaseExpenses + $dailyOperationalExpenses;
+            
+            $detailData[] = [
+                'date' => $date->format('d M Y'),
+                'income' => $dailyTotalIncome,
+                'expense' => $dailyTotalExpenses,
+                'profit' => $dailyTotalIncome - $dailyTotalExpenses,
+                'income_detail' => [
+                    'invoice_jo' => $dailyInvoiceJo,
+                    'invoice_so' => $dailyInvoiceSo,
+                    'total_invoice' => $dailyInvoiceIncome,
+                ],
+                'expense_detail' => [
+                    'purchase' => $dailyPurchaseExpenses,
+                    'operational' => $dailyOperationalExpenses,
+                ],
+            ];
+        }
+
+        // Hitung total keseluruhan
+        $totalIncomeDetail = array_sum(array_column($detailData, 'income'));
+        $totalExpenseDetail = array_sum(array_column($detailData, 'expense'));
+        $totalProfitDetail = $totalIncomeDetail - $totalExpenseDetail;
+
         return view('report.profit-loss', compact(
             'startDate',
             'endDate',
@@ -115,7 +174,11 @@ class ReportController extends Controller
             'chartLabels',
             'incomeData',
             'expenseData',
-            'profitData'
+            'profitData',
+            'detailData',
+            'totalIncomeDetail',
+            'totalExpenseDetail',
+            'totalProfitDetail'
         ));
     }
 

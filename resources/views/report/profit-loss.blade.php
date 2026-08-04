@@ -73,6 +73,110 @@
                 <canvas id="profitLossChart" height="100"></canvas>
             </div>
 
+            <!-- Tabel Detail Pemasukan dan Pengeluaran -->
+            <div class="bg-gray-700 rounded-lg p-4 border border-gray-600 mb-6">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-300">Detail Pemasukan & Pengeluaran</h3>
+                    <div class="text-sm text-gray-400 mt-2 sm:mt-0">
+                        <span class="text-green-400">Pemasukan: Rp {{ number_format($totalIncomeDetail, 2) }}</span>
+                        <span class="mx-2">|</span>
+                        <span class="text-red-400">Pengeluaran: Rp {{ number_format($totalExpenseDetail, 2) }}</span>
+                        <span class="mx-2">|</span>
+                        <span class="{{ $totalProfitDetail >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                            Laba/Rugi: Rp {{ number_format(abs($totalProfitDetail), 2) }}
+                            {{ $totalProfitDetail >= 0 ? '(Laba)' : '(Rugi)' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-400">
+                        <thead class="text-xs uppercase bg-gray-800 text-gray-400">
+                            <tr>
+                                <th class="px-4 py-3 text-center">Tanggal</th>
+                                <th class="px-4 py-3 text-right">Pemasukan</th>
+                                <th class="px-4 py-3 text-right">Pengeluaran</th>
+                                <th class="px-4 py-3 text-right">Laba/Rugi</th>
+                                <th class="px-4 py-3 text-center">Detail Pemasukan</th>
+                                <th class="px-4 py-3 text-center">Detail Pengeluaran</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($detailData as $data)
+                                <tr class="border-b border-gray-600 hover:bg-gray-600 transition-colors">
+                                    <td class="px-4 py-3 text-center font-medium text-white">{{ $data['date'] }}</td>
+                                    <td class="px-4 py-3 text-right text-green-400">
+                                        Rp {{ number_format($data['income'], 2) }}
+                                    </td>
+                                    <td class="px-4 py-3 text-right text-red-400">
+                                        Rp {{ number_format($data['expense'], 2) }}
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-medium {{ $data['profit'] >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                                        Rp {{ number_format(abs($data['profit']), 2) }}
+                                        <span class="text-xs">
+                                            {{ $data['profit'] >= 0 ? '▲' : '▼' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-xs">
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between gap-4">
+                                                <span class="text-gray-400">Invoice Job Order:</span>
+                                                <span class="text-white">Rp {{ number_format($data['income_detail']['invoice_jo'], 2) }}</span>
+                                            </div>
+                                            <div class="flex justify-between gap-4">
+                                                <span class="text-gray-400">Invoice Sales:</span>
+                                                <span class="text-white">Rp {{ number_format($data['income_detail']['invoice_so'], 2) }}</span>
+                                            </div>
+                                            <div class="flex justify-between gap-4 border-t border-gray-600 pt-1 mt-1">
+                                                <span class="text-gray-300 font-medium">Total Invoice:</span>
+                                                <span class="text-green-400 font-medium">Rp {{ number_format($data['income_detail']['total_invoice'], 2) }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-xs">
+                                        <div class="space-y-1">
+                                            <div class="flex justify-between gap-4">
+                                                <span class="text-gray-400">Pembelian:</span>
+                                                <span class="text-white">Rp {{ number_format($data['expense_detail']['purchase'], 2) }}</span>
+                                            </div>
+                                            <div class="flex justify-between gap-4">
+                                                <span class="text-gray-400">Operasional:</span>
+                                                <span class="text-white">Rp {{ number_format($data['expense_detail']['operational'], 2) }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-6 text-center text-gray-500">
+                                        Tidak ada data pada periode yang dipilih.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                        <tfoot class="bg-gray-800 text-xs uppercase text-gray-400">
+                            <tr>
+                                <th class="px-4 py-3 text-center font-bold text-white">TOTAL</th>
+                                <th class="px-4 py-3 text-right font-bold text-green-400">
+                                    Rp {{ number_format($totalIncomeDetail, 2) }}
+                                </th>
+                                <th class="px-4 py-3 text-right font-bold text-red-400">
+                                    Rp {{ number_format($totalExpenseDetail, 2) }}
+                                </th>
+                                <th class="px-4 py-3 text-right font-bold {{ $totalProfitDetail >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                                    Rp {{ number_format(abs($totalProfitDetail), 2) }}
+                                </th>
+                                <th colspan="2" class="px-4 py-3 text-center text-gray-400">
+                                    {{ $totalProfitDetail >= 0 ? 'Laba' : 'Rugi' }} periode
+                                    {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - 
+                                    {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
             <!-- Detail Pendapatan -->
             <div class="bg-gray-700 rounded-lg p-4 border border-gray-600 mb-6">
                 <h3 class="text-lg font-medium text-gray-300 mb-4">Detail Pendapatan</h3>

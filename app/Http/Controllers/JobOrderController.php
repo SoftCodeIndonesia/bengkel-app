@@ -115,6 +115,176 @@ class JobOrderController extends Controller
         return view('job-orders.index');
     }
 
+    public function getSummary(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+
+        $totalJobOrders = JobOrder::where('status', '!=', 'estimation')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->count();
+
+        $totalCompleted = JobOrder::where('status', 'completed')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        $totalProgress = JobOrder::where('status', 'progress')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        $totalCancelled = JobOrder::where('status', 'cancelled')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        return response()->json([
+            'totalJobOrders' => $totalJobOrders,
+            'totalCompleted' => $totalCompleted,
+            'totalProgress' => $totalProgress,
+            'totalCancelled' => $totalCancelled,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
+
+    public function report(Request $request)
+    {
+        // Ambil parameter filter dengan default hari ini
+        $startDate = $request->input('start_date', Carbon::now()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+        $status = $request->status;
+
+        // ===== HITUNG SUMMARY (di luar AJAX) =====
+        $summaryQuery = JobOrder::where('status', '!=', 'estimation')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+
+        // Total jumlah job order
+        $totalJobOrders = $summaryQuery->count();
+
+        // Total nominal untuk setiap status
+        $totalCompleted = JobOrder::where('status', 'completed')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        $totalProgress = JobOrder::where('status', 'progress')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        $totalCancelled = JobOrder::where('status', 'cancelled')
+            ->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->get()
+            ->sum(function ($job) {
+                return ($job->subtotal ?? 0) + ($job->fee_amount ?? 0) + ($job->ppn_amount ?? 0);
+            });
+
+        // ===== DATA TABLES (AJAX) =====
+        if ($request->ajax()) {
+            $data = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle'])
+                ->select('*')->orderBy('created_at', 'desc');
+
+            if ($startDate && $endDate) {
+                $data->whereBetween('service_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+
+            if ($status) {
+                $data->where('status', $status);
+            } else {
+                $data->where('status', '!=', 'estimation');
+            }
+
+            foreach ($request->order as $key => $value) {
+                if ($value['column'] == 0 || $value['column'] == 4) {
+                    $data->orderBy('service_at', $value['dir']);
+                } else {
+                    $data->orderBy('total', $value['dir']);
+                }
+            }
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('customer_name', function ($row) {
+                    return $row->customerVehicle->customer->name;
+                })
+                ->addColumn('vehicle', function ($row) {
+                    return $row->customerVehicle->vehicle->merk . ' - ' . $row->customerVehicle->vehicle->no_pol;
+                })
+                ->addColumn('subtotal', function ($row) {
+                    return 'Rp ' . number_format($row->subtotal + $row->fee_amount, 2, ',', '.');
+                })
+                ->addColumn('fee_amount', function ($row) {
+                    return 'Rp ' . number_format($row->fee_amount, 2, ',', '.');
+                })
+                ->addColumn('ppn_amount', function ($row) {
+                    return 'Rp ' . number_format($row->ppn_amount, 2, ',', '.');
+                })
+                ->addColumn('formatted_total', function ($row) {
+                    return 'Rp ' . number_format(($row->subtotal + $row->fee_amount) + $row->ppn_amount, 2, ',', '.');
+                })
+                ->addColumn('net_profit', function ($row) {
+                    return 'Rp ' . number_format($row->subtotal, 2, ',', '.');
+                })
+                ->addColumn('service_at', function ($row) {
+                    return $row->service_at->format('d M Y H:i');
+                })
+                ->addColumn('status_badge', function ($row) {
+                    $statusClass = [
+                        'new' => 'bg-yellow-100 text-yellow-800',
+                        'draft' => 'bg-gray-100 text-gray-800',
+                        'progress' => 'bg-blue-100 text-blue-800',
+                        'completed' => 'bg-green-100 text-green-800',
+                        'cancelled' => 'bg-red-100 text-red-800'
+                    ];
+                    return '<span class="px-2 py-1 text-xs font-semibold rounded-full ' . $statusClass[$row->status] . '">' . ucfirst($row->status) . '</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="flex justify-end gap-2">';
+                    $btn .= '<a href="' . route('job-orders.show', $row->id) . '" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">';
+                    $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>';
+                    $btn .= '</a>';
+                    $btn .= '<a href="' . route('job-orders.edit', $row->id) . '" class="p-2 text-green-600 hover:bg-green-50 rounded-lg">';
+                    $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>';
+                    $btn .= '</a>';
+
+                    if ($row->status != 'completed' && $row->status != 'progress') {
+                        $btn .= '<button type="button" data-id="' . $row->id . '" data-name="' . $row->unique_id . '"class="delete-jo p-2 text-red-600 hover:bg-green-50 rounded-lg">';
+                        $btn .= '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>';
+                        $btn .= '</button>';
+                    }
+
+                    $btn .= '</div>';
+                    return $btn;
+                })
+                ->orderColumn('service_at', 'service_at $1')
+                ->orderColumn('formatted_total', 'total $1')
+                ->rawColumns(['status_badge', 'action'])
+                ->make(true);
+        }
+
+        // ===== RETURN VIEW dengan data summary =====
+        return view('job-orders.report', compact(
+            'totalJobOrders',
+            'totalCompleted',
+            'totalProgress',
+            'totalCancelled',
+            'startDate',
+            'endDate'
+        ));
+    }
+
     public function create()
     {
 
