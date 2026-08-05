@@ -102,6 +102,8 @@
                 @csrf
                 @method('PUT')
 
+                <input type="hidden" name="status" value="{{ $status ?? $jobOrder->status }}" />
+
                 <!-- Customer Section -->
                 <div class="w-full" id="field-customer_vehicle_id">
                     <label for="customer_vehicle_id" class="block text-sm font-medium text-gray-300 mb-2">
@@ -590,7 +592,7 @@
                         <span class="text-gray-300">PPN (%):</span>
                         <div class="flex items-center gap-2">
                             <input type="number" name="ppn" id="ppn" min="0" max="100" step="0.01"
-                                value="{{ old('ppn', $jobOrder->ppn ?? 0) }}"
+                                value="{{ old('ppn', $jobOrder->ppn_value ?? 0) }}"
                                 class="w-20 bg-gray-700 border border-gray-600 text-white rounded-md py-1 px-2 text-right focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                             <span class="text-gray-300">%</span>
                             <input type="text" id="ppn-amount" name="ppn_amount" value="Rp 0"
@@ -1782,7 +1784,7 @@
         });
 
         // ✅ SET PPN VALUE FROM DATABASE
-        const ppnValue = {{ old('ppn', $jobOrder->ppn ?? 0) }};
+        const ppnValue = {{ old('ppn', $jobOrder->ppn_value ?? 0) }};
         document.getElementById('ppn').value = ppnValue;
 
         // ✅ INITIAL CALCULATION

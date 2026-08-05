@@ -8,8 +8,9 @@
     <div class="bg-gray-800 shadow overflow-hidden border border-gray-600">
         <div
             class="p-4 flex flex-col sm:flex-row sm:justify-between justify-start items-start sm:items-center border-b border-gray-600">
-            <h2 class="sm:text-xl text-sm font-semibold mb-2 sm:mb-0 text-white">Detail Job Order: {{ $jobOrder->unique_id }}
+            <h2 class="sm:text-xl text-sm font-semibold mb-2 sm:mb-0 text-white">Detail {{$jobOrder->status == 'estimation' ? 'Estimasi' : 'Job Order'}}: {{ $jobOrder->unique_id }}
             </h2>
+            
             <div class="flex flex-col w-full sm:w-fit sm:flex-row space-x-0 sm:space-x-2">
                 @php
                     $statusClasses = [
@@ -19,9 +20,10 @@
                         'completed' =>
                             'bg-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800',
                         'cancelled' => 'bg-red-500',
+                        'estimation' => 'bg-yellow-500',
                     ];
                 @endphp
-
+                @if($jobOrder->status != 'estimation')
                 <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
                     class="text-white mb-2 sm:mb-0 {{ $statusClasses[$jobOrder->status] }} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
                     type="button">{{ $jobOrder->getDisplayStatus() }} <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true"
@@ -41,9 +43,16 @@
                         @endforeach
                     </ul>
                 </div>
-
-
-
+                @endif
+                @if($jobOrder->status == 'estimation')
+                <a href="{{ route('job-orders.edit', [
+                        'jobOrder' => $jobOrder->id,
+                        'status' => 'new'
+                    ]) }}"
+                    class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg flex items-center ">
+                    Jadikan Job Order
+                </a>
+                @endif
                 @if ($jobOrder->status != 'estimation' && $jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
                     <a href="{{ route('job-orders.edit', $jobOrder->id) }}"
                         class="text-white mb-2 sm:mb-0 bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
@@ -116,6 +125,7 @@
                                     'progress' => 'bg-blue-100 text-blue-800',
                                     'completed' => 'bg-green-500',
                                     'cancelled' => 'bg-red-500',
+                                    'estimation' => 'bg-yellow-500',
                                 ];
                                 $statusText = [
                                     'draft' => 'New',
@@ -123,6 +133,7 @@
                                     'progress' => 'Progress',
                                     'completed' => 'Selesai',
                                     'cancelled' => 'Batal',
+                                    'estimation' => 'Estimasi',
                                 ];
                             @endphp
                             <span class="px-2 py-1 text-xs rounded-full {{ $statusClasses[$jobOrder->status] }}">

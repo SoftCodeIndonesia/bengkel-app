@@ -273,6 +273,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/estimation/print/{id}', [EstimationController::class, 'print'])->name('estimation.print');
     Route::get('/estimation/job-order/{id}', [EstimationController::class, 'toJobOrder'])->name('to-job-order');
+    Route::get('/job-orders/{jobOrder}/edit/{status?}', [JobOrderController::class, 'edit'])
+    ->name('job-orders.edit');
     Route::resource('estimation', EstimationController::class);
 
 

@@ -64,7 +64,7 @@
                         Filter
                     </button>
                 </form>
-                <a href="{{ route('job-orders.create') }}"
+                <a href="{{ route('job-orders.create', ['status' => 'new']) }}"
                     class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg w-full flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

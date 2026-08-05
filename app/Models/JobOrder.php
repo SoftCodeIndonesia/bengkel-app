@@ -105,26 +105,41 @@ class JobOrder extends Model
 
         static::creating(function ($jobOrder) {
             $now = now();
-            $prefix = 'JO';
             $tanggal = $now->format('d');
             $bulan = $now->format('m');
-            $tahun = $now->format('y'); // hanya 2 digit tahun
+            $tahun = $now->format('y'); // 2 digit tahun
 
-            // Ambil job order terakhir di tahun yang sama
-            $latest = self::whereYear('created_at', $now->year)
-                ->where('status', '!=', "estimation")
-                ->where('unique_id', 'like', "{$prefix}/%/%/{$tahun}/%")
-                ->orderByDesc('created_at')
-                ->withTrashed()
-                ->first();
+            // Tentukan prefix berdasarkan status
+            if ($jobOrder->status == 'estimation') {
+                $prefix = 'EST';
+            } else {
+                $prefix = 'WO';
+            }
+
+            // Cari data terakhir berdasarkan status (EST atau non-EST)
+            if ($jobOrder->status == 'estimation') {
+                // Untuk EST: cari data dengan status 'estimation'
+                $latest = self::whereYear('created_at', $now->year)
+                    ->where('status', 'estimation')
+                    ->where('unique_id', 'like', "EST/%/%/{$tahun}/%")
+                    ->orderByDesc('created_at')
+                    ->withTrashed()
+                    ->first();
+            } else {
+                // Untuk WO: cari data dengan status != 'estimation'
+                $latest = self::whereYear('created_at', $now->year)
+                    ->where('status', '!=', 'estimation')
+                    ->where('unique_id', 'like', "WO/%/%/{$tahun}/%")
+                    ->orderByDesc('created_at')
+                    ->withTrashed()
+                    ->first();
+            }
 
 
-
-            // Ambil nomor urut dari unique_id terakhir
+            // Ambil nomor urut terakhir
             if ($latest) {
-                // Pecah format: JO/dd/mm/yy/0001
                 $parts = explode('/', $latest->unique_id);
-                $lastUrut = (int) ($parts[4] ?? 0); // ambil bagian terakhir
+                $lastUrut = (int) ($parts[4] ?? 0);
             } else {
                 $lastUrut = 0;
             }
@@ -135,6 +150,7 @@ class JobOrder extends Model
             // Format dengan padding 4 digit
             $nomorUrut = str_pad($nextUrut, 4, '0', STR_PAD_LEFT);
 
+            // Generate unique_id
             $generated = "{$prefix}/{$tanggal}/{$bulan}/{$tahun}/{$nomorUrut}";
 
             $jobOrder->unique_id = $generated;
@@ -147,7 +163,7 @@ class JobOrder extends Model
             $this->statuses = [
                 'completed',
             ];
-        } else if ($this->status == 'draft') {
+        } else if ($this->status == 'draft' || $this->status == 'new') {
             $this->statuses = [
                 'progress',
                 'completed',

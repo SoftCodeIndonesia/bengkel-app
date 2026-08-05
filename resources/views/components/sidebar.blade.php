@@ -103,7 +103,7 @@
                 </button>
                 <ul id="dropdown-example-workorder" class="hidden py-2 space-y-2">
                     <li>
-                        <a href="{{ route('job-orders.create') }}"
+                        <a href="{{ route('job-orders.create', ['status' => 'new']) }}"
                             class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">
                             Buat Work Order</a>
                     </li>

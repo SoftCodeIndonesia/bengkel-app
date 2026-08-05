@@ -25,7 +25,9 @@
                             <th class="p-3 w-64">Nama Jasa</th>
                             <th class="p-3 w-20">FRT</th>
                             <th class="p-3 w-40">Diskon Jasa</th>
+                            <th class="p-3 w-40">Fee Jasa</th>
                             <th class="p-3 w-40">Total Jasa</th>
+                            <th class="p-3 w-40">Profit Jasa</th>
                             <th class="p-3 w-64">Nama Part</th>
                             <th class="p-3 w-20">QTY</th>
                             <th class="p-3 w-40">Harga Beli Satuan</th>
@@ -50,6 +52,17 @@
                         @foreach ($jobOrderIncome as $keyWo => $wo)
                             @foreach ($wo->service as $keyJasa => $jasa)
                                 @foreach ($wo->sparepart as $keyPart => $part)
+                                    @php
+                                    $basePrice = 100000 * $jasa->quantity;
+                                    $diskon = $basePrice * ($jasa->diskon_value / 100);
+                                    
+                                    $unit_price = $jasa->markup_price + $diskon;
+                                    // $sumTotalPrice += $unit_price * $jasa->quantity;
+                                    // $sumDiskon += $diskon * $jasa->quantity;
+
+                                    $total = $jasa->markup_price * $jasa->quantity;
+                                    // $sumSubtotal += $total;    
+                                    @endphp
                                     <tr>
                                         <td class="p-3 w-64">{{ 'WO' }}</td>
                                         <td class="p-3 w-64">
@@ -60,10 +73,16 @@
                                         <td class="p-3 w-64">{{ $keyPart == 0 ? $jasa->quantity : '' }}</td>
 
                                         <td class="p-3 w-64">
-                                            {{ $keyPart == 0 ? number_format(100000 * $jasa->quantity * ($jasa->diskon_value / 100), 0, ',', '.') : '' }}
+                                            {{ $keyPart == 0 ? number_format($jasa->diskon, 0, ',', '.') : '' }}
                                         </td>
                                         <td class="p-3 w-64">
-                                            {{ $keyPart == 0 ? number_format($jasa->price_after_diskon, 0, ',', '.') : '' }}
+                                            {{ $keyPart == 0 ? number_format($jasa->fee_amount, 0, ',', '.') : '' }}
+                                        </td>
+                                        <td class="p-3 w-64">
+                                            {{ $keyPart == 0 ? number_format($total, 0, ',', '.') : '' }}
+                                        </td>
+                                        <td class="p-3 w-64">
+                                            {{ $keyPart == 0 ? number_format($total - $diskon - $jasa->fee_amount, 0, ',', '.') : '' }}
                                         </td>
                                         <td class="p-3 w-64">{{ $part->product->name }}</td>
                                         <td class="p-3 w-64">{{ $part->quantity }}</td>

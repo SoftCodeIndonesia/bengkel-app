@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\Product;
-use App\Models\Vehicle;
+use App\Http\Controllers\Controller;
+use App\Models\Breakdown;
 use App\Models\Customer;
+use App\Models\CustomerVehicle;
 use App\Models\JobOrder;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ReturnItem;
-use App\Models\SupplyItem;
-use Illuminate\Http\Request;
-use App\Models\CustomerVehicle;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\ServicePackage;
 use App\Models\Supply;
+use App\Models\SupplyItem;
+use App\Models\Vehicle;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class JobOrderController extends Controller
@@ -84,7 +85,8 @@ class JobOrderController extends Controller
                         'draft' => 'bg-gray-100 text-gray-800',
                         'progress' => 'bg-blue-100 text-blue-800',
                         'completed' => 'bg-green-100 text-green-800',
-                        'cancelled' => 'bg-red-100 text-red-800'
+                        'cancelled' => 'bg-red-100 text-red-800',
+                        'estimation' => 'bg-yellow-100 text-yellow-800'
                     ];
                     return '<span class="px-2 py-1 text-xs font-semibold rounded-full ' . $statusClass[$row->status] . '">' . ucfirst($row->status) . '</span>';
                 })
@@ -285,12 +287,13 @@ class JobOrderController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
 
         $packages = ServicePackage::all();
-
-        return view('job-orders.create', compact('packages'));
+        $status = $request->status;
+        $title = $request->status == 'estimation' ? "Buat Estimasi Baru" : "Buat Work Order Baru";
+        return view('job-orders.create', compact('packages', 'status', 'title'));
     }
 
     protected function validateRequest(Request $request)
@@ -376,7 +379,7 @@ class JobOrderController extends Controller
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
-                'status' => 'draft',
+                'status' => $request->status,
                 'subtotal' => $total_internal,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
@@ -472,7 +475,11 @@ class JobOrderController extends Controller
                 }
             }
         });
-        return redirect()->route('job-orders.index')->with('success', 'Job Order berhasil dibuat');
+        if($request->status == 'estimation'){
+            return redirect()->route('estimation.index')->with('success', 'Job Order berhasil dibuat');
+        }else{
+            return redirect()->route('job-orders.index')->with('success', 'Job Order berhasil dibuat');
+        }
     }
 
     public function show(JobOrder $jobOrder)
@@ -522,8 +529,10 @@ class JobOrderController extends Controller
         return view('job-orders.print', compact('jobOrder', 'data'));
     }
 
-    public function edit(JobOrder $jobOrder)
+    public function edit(JobOrder $jobOrder, $status = null)
     {
+        
+        
         $jobOrder->load(['orderItems.product', 'breakdowns', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle']);
         $customerVehicles = CustomerVehicle::with(['customer', 'vehicle'])->get();
         $products = Product::all();
@@ -546,17 +555,23 @@ class JobOrderController extends Controller
             $total_diskon += $diskon_nominal;
         }
 
-        return view('job-orders.edit', compact('jobOrder', 'customerVehicles', 'products', 'total_sparepart', 'total_service', 'total_diskon'));
+        return view('job-orders.edit', compact('jobOrder', 'customerVehicles', 'products', 'total_sparepart', 'total_service', 'total_diskon', 'status'));
     }
 
     public function update(Request $request, JobOrder $jobOrder)
     {
-
-        // dd($request->all());
         $validated = $this->validateRequest($request);
 
-        DB::transaction(function () use ($request, $jobOrder) {
+        $redirectJobOrder = null;
 
+        DB::transaction(function () use ($request, $jobOrder, &$redirectJobOrder) {
+            
+            // CEK: Apakah status berubah dari 'estimation' ke 'new'?
+            $isEstimationToNew = ($jobOrder->status == 'estimation' && $request->status == 'new');
+
+            // ==========================================
+            // 1. HANDLE CUSTOMER & VEHICLE
+            // ==========================================
             if ($request->customer_vehicle_id) {
                 $customerVehicle = CustomerVehicle::find($request->customer_vehicle_id);
             } else {
@@ -569,9 +584,15 @@ class JobOrderController extends Controller
 
                 $vehicle = Vehicle::create($request->only(['merk', 'tipe', 'no_pol']));
 
-                $customerVehicle = CustomerVehicle::create(['customer_id' => $customer->id, 'vehicle_id' => $vehicle->id]);
+                $customerVehicle = CustomerVehicle::create([
+                    'customer_id' => $customer->id, 
+                    'vehicle_id' => $vehicle->id
+                ]);
             }
 
+            // ==========================================
+            // 2. PREPARE DATA JOB ORDER
+            // ==========================================
             $subtotal = $request->subtotal;
             $total = $request->total;
             $grantTotal = $request->grand_total;
@@ -587,7 +608,7 @@ class JobOrderController extends Controller
                 'customer_vehicle_id' => $customerVehicle->id,
                 'km' => $request->km,
                 'service_at' => $request->service_at,
-                'status' => $jobOrder->status,
+                'status' => $request->status,
                 'subtotal' => $total_internal,
                 'diskon_unit' => $diskonUnit,
                 'diskon_value' => $diskonValue,
@@ -598,151 +619,326 @@ class JobOrderController extends Controller
                 'notes' => $request->notes,
             ];
 
-            // dd($jo_data);
-            $jobOrder->update($jo_data);
+            // ==========================================
+            // 3. TENTUKAN: DUPLICATE ATAU UPDATE?
+            // ==========================================
+            if ($isEstimationToNew) {
+                // ==========================================
+                // 3A. DUPLICATE: Buat JobOrder Baru
+                // ==========================================
+                
+                // Hapus 'status' dari $jo_data karena akan di-set manual
+                $jo_data['status'] = 'new';
+                
+                // Buat JobOrder baru (duplicate)
+                $newJobOrder = JobOrder::create($jo_data);
 
-            // $jobOrder = JobOrder::find($jobOrder->id);
-
-
-            foreach ($request->items as $item) {
-                if (str_starts_with($item['id'] ?? '', 'delete_')) {
-                    // Delete marked items
-                    $id = str_replace('delete_', '', $item['id']);
-                    OrderItem::find($id)->delete();
-                } elseif (empty($item['id'])) {
-                    $data_item = json_decode($item['product_id']);
-                    $product = null;
-                    if (gettype($data_item) == 'object') {
-                        $product = Product::find($data_item->id);
-                    } else {
-                        $product = Product::find($data_item);
-                    }
-
-
-
-                    $subtotal = $product->unit_price * $item['quantity'];
-                    $subtotalMarkup = $item['subtotal'];
-                    $potongan = ($item['diskon_value'] / 100) * $subtotal;
-                    $fee_value = $item['fee_value'];
-                    $fee_amount = $item['fee_amount'];
-                    $total = $item['total'];
-                    if ($product->tipe == 'jasa') {
-                        $subtotaljasa = 100000 * $item['quantity'];
-                        $data_input = [
-                            'product_id' => $product->id,
-                            'quantity' => $item['quantity'],
-                            'unit_price' => 0,
-                            'total_price' => $subtotalMarkup,
-                            'markup_price' => $item['markup_price'],
-                            'diskon_value' => $item['diskon_value'] ?? 0,
-                            'fee_value' => $fee_value ?? 0,
-                            'fee_amount' => $fee_amount ?? 0,
-                            'price_after_diskon' => $subtotaljasa - $potongan,
-                        ];
-                    } else {
-                        $data_input = [
-                            'product_id' => $product->id,
-                            'quantity' => $item['quantity'],
-                            'unit_price' => $product->unit_price,
-                            'total_price' => $subtotalMarkup,
-                            'markup_price' => $item['markup_price'],
-                            'diskon_value' => $item['diskon_value'] ?? 0,
-                            'fee_value' => $fee_value ?? 0,
-                            'fee_amount' => $fee_amount ?? 0,
-                            'price_after_diskon' => $subtotal - $potongan,
-                        ];
-                    }
-
-
-
-
-                    // dd($data_input);
-                    $jobOrderItem = $jobOrder->orderItems()->create($data_input);
-
-                    $findSupply = Supply::where('job_order_id', $jobOrder->id)->first();
-
-                    if ($findSupply) {
-                        // 3. Jika ada supply slip, tambahkan supply item juga
-                        $findSupply->items()->create([
-                            'product_id' => $jobOrderItem->product_id,
-                            'item_id' => $jobOrderItem->id,
-                            'quantity_requested' => $jobOrderItem->quantity,
-                            'quantity_fulfilled' => 0,
-                            'unit_price' => $jobOrderItem->unit_price,
-                            'total_price' => $jobOrderItem->total_price,
-                            'status' => 'pending',
-                        ]);
-                    }
+                
+                
+                // Generate unique_id baru dengan prefix WO
+                $now = now();
+                $tanggal = $now->format('d');
+                $bulan = $now->format('m');
+                $tahun = $now->format('y');
+                $prefix = 'WO';
+                
+                // Cari WO terakhir untuk nomor urut
+                $latestWO = JobOrder::whereYear('created_at', $now->year)
+                    ->where('status', '!=', 'estimation')
+                    ->where('unique_id', 'like', "WO/%/%/{$tahun}/%")
+                    ->orderByDesc('created_at')
+                    ->withTrashed()
+                    ->first();
+                
+                if ($latestWO) {
+                    $parts = explode('/', $latestWO->unique_id);
+                    $lastUrut = (int) ($parts[4] ?? 0);
                 } else {
-                    $orderItem = OrderItem::find($item['id']);
-
-                    if ($orderItem->product->tipe == 'jasa') {
-                        $subtotal = 100000 * $item['quantity'];
-                    } else {
-                        $subtotal = $orderItem->unit_price * $item['quantity'];
-                    }
-
-                    $potongan = ($item['diskon_value'] / 100) * $subtotal;
-
-                   
-                    $subtotalMarkup = $item['subtotal'];
-                    $potongan = ($item['diskon_value'] / 100) * $subtotal;
-                    $fee_value = $item['fee_value'];
-                    $fee_amount = $item['fee_amount'];
-                    $total = $item['total'];
-
-                    $orderItem->quantity = $item['quantity'];
-                    $orderItem->total_price = $subtotalMarkup;
-                    $orderItem->markup_price = $item['markup_price'];
-                    $orderItem->diskon_value = $item['diskon_value'];
-                    $orderItem->fee_value = $fee_value;
-                    $orderItem->fee_amount = $fee_amount;
-                    $orderItem->price_after_diskon = $subtotal - $potongan;
-
-                    // $supplyItem = SupplyItem::where('item_id', $orderItem->id)->get()->first();
-                    // // dd($item['id']);
-                    // if ($supplyItem) {
-                    //     // dd($supplyItem);
-                    //     $supplyItem->quantity_requested = $item['quantity'] - $supplyItem->quantity_fulfilled;
-                    //     $supplyItem->status = 'partial';
-                    //     $supplyItem->save();
-
-                    //     $supply = Supply::find($supplyItem->supply_id);
-
-                    //     $supply->status = 'pending';
-
-                    //     $supply->save();
-                    // }
-
-
-                    $orderItem->save();
+                    $lastUrut = 0;
                 }
+                
+                $nextUrut = $lastUrut + 1;
+                $nomorUrut = str_pad($nextUrut, 4, '0', STR_PAD_LEFT);
+                $generated = "{$prefix}/{$tanggal}/{$bulan}/{$tahun}/{$nomorUrut}";
+                
+                // Update unique_id di newJobOrder
+                $newJobOrder->unique_id = $generated;
+                $newJobOrder->save();
+                
+                // ==========================================
+                // 3B. DUPLICATE: Order Items
+                // ==========================================
+                foreach ($request->items as $item) {
+                    if (str_starts_with($item['id'] ?? '', 'delete_')) {
+                        // Skip deleted items (tidak di-copy ke data baru)
+                        continue;
+                    } elseif (empty($item['id'])) {
+                        // Item baru - create langsung
+                        $data_item = json_decode($item['product_id']);
+                        $product = null;
+                        if (gettype($data_item) == 'object') {
+                            $product = Product::find($data_item->id);
+                        } else {
+                            $product = Product::find($data_item);
+                        }
+
+                        $subtotal = $product->unit_price * $item['quantity'];
+                        $subtotalMarkup = $item['subtotal'];
+                        $potongan = ($item['diskon_value'] / 100) * $subtotal;
+                        $fee_value = $item['fee_value'];
+                        $fee_amount = $item['fee_amount'];
+                        $total = $item['total'];
+                        
+                        if ($product->tipe == 'jasa') {
+                            $subtotaljasa = 100000 * $item['quantity'];
+                            $data_input = [
+                                'product_id' => $product->id,
+                                'quantity' => $item['quantity'],
+                                'unit_price' => 0,
+                                'total_price' => $subtotalMarkup,
+                                'markup_price' => $item['markup_price'],
+                                'diskon_value' => $item['diskon_value'] ?? 0,
+                                'fee_value' => $fee_value ?? 0,
+                                'fee_amount' => $fee_amount ?? 0,
+                                'price_after_diskon' => $subtotaljasa - $potongan,
+                            ];
+                        } else {
+                            $data_input = [
+                                'product_id' => $product->id,
+                                'quantity' => $item['quantity'],
+                                'unit_price' => $product->unit_price,
+                                'total_price' => $subtotalMarkup,
+                                'markup_price' => $item['markup_price'],
+                                'diskon_value' => $item['diskon_value'] ?? 0,
+                                'fee_value' => $fee_value ?? 0,
+                                'fee_amount' => $fee_amount ?? 0,
+                                'price_after_diskon' => $subtotal - $potongan,
+                            ];
+                        }
+
+                        // Create item di newJobOrder
+                        $newOrderItem = $newJobOrder->orderItems()->create($data_input);
+
+                        // Handle Supply
+                        $findSupply = Supply::where('job_order_id', $newJobOrder->id)->first();
+                        if ($findSupply) {
+                            $findSupply->items()->create([
+                                'product_id' => $newOrderItem->product_id,
+                                'item_id' => $newOrderItem->id,
+                                'quantity_requested' => $newOrderItem->quantity,
+                                'quantity_fulfilled' => 0,
+                                'unit_price' => $newOrderItem->unit_price,
+                                'total_price' => $newOrderItem->total_price,
+                                'status' => 'pending',
+                            ]);
+                        }
+                    } else {
+                        // Item existing - duplicate ke newJobOrder
+                        $oldOrderItem = OrderItem::find($item['id']);
+                        if ($oldOrderItem) {
+                            // Hitung ulang berdasarkan data dari request
+                            $product = $oldOrderItem->product;
+                            
+                            if ($product->tipe == 'jasa') {
+                                $subtotal = 100000 * $item['quantity'];
+                            } else {
+                                $subtotal = $oldOrderItem->unit_price * $item['quantity'];
+                            }
+                            
+                            $potongan = ($item['diskon_value'] / 100) * $subtotal;
+                            $subtotalMarkup = $item['subtotal'];
+                            $fee_value = $item['fee_value'];
+                            $fee_amount = $item['fee_amount'];
+                            
+                            $data_input = [
+                                'product_id' => $oldOrderItem->product_id,
+                                'quantity' => $item['quantity'],
+                                'unit_price' => $oldOrderItem->unit_price,
+                                'total_price' => $subtotalMarkup,
+                                'markup_price' => $item['markup_price'],
+                                'diskon_value' => $item['diskon_value'] ?? 0,
+                                'fee_value' => $fee_value ?? 0,
+                                'fee_amount' => $fee_amount ?? 0,
+                                'price_after_diskon' => $subtotal - $potongan,
+                            ];
+                            
+                            $newOrderItem = $newJobOrder->orderItems()->create($data_input);
+                            
+                            // Handle Supply untuk item yang diduplicate
+                            $findSupply = Supply::where('job_order_id', $newJobOrder->id)->first();
+                            if ($findSupply) {
+                                $findSupply->items()->create([
+                                    'product_id' => $newOrderItem->product_id,
+                                    'item_id' => $newOrderItem->id,
+                                    'quantity_requested' => $newOrderItem->quantity,
+                                    'quantity_fulfilled' => 0,
+                                    'unit_price' => $newOrderItem->unit_price,
+                                    'total_price' => $newOrderItem->total_price,
+                                    'status' => 'pending',
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                // ==========================================
+                // 3C. DUPLICATE: Breakdowns
+                // ==========================================
+                if ($request->has('breakdowns')) {
+                    foreach ($request->breakdowns as $breakdown) {
+                        if (str_starts_with($breakdown['id'] ?? '', 'delete_')) {
+                            // Skip deleted breakdowns
+                            continue;
+                        } elseif (empty($breakdown['id'])) {
+                            // Breakdown baru - create langsung
+                            $newJobOrder->breakdowns()->create([
+                                'name' => $breakdown['name'],
+                            ]);
+                        } else {
+                            // Breakdown existing - duplicate ke newJobOrder
+                            $oldBreakdown = Breakdown::find($breakdown['id']);
+                            if ($oldBreakdown) {
+                                $newJobOrder->breakdowns()->create([
+                                    'name' => $breakdown['name'],
+                                    // tambahkan field lain jika ada
+                                ]);
+                            }
+                        }
+                    }
+                }
+
+                // ==========================================
+                // 3D. DATA LAMA TETAP DENGAN STATUS 'estimation'
+                // ==========================================
+                // Tidak ada perubahan pada $jobOrder (data lama tetap estimation)
+                // JobOrder lama tetap dengan status 'estimation' dan unique_id EST
+
+                $redirectJobOrder = $newJobOrder; // Redirect ke data baru
+
+            } else {
+                // ==========================================
+                // 3E. UPDATE: Update JobOrder seperti biasa
+                // ==========================================
+                $jobOrder->update($jo_data);
+
+                // ==========================================
+                // 3F. UPDATE: Order Items
+                // ==========================================
+                foreach ($request->items as $item) {
+                    if (str_starts_with($item['id'] ?? '', 'delete_')) {
+                        $id = str_replace('delete_', '', $item['id']);
+                        OrderItem::find($id)->delete();
+                    } elseif (empty($item['id'])) {
+                        $data_item = json_decode($item['product_id']);
+                        $product = null;
+                        if (gettype($data_item) == 'object') {
+                            $product = Product::find($data_item->id);
+                        } else {
+                            $product = Product::find($data_item);
+                        }
+
+                        $subtotal = $product->unit_price * $item['quantity'];
+                        $subtotalMarkup = $item['subtotal'];
+                        $potongan = ($item['diskon_value'] / 100) * $subtotal;
+                        $fee_value = $item['fee_value'];
+                        $fee_amount = $item['fee_amount'];
+                        $total = $item['total'];
+                        
+                        if ($product->tipe == 'jasa') {
+                            $subtotaljasa = 100000 * $item['quantity'];
+                            $data_input = [
+                                'product_id' => $product->id,
+                                'quantity' => $item['quantity'],
+                                'unit_price' => 0,
+                                'total_price' => $subtotalMarkup,
+                                'markup_price' => $item['markup_price'],
+                                'diskon_value' => $item['diskon_value'] ?? 0,
+                                'fee_value' => $fee_value ?? 0,
+                                'fee_amount' => $fee_amount ?? 0,
+                                'price_after_diskon' => $subtotaljasa - $potongan,
+                            ];
+                        } else {
+                            $data_input = [
+                                'product_id' => $product->id,
+                                'quantity' => $item['quantity'],
+                                'unit_price' => $product->unit_price,
+                                'total_price' => $subtotalMarkup,
+                                'markup_price' => $item['markup_price'],
+                                'diskon_value' => $item['diskon_value'] ?? 0,
+                                'fee_value' => $fee_value ?? 0,
+                                'fee_amount' => $fee_amount ?? 0,
+                                'price_after_diskon' => $subtotal - $potongan,
+                            ];
+                        }
+
+                        $jobOrderItem = $jobOrder->orderItems()->create($data_input);
+
+                        $findSupply = Supply::where('job_order_id', $jobOrder->id)->first();
+                        if ($findSupply) {
+                            $findSupply->items()->create([
+                                'product_id' => $jobOrderItem->product_id,
+                                'item_id' => $jobOrderItem->id,
+                                'quantity_requested' => $jobOrderItem->quantity,
+                                'quantity_fulfilled' => 0,
+                                'unit_price' => $jobOrderItem->unit_price,
+                                'total_price' => $jobOrderItem->total_price,
+                                'status' => 'pending',
+                            ]);
+                        }
+                    } else {
+                        $orderItem = OrderItem::find($item['id']);
+                        if ($orderItem) {
+                            if ($orderItem->product->tipe == 'jasa') {
+                                $subtotal = 100000 * $item['quantity'];
+                            } else {
+                                $subtotal = $orderItem->unit_price * $item['quantity'];
+                            }
+
+                            $potongan = ($item['diskon_value'] / 100) * $subtotal;
+                            $subtotalMarkup = $item['subtotal'];
+                            $fee_value = $item['fee_value'];
+                            $fee_amount = $item['fee_amount'];
+
+                            $orderItem->quantity = $item['quantity'];
+                            $orderItem->total_price = $subtotalMarkup;
+                            $orderItem->markup_price = $item['markup_price'];
+                            $orderItem->diskon_value = $item['diskon_value'];
+                            $orderItem->fee_value = $fee_value;
+                            $orderItem->fee_amount = $fee_amount;
+                            $orderItem->price_after_diskon = $subtotal - $potongan;
+                            $orderItem->save();
+                        }
+                    }
+                }
+
+                // ==========================================
+                // 3G. UPDATE: Breakdowns
+                // ==========================================
+                if ($request->has('breakdowns')) {
+                    foreach ($request->breakdowns as $breakdown) {
+                        if (str_starts_with($breakdown['id'] ?? '', 'delete_')) {
+                            $id = str_replace('delete_', '', $breakdown['id']);
+                            $jobOrder->breakdowns()->where('id', $id)->delete();
+                        } elseif (empty($breakdown['id'])) {
+                            $jobOrder->breakdowns()->create([
+                                'name' => $breakdown['name'],
+                            ]);
+                        } else {
+                            $jobOrder->breakdowns()->where('id', $breakdown['id'])->update([
+                                'name' => $breakdown['name'],
+                            ]);
+                        }
+                    }
+                }
+
+                $redirectJobOrder = $jobOrder; // Redirect ke data yang diupdate
             }
 
-
-            if ($request->has('breakdowns')) {
-                foreach ($request->breakdowns as $breakdown) {
-                    if (str_starts_with($breakdown['id'] ?? '', 'delete_')) {
-                        // Delete marked breakdowns
-                        $id = str_replace('delete_', '', $breakdown['id']);
-                        $jobOrder->breakdowns()->where('id', $id)->delete();
-                    } elseif (empty($breakdown['id'])) {
-                        // Create new breakdowns
-                        $jobOrder->breakdowns()->create([
-                            'name' => $breakdown['name'],
-                            // other breakdown fields
-                        ]);
-                    } else {
-                        // Update existing breakdowns
-                        $jobOrder->breakdowns()->where('id', $breakdown['id'])->update([
-                            'name' => $breakdown['name'],
-                            // other breakdown fields
-                        ]);
-                    }
-                }
-            }
         });
-        return redirect()->route('job-orders.show', $jobOrder->id)->with('success', 'Job Order berhasil dibuat');
+
+        // Redirect ke show dengan data yang sesuai (baru atau yang diupdate)
+        return redirect()->route('job-orders.show', $redirectJobOrder?->id)
+            ->with('success', 'Job Order berhasil di ubah');
     }
 
     public function destroy(JobOrder $jobOrder)
