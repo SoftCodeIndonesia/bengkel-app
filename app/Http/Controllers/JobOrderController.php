@@ -523,7 +523,14 @@ class JobOrderController extends Controller
         $jobOrder = JobOrder::with('orderItems', 'orderItems.product', 'invoice', 'breakdowns', 'orderItems.product', 'customerVehicle', 'customerVehicle.customer', 'customerVehicle.vehicle')->find($id);
 
         $data['unique_id'] = $jobOrder->unique_id;
-        $data['type'] = 'WORK ORDER';
+        
+
+        if($jobOrder->status == 'estimation'){
+            $data['type'] = 'ESTIMASI';
+            }else{
+            $data['type'] = 'WORK ORDER';
+        }
+
         $data['tanggal'] = $jobOrder->service_at->format('d M Y H:i');
         $data['customer_name'] = $jobOrder->customerVehicle->customer->name;
         return view('job-orders.print', compact('jobOrder', 'data'));

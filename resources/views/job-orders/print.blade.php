@@ -124,10 +124,21 @@
                     </thead>
                     @php
                         $index = 1;
+                        $sumSubtotal = 0;
+                        $sumDiskon = 0;
                     @endphp
                     <tbody>
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe != 'jasa')
+                                @php
+                                    $unit_price = $item->markup_price;
+                                    $total = $unit_price * $item->quantity;
+                                    $diskon = $item->unit_price * ($item->diskon_value / 100);
+
+                                    $sumDiskon += $diskon;
+                                    $sumSubtotal += $total;
+
+                                @endphp
                                 <tr class="border">
 
                                     <td class=" px-2">{{ $index }}</td>
@@ -136,9 +147,9 @@
                                     <td class="px-4  text-right">{{ $item->quantity }}
                                     </td>
                                     <td class="px-4  text-right">
-                                        {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                        {{ number_format($unit_price, 0, ',', '.') }}</td>
                                     <td class="px-2  text-right">
-                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                        {{ number_format($total, 0, ',', '.') }}</td>
 
                                 </tr>
                                 @php
@@ -148,6 +159,14 @@
                         @endforeach
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe == 'jasa')
+                                    @php
+                                        $unit_price = $item->markup_price;
+                                        $total = $unit_price * $item->quantity;
+                                        $diskon = $item->unit_price * ($item->diskon_value / 100);
+
+                                        $sumDiskon += $diskon;
+                                        $sumSubtotal += $total;
+                                    @endphp
                                 <tr class="border">
 
                                     <td class="px-2">{{ $index }}</td>
@@ -157,7 +176,7 @@
                                     </td>
                                     <td class="px-4 text-right"></td>
                                     <td class="px-2 text-right">
-                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                        {{ number_format($total, 0, ',', '.') }}</td>
 
                                 </tr>
                                 @php
@@ -182,23 +201,26 @@
                             <tr>
                                 <th class="text-left px-2" width="100px">Subtotal</th>
                                 <td class="text-right font-bold px-2">Rp
-                                    {{ number_format($jobOrder->subtotal, 0, ',', '.') }}</td>
+                                    {{ number_format($sumSubtotal, 0, ',', '.') }}</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <th class="text-left px-2" width="100px">Diskon</th>
                                 <td class="text-right font-bold px-2">
-                                    @if ($jobOrder->diskon_unit == 'percentage')
-                                        ({{ $jobOrder->diskon_value }}%)
-                                    @else
-                                        Rp
-                                        {{ number_format($jobOrder->diskon_value, 2, ',', '.') }}
-                                    @endif
+                                    Rp
+                                        {{ number_format($diskon, 2, ',', '.') }}
+                                </td>
+                            </tr> --}}
+                            <tr>
+                                <th class="text-left px-2" width="100px">PPN</th>
+                                <td class="text-right font-bold px-2">
+                                    Rp
+                                        {{ number_format($jobOrder->ppn_amount, 2, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <th class="text-left px-2" width="100px">Total</th>
                                 <td class="text-right font-bold px-2">Rp
-                                    {{ number_format($jobOrder->total, 2, ',', '.') }}</td>
+                                    {{ number_format($sumSubtotal + $jobOrder->ppn_amount, 2, ',', '.') }}</td>
                             </tr>
                         </thead>
                     </table>
