@@ -124,11 +124,11 @@
                                             <span
                                                 class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm {{ $clases[$item->product->grade ?? '-'] }}">{{ $item->product->grade ?? '-' }}</span>
                                         </td>
-                                        <td class="py-3 px-4 text-right text-white">Rp
-                                            {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-4 text-right text-white">
+                                            {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->markup_price, 0, ',', '.') }}</td>
                                         <td class="py-3 px-4 text-right text-white">{{ $item->quantity }}</td>
                                         <td class="py-3 px-4 text-right text-white">Rp
-                                            {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                            {{ number_format($item->markup_price * $item->quantity, 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             @endif

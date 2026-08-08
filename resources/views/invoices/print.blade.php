@@ -131,12 +131,12 @@
                                     <td class="py-1 px-2 text-left">{{ ucfirst($item->product->tipe ?? '') }}
                                     </td>
                                     <td class="py-1 px-2 text-end">
-                                        {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->unit_price, 0, ',', '.') }}
+                                        {{ $item->product->tipe == 'jasa' ? '' : 'Rp ' . number_format($item->markup_price, 0, ',', '.') }}
                                     </td>
                                     <td class="py-1 px-2 text-end">
                                         {{ $item->quantity }}</td>
                                     <td class="py-1 px-2 text-end">Rp
-                                        {{ number_format($item->total_price, 0, ',', '.') }}</td>
+                                        {{ number_format($item->markup_price * $item->quantity, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         @endif
