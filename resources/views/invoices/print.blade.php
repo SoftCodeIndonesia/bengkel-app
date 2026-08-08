@@ -148,13 +148,22 @@
                         <tr>
                             <td class="text-left px-2 font-bold">Diskon</td>
                             <td class="text-right px-2 font-bold" colspan="4">
-                                @if ($invoice->diskon_unit == 'percentage')
-                                    ({{ $invoice->diskon_value }}%)
+                                @if ($invoice->diskon_value > 0)
+                                    @if ($invoice->diskon_unit == 'percentage')
+                                        ({{ $invoice->diskon_value }}%)
+                                    @else
+                                        Rp
+                                        {{ number_format($invoice->diskon_value, 2, ',', '.') }}
+                                    @endif
                                 @else
-                                    Rp
-                                    {{ number_format($invoice->diskon_value, 2, ',', '.') }}
+                                    -
                                 @endif
                             </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left px-2 font-bold">PPN</td>
+                            <td class="text-right px-2 font-bold" colspan="4">Rp
+                                {{ number_format($invoice->ppn_amount, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="text-left px-2 font-bold">Grand Total</td>
@@ -172,8 +181,8 @@
             <p class="font-bold">Note</p>
             <p>Garansi Part Genuine 6 Bulan</p>
             <p>Garansi Part OEM 3 Bulan</p>
-            <p>Rekening Pembayaran : BCA 8692734903 (A/N Imam Bayhaqi)</p>
-
+            <p>Rekening Pembayaran : BCA 7160158951 (A/N AHMAD ULINNUHA)</p>
+  
         </div>
 
     </div>

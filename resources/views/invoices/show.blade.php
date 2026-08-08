@@ -145,7 +145,7 @@
                         <span class="text-white font-medium">Rp
                             {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
                     </div>
-                    @if ($invoice->diskon_unit)
+                    @if ($invoice->diskon_unit && $invoice->diskon_value > 0)
                         <div class="flex justify-between py-2">
                             <span class="text-gray-300">Diskon
                                 ({{ $invoice->diskon_unit === 'percentage' ? $invoice->diskon_value . '%' : 'Nominal' }}):</span>
@@ -159,6 +159,11 @@
                             </span>
                         </div>
                     @endif
+                    <div class="flex justify-between py-2">
+                        <span class="text-gray-300">PPN:</span>
+                        <span class="text-white font-medium">Rp
+                            {{ number_format($invoice->ppn_amount, 0, ',', '.') }}</span>
+                    </div>
                     <div class="flex justify-between py-2 border-t border-gray-600">
                         <span class="text-gray-300 font-semibold">Total:</span>
                         <span class="text-white font-bold">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>

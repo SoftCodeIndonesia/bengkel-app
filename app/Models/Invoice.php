@@ -24,6 +24,7 @@ class Invoice extends Model
         'subtotal',
         'diskon_unit',
         'diskon_value',
+        'ppn_amount',
         'total',
         'date'
     ];

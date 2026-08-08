@@ -129,7 +129,7 @@
                         </div>
                         <div class="flex-1">
                             <label class="block text-gray-300 mb-2">Tanggal Invoice</label>
-                            <input type="date" value="date('Y-d-')" name="date"
+                            <input type="date" value="{{ date('Y-m-d') }}" name="date"
                                 class="w-full bg-gray-700 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-gray-700 p-4 rounded-md">
                         <label class="block text-gray-300 mb-2">Subtotal</label>
                         <input type="text" name="subtotal" id="subtotal"
@@ -171,6 +171,24 @@
                         <input type="text" name="total" id="total" value="{{ $reference ? $reference->total : 0 }}"
                             class="numeric-input w-full bg-gray-800 border border-gray-600 rounded-md text-white px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             readonly>
+                    </div>
+                </div> --}}
+
+                <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 mb-6">
+                    <h3 class="text-lg font-medium text-white mb-4">Rincian Biaya</h3>
+                    <div class="overflow-x-auto">
+                        <div class="flex justify-between mb-2 items-center">
+                            <span class="text-gray-300">Subtotal:</span>
+                            <span id="subtotal-display" class="text-gray-300">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between mb-2 items-center">
+                            <span class="text-gray-300">PPN:</span>
+                            <span id="ppn-display" class="text-gray-300">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-medium">
+                            <span class="text-gray-300">Total:</span>
+                            <span id="total-display" class="text-blue-400">Rp 0</span>
+                        </div>
                     </div>
                 </div>
 
@@ -335,26 +353,25 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            let subtotalAmount = 0;
+            let ppnAmount = 0;
+            let grandTotal = 0;
+
             const modalReference = document.getElementById('modal-reference');
             const confirmReference = document.getElementById('confirm-reference');
             const btnOpenReference = document.getElementById('button-select-reference');
-
-
 
             const referenceIdInput = document.querySelector('input[name="reference_id"]');
             const referenceInput = document.querySelector('input[name="referensi"]');
             const invoiceTipeField = document.querySelector('input[name="tipe"]');
 
-
-            const diskonUnit = document.getElementById('diskon_unit');
-            const diskonValue = document.getElementById('diskon_value');
-            const subtotal = document.getElementById('subtotal');
-            const total = document.getElementById('total');
-
+            const subtotalDisplay = document.getElementById('subtotal-display');
+            const ppnDisplay = document.getElementById('ppn-display');
+            const totalDisplay = document.getElementById('total-display');
 
             confirmReference.addEventListener('click', function() {
                 const value = JSON.parse($('input[name="select-reference"]:checked').val());
-                console.log(value);
 
                 const tipe = value.tipe;
                 const id = value.value;
@@ -369,12 +386,6 @@
 
                         referenceIdInput.value = reference.id;
                         referenceInput.value = reference.unique_id;
-
-                        // isi field summary
-                        subtotal.value = formatNumber(reference.subtotal);
-                        total.value = formatNumber(reference.total);
-                        diskonValue.value = formatNumber(reference.diskon_value);
-                        diskonUnit.value = reference.diskon_unit;
 
                         if (tipe == 'sales') {
                             // isi customer
@@ -392,73 +403,33 @@
                             $('.reference-detail').append(layoutJO(reference));
                         }
 
-                        // // tutup modal
-                        // const modal = document.querySelector('#modal-reference');
-                        // modalReference.classList.add('hidden');
-                        // modalReference.hide();
+                        // hitung subtotal dari item/jasa sesuai markup price
+                        if (tipe === 'sales') {
+                            subtotalAmount = parseFloat(reference.subtotal) || 0;
+                            ppnAmount = 0;
+                            grandTotal = parseFloat(reference.total) || 0;
+                        } else {
+                            subtotalAmount = 0;
+                            reference.order_items.forEach(element => {
+                                const diskon = element.unit_price * (element.diskon_value / 100);
+                                const unit_price = element.markup_price;
+                                const total = unit_price * element.quantity;
 
+                                subtotalAmount += total;
+                            });
 
+                            ppnAmount = parseFloat(reference.ppn_amount) || 0;
+                            grandTotal = subtotalAmount + ppnAmount;
+                        }
 
-
-
-
-                        // modalReferenceEl.toggle();
+                        subtotalDisplay.textContent = formatNumber(subtotalAmount);
+                        ppnDisplay.textContent = formatNumber(ppnAmount);
+                        totalDisplay.textContent = formatNumber(grandTotal);
                     })
                     .catch(err => {
                         console.error(err);
                         alert('Gagal mengambil data referensi');
                     });
-            });
-
-            function calculateTotal() {
-
-                let subtotalValue = parseFloat(subtotal.value.replace('.', '')) || 0;
-                let diskon = parseFloat(diskonValue.value) || 0;
-
-                if (diskonUnit.value === 'percentage') {
-                    diskon = subtotalValue * (diskon / 100);
-                }
-
-                // Pastikan diskon tidak melebihi subtotal
-                diskon = Math.min(diskon, subtotalValue);
-
-                total.value = formatNumber((subtotalValue - diskon));
-            }
-
-            diskonUnit.addEventListener('change', calculateTotal);
-            diskonValue.addEventListener('input', calculateTotal);
-
-            $('#referensi').change(function(e) {
-                e.preventDefault();
-                const reference = JSON.parse($(this).val());
-                console.log(reference);
-                // $('input[name="customer_name"]').val(reference.customer_name);
-
-                subtotal.value = formatNumber(reference.subtotal);
-                total.value = formatNumber(reference.total);
-                diskonValue.value = formatNumber(reference.diskon_value);
-                diskonUnit.value = formatNumber(reference.diskon_unit);
-                if ($('input[name="tipe"]:checked')
-                    .val() == 'sales') {
-
-
-
-                    $('input[name="customer_id"]').val(reference.customer_id);
-                    $('input[name="reference_id"]').val(reference.id);
-                    $('.reference-detail').html('');
-
-                    $('.reference-detail').append(layoutSales(reference));
-                } else if ($('input[name="tipe"]:checked')
-                    .val() == 'services') {
-
-
-
-                    $('input[name="customer_id"]').val(reference.customer_vehicle.customer_id);
-                    $('input[name="reference_id"]').val(reference.id);
-                    $('.reference-detail').html('');
-
-                    $('.reference-detail').append(layoutJO(reference));
-                }
             });
 
             function layoutSales(sales) {
@@ -640,7 +611,7 @@
                                 ${formatNumber(element.unit_price)}</td>
                                 <td class="py-3 px-4 text-right text-white">${ element.quantity }</td>
                                 <td class="py-3 px-4 text-right text-white">Rp
-                                ${element.total_price}</td>
+                                ${formatNumber(element.total_price)}</td>
                             </tr>`
                 });
 
@@ -650,6 +621,10 @@
             function layoutItemJO(items, tipe) {
                 var html = '';
                 items.forEach((element, index) => {
+
+                    const unit_price = element.markup_price;
+                    const total = element.markup_price * element.quantity;
+
                     if (tipe == 'jasa' && element.product.tipe == tipe) {
                         html += ` <tr class="border-b border-gray-600">
                                     
@@ -658,10 +633,10 @@
                                     <td class="px-4 py-3 text-right">${element.quantity}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp
-                                    ${formatNumber(element.unit_price)}
+                                    ${formatNumber(unit_price)}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp
-                                    ${formatNumber(element.total_price)}</td>
+                                    ${formatNumber(total)}</td>
                                 </tr>`;
                     } else if (tipe != 'jasa' && element.product.tipe != 'jasa') {
                         html += ` <tr class="border-b border-gray-600">
@@ -671,10 +646,10 @@
                                     <td class="px-4 py-3 text-right">${element.quantity}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp
-                                    ${formatNumber(element.unit_price)}
+                                    ${formatNumber(unit_price)}
                                     </td>
                                     <td class="px-4 py-3 text-right">Rp
-                                    ${formatNumber(element.total_price)}</td>
+                                    ${formatNumber(total)}</td>
                                 </tr>`;
                     }
                 });
@@ -686,13 +661,6 @@
             function formatNumber(num) {
                 return new Intl.NumberFormat('id-ID').format(num);
             }
-
-            $('#form-create-invoice').submit(function(e) {
-
-                $('input[name="subtotal"]').val(originalNumber($('input[name="subtotal"]').val()));
-                $('input[name="diskon_value"]').val(originalNumber($('input[name="diskon_value"]').val()));
-                $('input[name="total"]').val(originalNumber($('input[name="total"]').val()));
-            });
         });
     </script>
 @endpush

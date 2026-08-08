@@ -259,25 +259,26 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'tipe' => 'required|in:sales,services',
             'reference_id' => 'required',
             'customer_id' => 'required|exists:customers,id',
-            'diskon_value' => 'nullable|numeric|min:0',
             'status' => 'required',
             'date' => 'required',
         ]);
 
-
         if ($validated['tipe'] === 'sales') {
             $sale = Sales::findOrFail($validated['reference_id']);
             $validated['subtotal'] = $sale->subtotal;
+            $validated['ppn_amount'] = 0;
             $validated['total'] = $sale->total;
         } else {
-            $jobOrder = JobOrder::findOrFail($validated['reference_id']);
-            $validated['subtotal'] = $jobOrder->subtotal;
-            $validated['total'] = $jobOrder->total;
+            $jobOrder = JobOrder::with('orderItems')->findOrFail($validated['reference_id']);
+            $validated['subtotal'] = $jobOrder->orderItems->sum(function ($item) {
+                return $item->markup_price * $item->quantity;
+            });
+            $validated['ppn_amount'] = $jobOrder->ppn_amount ?? 0;
+            $validated['total'] = $validated['subtotal'] + $validated['ppn_amount'];
         }
 
         $customer = Customer::find($validated['customer_id']);
@@ -291,7 +292,8 @@ class InvoiceController extends Controller
             'customer_address' => $customer->address ?? '',
             'subtotal' => $validated['subtotal'],
             'diskon_unit' => 'nominal',
-            'diskon_value' => $validated['diskon_value'] ?? 0,
+            'diskon_value' => 0,
+            'ppn_amount' => $validated['ppn_amount'],
             'total' => $validated['total'],
             'date' => $validated['date'],
         ]);
