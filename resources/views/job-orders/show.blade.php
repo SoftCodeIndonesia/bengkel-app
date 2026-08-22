@@ -53,7 +53,7 @@
                     Jadikan Job Order
                 </a>
                 @endif
-                @if ($jobOrder->status != 'estimation' && $jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
+                @if ($jobOrder->status != 'completed' && $jobOrder->status != 'cancelled')
                     <a href="{{ route('job-orders.edit', $jobOrder->id) }}"
                         class="text-white mb-2 sm:mb-0 bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg flex items-center ">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,6 +62,7 @@
                         </svg>
                         Edit
                     </a>
+                    @if($jobOrder->status != 'estimation')
                     <a href="{{ route('supplies.create-from-job', $jobOrder->id) }}"
                         class="bg-purple-600 mb-2 sm:mb-0 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,6 +70,7 @@
                         </svg>
                         Buat Permintaan Supply
                     </a>
+                    @endif
                 @endif
                 {{-- @if ($jobOrder->status == 'completed')
                     <a href="{{ route('invoices.create-from-service', $jobOrder) }}"

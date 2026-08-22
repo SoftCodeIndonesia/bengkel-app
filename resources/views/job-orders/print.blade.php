@@ -115,11 +115,13 @@
                         <tr>
 
                             <th class=" px-2" width="30px">No</th>
-                            <th class="px-4  text-left" width="50%">Sparepart/Jasa</th>
+                            <th class="px-4  text-left" width="20%">Sparepart/Jasa</th>
                             <th class="px-4  text-left">Kategori</th>
                             <th class="px-4  text-right">FRT/QTY</th>
-                            <th class="px-4  text-right">Harga</th>
-                            <th class=" text-right px-2">Subtotal</th>
+                            <th class="px-4 py-3 text-right">Harga</th>
+                            <th class="px-4 py-3 text-right">Diskon</th>
+                            <th class="px-4 py-3 text-right">Subtotal</th>
+                            <th class="px-4 py-3 text-right">Total</th>
                         </tr>
                     </thead>
                     @php
@@ -131,10 +133,10 @@
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe != 'jasa')
                                 @php
-                                    $unit_price = $item->markup_price;
-                                    $total = $unit_price * $item->quantity;
                                     $diskon = $item->unit_price * ($item->diskon_value / 100);
-
+                                    $unit_price = $item->markup_price + $diskon;
+                                    
+                                    $total = $item->markup_price * $item->quantity;
                                     $sumDiskon += $diskon;
                                     $sumSubtotal += $total;
 
@@ -149,8 +151,11 @@
                                     <td class="px-4  text-right">
                                         {{ number_format($unit_price, 0, ',', '.') }}</td>
                                     <td class="px-2  text-right">
-                                        {{ number_format($total, 0, ',', '.') }}</td>
-
+                                        {{ number_format($diskon, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-right">
+                                                {{ number_format($item->markup_price, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-right">
+                                                {{ number_format($total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     $index++;
@@ -160,9 +165,10 @@
                         @foreach ($jobOrder->orderItems as $item)
                             @if ($item->product->tipe == 'jasa')
                                     @php
-                                        $unit_price = $item->markup_price;
-                                        $total = $unit_price * $item->quantity;
-                                        $diskon = $item->unit_price * ($item->diskon_value / 100);
+                                        $basePrice = 100000 * $item->quantity;
+                                        $diskon = $basePrice * ($item->diskon_value / 100);
+                                        $unit_price = $item->markup_price + $diskon;
+                                        $total = $item->markup_price * $item->quantity;
 
                                         $sumDiskon += $diskon;
                                         $sumSubtotal += $total;
@@ -174,10 +180,14 @@
                                     <td class="px-4">Jasa</td>
                                     <td class="px-4 text-right">{{ $item->quantity }}
                                     </td>
-                                    <td class="px-4 text-right"></td>
+                                    <td class="px-4 text-right">{{$unit_price}}</td>
                                     <td class="px-2 text-right">
-                                        {{ number_format($total, 0, ',', '.') }}</td>
-
+                                        {{ number_format($diskon, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3 text-right">
+                                                    {{ number_format($item->markup_price, 0, ',', '.') }}
+                                                </td>
+                                            <td class="px-4 py-3 text-right">
+                                                {{ number_format($total, 0, ',', '.') }}</td>
                                 </tr>
                                 @php
                                     $index++;
