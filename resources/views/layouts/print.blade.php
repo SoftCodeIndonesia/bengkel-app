@@ -72,7 +72,7 @@
                     <div class="">
                         <div style="font-size: 20px" class="mt-2 font-bold">
                             {{ $data['type'] ?? 'INVOICE' }}</div>
-                        <div style="font-size: 10px" class="font-bold">88AUTOCARE - Nissan, Datsun & Umum Specialist
+                        <div style="font-size: 10px" class="font-bold">SANAUTO99 - Nissan, Datsun & Umum Specialist
                         </div>
                         <div style="font-size: 10px">Jl. K.H.M. Usman RT. 01 RW. 04, Kukusan, Kecamatan Beji, Kota
                             Depok,
@@ -93,7 +93,7 @@
                         </table>
                     </div>
                     <div class="">
-                        <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" width="300" alt="Logo">
+                        <img src="{{ asset('assets/app/img/sanauto99-logo.png') }}" width="300" alt="Logo">
                     </div>
 
                 </div>

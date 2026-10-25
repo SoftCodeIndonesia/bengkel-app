@@ -14,7 +14,7 @@
                     </svg>
                 </button>
                 <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <img src="{{ asset('assets/app/img/logo-bengkel-1.png') }}" class="h-12 w-full mr-3"
+                    <img src="{{ asset('assets/app/img/sanauto-logo.png') }}" class="h-12 w-full mr-3"
                         style="width: 250px" alt="Logo Bengkel">
                     {{-- <span class="text-xl font-semibold">BengBeng</span> --}}
                 </a>
