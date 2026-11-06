@@ -133,7 +133,7 @@ class SupplyController extends Controller
         $supplies = Supply::where('job_order_id', $jobOrderId)->get()->first();
 
         if ($supplies) {
-            return redirect()->route('supplies.fulfill', $supplies->id);
+            return redirect()->route('supplies.show', $supplies->id);
         }
 
         $jobOrder = JobOrder::with(['customerVehicle.customer', 'customerVehicle.vehicle', 'sparepart', 'sparepart.supplyItem', 'sparepart.product'])
@@ -168,6 +168,9 @@ class SupplyController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->filled('sales_id') && !auth()->user()->can('manage inventory')) {
+            abort(403, 'Anda hanya dapat membuat permintaan supply dari job order.');
+        }
 
         if ($request->has('sales_id')) {
             return $this->storeSO($request);

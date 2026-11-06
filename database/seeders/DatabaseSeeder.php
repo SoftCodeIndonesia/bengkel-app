@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
-            // Tambahkan seeder lain di sini
+            PermissionSeeder::class,
         ]);
     }
 }

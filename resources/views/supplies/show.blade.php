@@ -22,14 +22,25 @@
                 <button class="px-3 py-2 rounded-md text-sm {{ $statusClasses[$supply->status] }}">
                     {{ ucfirst($supply->status) }}
                 </button>
-                <a href="{{ route('supplies.index') }}"
-                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600 transition-colors">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Kembali ke Daftar
-                </a>
+                @can('manage inventory')
+                    <a href="{{ route('supplies.index') }}"
+                        class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600 transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Kembali ke Daftar
+                    </a>
+                @else
+                    <a href="{{ $supply->job_order_id ? route('job-orders.show', $supply->job_order_id) : url('/dashboard') }}"
+                        class="text-gray-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex items-center border border-gray-600 transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Kembali
+                    </a>
+                @endcan
 
             </div>
 
@@ -186,15 +197,17 @@
             </div>
 
             <div class="flex justify-end">
-                @if ($supply->status == 'pending' || $supply->status == 'processed')
-                    <a href="{{ route('supplies.fulfill', $supply->id) }}"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Penuhi Permintaan
-                    </a>
-                @endif
+                @can('manage inventory')
+                    @if ($supply->status == 'pending' || $supply->status == 'processed')
+                        <a href="{{ route('supplies.fulfill', $supply->id) }}"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Penuhi Permintaan
+                        </a>
+                    @endif
+                @endcan
             </div>
         </div>
     </div>

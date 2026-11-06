@@ -17,6 +17,7 @@
                     <span class="ms-3">Dashboard</span>
                 </a>
             </li>
+            @can('manage purchases')
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -49,6 +50,8 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+            @canany(['view customers', 'manage master data'])
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -68,18 +71,24 @@
                     </svg>
                 </button>
                 <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                    <li>
-                        <a href="{{ route('customers.index') }}"
-                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
-                            Pelanggan</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('vehicles.index') }}"
-                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
-                            Kendaraan</a>
-                    </li>
+                    @can('view customers')
+                        <li>
+                            <a href="{{ route('customers.index') }}"
+                                class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
+                                Pelanggan</a>
+                        </li>
+                    @endcan
+                    @can('manage master data')
+                        <li>
+                            <a href="{{ route('vehicles.index') }}"
+                                class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
+                                Kendaraan</a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
+            @endcanany
+            @can('manage workshop')
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -124,6 +133,8 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+            @can('manage sales')
             <li>
                 <a href="{{ route('sales.index') }}"
                     class="flex items-center p-2  rounded-lg text-gray-400  hover:bg-gray-700 group">
@@ -138,6 +149,8 @@
 
                 </a>
             </li>
+            @endcan
+            @can('manage inventory')
             <li>
                 <a href="{{ route('movements.index') }}"
                     class="flex items-center p-2  rounded-lg text-gray-400  hover:bg-gray-700 group">
@@ -153,7 +166,9 @@
 
                 </a>
             </li>
+            @endcan
 
+            @can('manage appointments')
             <li>
                 <a href="{{ route('appointments.index') }}"
                     class="flex items-center p-2  rounded-lg text-gray-400  hover:bg-gray-700 group">
@@ -168,6 +183,8 @@
 
                 </a>
             </li>
+            @endcan
+            @can('manage follow-ups')
             <li>
                 <a href="{{ route('follow-ups.index') }}"
                     class="flex items-center p-2  rounded-lg text-gray-400  hover:bg-gray-700 group">
@@ -183,6 +200,8 @@
 
                 </a>
             </li>
+            @endcan
+            @can('manage inventory')
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -229,6 +248,8 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+            @can('manage master data')
             <li>
                 <a href="{{ route('services.index') }}"
                     class="flex items-center p-2  rounded-lg text-gray-400  hover:bg-gray-700 group">
@@ -241,10 +262,9 @@
                     <span class="flex-1 ms-3 whitespace-nowrap">Jasa</span>
                 </a>
             </li>
+            @endcan
 
-
-
-
+            @canany(['manage invoices', 'manage finance', 'view reports'])
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -266,25 +286,33 @@
                     </svg>
                 </button>
                 <ul id="finance" class="hidden py-2 space-y-2">
-                    <li>
-                        <a href="{{ route('invoices.index') }}"
-                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">
-                            Invoice
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('expenses.index') }}"
-                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
-                            Pengeluaran</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('reports.profit-loss') }}"
-                            class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
-                            Laporan Keuangan</a>
-                    </li>
+                    @can('manage invoices')
+                        <li>
+                            <a href="{{ route('invoices.index') }}"
+                                class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">
+                                Invoice
+                            </a>
+                        </li>
+                    @endcan
+                    @can('manage finance')
+                        <li>
+                            <a href="{{ route('expenses.index') }}"
+                                class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
+                                Pengeluaran</a>
+                        </li>
+                    @endcan
+                    @can('view reports')
+                        <li>
+                            <a href="{{ route('reports.profit-loss') }}"
+                                class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Data
+                                Laporan Keuangan</a>
+                        </li>
+                    @endcan
 
                 </ul>
             </li>
+            @endcanany
+            @can('manage hr')
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -319,9 +347,9 @@
 
                 </ul>
             </li>
+            @endcan
 
-
-
+            @canany(['view users', 'view roles'])
             <li>
                 <button type="button"
                     class="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-gray-400 hover:bg-gray-700"
@@ -360,6 +388,7 @@
 
                 </ul>
             </li>
+            @endcanany
 
 
         </ul>
