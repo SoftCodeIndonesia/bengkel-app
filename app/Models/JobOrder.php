@@ -140,7 +140,7 @@ class JobOrder extends Model
             $this->statuses = [
                 'completed',
             ];
-        } else if ($this->status == 'draft') {
+        } else if ($this->status == 'new' || $this->status == 'draft') {
             $this->statuses = [
                 'progress',
                 'completed',

@@ -51,7 +51,7 @@ class Invoice extends Model
         parent::boot();
 
         static::creating(function ($invoice) {
-            $invoice->unique_id = 'INV-' . date('Ymd') . '-' . str_pad(static::count() + 1, 4, '0', STR_PAD_LEFT);
+            $invoice->unique_id = 'INV-' . date('Ymd') . '-' . str_pad(static::withTrashed()->count() + 1, 4, '0', STR_PAD_LEFT);
         });
     }
 }
