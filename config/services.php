@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'reminder' => [
+        'url' => env('N8NWEBHOOKREMINDERURL'),
+        'header_name' => env('N8NWEBHOOKREMINDERAPIKEYNAME'),
+        'header_value' => env('N8NWEBHOOKREMINDERKEY'),
+    ],
+
 ];

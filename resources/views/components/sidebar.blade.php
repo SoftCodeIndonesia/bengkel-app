@@ -122,6 +122,10 @@
                             Work Order</a>
                     </li>
                     <li>
+                        <a href="{{ route('reminders.index') }}"
+                            class="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group text-gray-400 hover:bg-gray-700">Reminder</a>
+                    </li>
+                    <li>
                         <a href="{{ route('estimation.index') }}"
                             class="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-gray-400 hover:bg-gray-700">Daftar
                             Estimasi</a>

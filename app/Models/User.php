@@ -12,7 +12,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasRoles {
+        hasPermissionTo as protected hasPermissionToByRole;
+    }
+
+    /**
+     * When configured, a user's selected menu permissions take precedence over
+     * permissions inherited from their roles. Admin accounts retain role access.
+     */
+    public function hasPermissionTo($permission, ?string $guardName = null): bool
+    {
+        if (!$this->menu_access_configured || $this->hasRole('admin')) {
+            return $this->hasPermissionToByRole($permission, $guardName);
+        }
+
+        return $this->hasDirectPermission($permission);
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -43,5 +59,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'menu_access_configured' => 'boolean',
     ];
 }

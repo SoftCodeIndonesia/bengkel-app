@@ -9,9 +9,8 @@ use App\Models\JobOrder;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\ReminderWebhookService;
 use Yajra\DataTables\Facades\DataTables;
 
 class InvoiceController extends Controller
@@ -308,7 +307,7 @@ class InvoiceController extends Controller
         ]);
 
         if ($validated['status'] === 'paid' && $invoice->tipe === 'services') {
-            $this->sendInvoicePaidWebhook($invoice);
+            // $this->sendInvoicePaidWebhook($invoice);
         }
 
         return redirect()->route('invoices.show', $invoice)
@@ -381,7 +380,7 @@ class InvoiceController extends Controller
         ]);
 
         if ($validated['status'] === 'paid' && $oldStatus !== 'paid' && $invoice->tipe === 'services') {
-            $this->sendInvoicePaidWebhook($invoice);
+            // $this->sendInvoicePaidWebhook($invoice);
         }
 
         return redirect()->route('invoices.show', $invoice->id)
@@ -405,13 +404,13 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $oldStatus = $invoice->status;
 
-        // $invoice->update([
-        //     'status' => $validated['status'],
-        // ]);
+        $invoice->update([
+            'status' => $validated['status'],
+        ]);
 
         if ($validated['status'] === 'paid' && $oldStatus !== 'paid' && $invoice->tipe === 'services') {
             
-            $this->sendInvoicePaidWebhook($invoice);
+            // $this->sendInvoicePaidWebhook($invoice);
         }
 
         return redirect()->route('invoices.show', $invoice->id)
@@ -444,30 +443,12 @@ class InvoiceController extends Controller
         if (!$jobOrder || !$jobOrder instanceof JobOrder) {
             return;
         }
-
-        $customerVehicle = $jobOrder->customerVehicle;
-        $vehicle = $customerVehicle?->vehicle;
-
-        $payload = [
-            'no_wo' => $jobOrder->unique_id,
-            'nama_customer' => $invoice->customer_name,
-            'whatsapp' => optional($invoice->customer)->phone,
-            'kendaraan' => $vehicle ? "{$vehicle->merk} {$vehicle->tipe}" : '',
-            'nomor_polisi' => $vehicle?->no_pol ?? '',
-            'tanggal_service' => $jobOrder->service_at?->format('Y-m-d H:i:s') ?? $jobOrder->created_at->format('Y-m-d H:i:s'),
-            'paket_service' => '',
-        ];
-
-        // dd(env('N8NWEBHOOKREMINDERAPIKEYNAME'), env('N8NWEBHOOKREMINDERKEY'));
-        try {
-            $response = Http::timeout(10)
-                ->withHeaders([
-                    env('N8NWEBHOOKREMINDERAPIKEYNAME') => env('N8NWEBHOOKREMINDERKEY'),
-                ])
-                ->post(env('N8NWEBHOOKREMINDERURL'), $payload);
-                
-        } catch (\Throwable $e) {
-            Log::error('Webhook invoice paid failed: ' . $e->getMessage());
-        }
+        app(ReminderWebhookService::class)->sendJobOrder(
+            $jobOrder,
+            $invoice->customer_name,
+            $invoice->customer?->phone,
+            'Webhook invoice paid failed',
+            'After Service'
+        );
     }
 }

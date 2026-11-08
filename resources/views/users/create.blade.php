@@ -91,6 +91,8 @@
                     @enderror
                 </div>
 
+                @include('users._menu-permissions')
+
                 <div class="flex justify-end">
                     <a href="{{ route('users.index') }}"
                         class="mr-3 text-gray-400 hover:text-white bg-gray-700 px-4 py-2 rounded-lg">

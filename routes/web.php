@@ -27,6 +27,7 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\MovementItemController;
 use App\Http\Controllers\ServicePackageController;
@@ -116,6 +117,8 @@ Route::middleware('auth')->group(function () {
 
     // Workshop
     Route::middleware('permission:manage workshop')->group(function () {
+        Route::get('/reminders', [ReminderController::class, 'index'])->name('reminders.index');
+        Route::post('/reminders/send', [ReminderController::class, 'send'])->name('reminders.send');
         Route::get('job-orders/print/{id}', [JobOrderController::class, 'print'])->name('job-orders.print');
         Route::resource('job-orders', JobOrderController::class);
 
